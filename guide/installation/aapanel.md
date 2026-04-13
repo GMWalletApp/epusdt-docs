@@ -1,22 +1,23 @@
-# BaoTa Panel Deployment
+# aaPanel Deployment
 
-This guide shows how to run the Epusdt service itself with BaoTa.
+This guide shows how to run the Epusdt service itself with aaPanel.
 
 ## Prerequisites
 
 Prepare the following before deployment:
 
-- A Linux server with BaoTa installed
-- Nginx installed in BaoTa
-- Supervisor installed in BaoTa
+- A Linux server with aaPanel installed
+- Nginx installed in aaPanel
+- Supervisor installed in aaPanel
 - A public domain pointed to the server, such as `pay.example.com`
 - The Epusdt release package or a self-built `epusdt` binary
 - A valid `api_auth_token`
 - Optional but recommended: `tron_grid_api_key`
+- Optional if using extra networks: `solana_rpc_url` and `ethereum_ws_url`
 
-## 1. Create a site in BaoTa
+## 1. Create a site in aaPanel
 
-In BaoTa, create a new site and bind your checkout domain.
+In aaPanel, create a new site and bind your checkout domain.
 
 This site is only used as the public entry for the Epusdt service behind reverse proxy. You are not deploying the documentation site, VitePress, or Cloudflare Pages here.
 
@@ -72,6 +73,10 @@ order_notice_max_retry=0
 forced_usdt_rate=
 api_rate_url=
 tron_grid_api_key=
+solana_rpc_url=
+ethereum_ws_url=wss://ethereum.publicnode.com
+epay_pid=
+epay_key=
 ```
 
 If you use MySQL instead:
@@ -106,7 +111,7 @@ postgres_max_life_time=6
 
 ## 4. Configure reverse proxy
 
-In BaoTa, open the site settings and configure reverse proxy to:
+In aaPanel, open the site settings and configure reverse proxy to:
 
 ```text
 http://127.0.0.1:8000
@@ -116,7 +121,7 @@ Make sure the public domain used in proxy matches `app_uri`.
 
 ## 5. Add Supervisor process
 
-In BaoTa Supervisor, add a process with a startup command like:
+In aaPanel Supervisor, add a process with a startup command like:
 
 ```text
 /www/wwwroot/pay.example.com/epusdt http start
@@ -143,6 +148,8 @@ POST /payments/epusdt/v1/order/create-transaction
 ## Notes
 
 - Restart the Supervisor process after changing `.env`
-- Keep `api_auth_token` secret
-- `tron_grid_api_key` is recommended for better stability
-- Use actual deployment paths from your BaoTa environment
+- Keep `api_auth_token` secret, it is also used by wallet management APIs
+- `tron_grid_api_key` is recommended for better Tron stability
+- If you use Solana or Ethereum collection, configure `solana_rpc_url` and `ethereum_ws_url`
+- Current `.env.example` also includes `epay_pid` and `epay_key`
+- Use actual deployment paths from your aaPanel environment

@@ -80,6 +80,14 @@ api_rate_url=https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/cu
 
 # Recommended: TRON Grid API Key (improves stability)
 tron_grid_api_key=
+
+# Solana / Ethereum monitoring
+solana_rpc_url=
+ethereum_ws_url=wss://ethereum.publicnode.com
+
+# EPay-compatible route
+epay_pid=
+epay_key=
 EOF
 ```
 
@@ -118,4 +126,6 @@ In the Dujiaoka admin panel, add a payment method:
 ## Notes
 
 - After editing `.env`, restart the container: `docker compose restart`
-- Keep `api_auth_token` secret — it's used to sign all API requests
+- Keep `api_auth_token` secret, it is also used by wallet management APIs
+- If you use Solana or Ethereum payments, set `solana_rpc_url` and `ethereum_ws_url`
+- Current `.env.example` also includes `epay_pid` and `epay_key` for the EPay-compatible route

@@ -2,9 +2,9 @@
 
 ## Epusdt (Easy Payment Usdt)
 
-`Epusdt` is a self-hosted **USDT payment middleware** written in **Go**, operating on the TRC20 network.
+`Epusdt` is a self-hosted **crypto payment middleware** written in **Go**.
 
-Developers and site owners can integrate USDT payment collection into any system via the `Epusdt` HTTP API — no complex setup required. It only needs **MySQL/SQLite** (and optionally Redis) to handle online USDT payments and async payment callbacks.
+Current source supports payment collection on **Tron**, **Solana**, and **Ethereum** networks, with hosted checkout, async callbacks, and wallet management APIs. It works with **MySQL/SQLite/PostgreSQL** for order data plus a runtime SQLite database for temporary lock state.
 
 With private deployment, there are **no transaction fees** and no third-party custody — USDT goes directly to your wallet. 💰
 
@@ -12,11 +12,12 @@ With private deployment, there are **no transaction fees** and no third-party cu
 
 - ✅ **Private deployment** — no risk of wallet hijacking or missed orders
 - ✅ **Cross-platform Go binary** — x86 and ARM, Windows and Linux
-- ✅ **Multi-wallet polling** — higher concurrency for simultaneous orders
-- ✅ **Async queue** — elegant, high-performance callback processing
-- ✅ **Single binary** — no runtime dependencies
+- ✅ **Multi-wallet monitoring** — Tron, Solana, and Ethereum payment detection
+- ✅ **Multi-wallet management API** — add, list, enable, disable, and delete addresses
+- ✅ **Async queue** — callback processing and background tasks
+- ✅ **Hosted checkout** — redirect users to a built-in cashier page
 - ✅ **HTTP API** — integrate with any system
-- ✅ **Telegram bot** — instant payment notifications
+- ✅ **Telegram bot** — instant payment notifications with network info
 
 ## Project Structure
 
@@ -31,15 +32,16 @@ Epusdt
 
 ## How It Works
 
-Epusdt monitors the TRC20 network via public API or RPC nodes, watching for incoming USDT transactions on configured wallet addresses. It uses **amount matching** and **time-locking** to attribute payments to orders.
+Epusdt monitors supported networks for incoming transfers on configured wallet addresses. It uses **amount matching** and **time-locking** to attribute payments to orders.
 
 ```
 Flow:
-1. Customer needs to pay 20.05 USDT
-2. Server locks wallet address_1 → 20.05 (for 10 minutes)
-3. If that amount is already taken (concurrent order), increment by 0.0001 and retry (up to 100x)
-4. Background thread monitors all wallet inflows;
-   when an incoming amount matches a locked order, payment is confirmed → callback triggered
+1. Customer creates an order and gets a token amount plus a wallet address on the selected network
+2. Server locks wallet address_1 + network + amount for the order window
+3. If that amount is already taken on that wallet, source increments the amount and retries (up to 100 times)
+4. Background tasks monitor supported chain inflows and match them against locked routes
+5. When a match is confirmed, payment succeeds and Epusdt triggers the callback flow
+6. Hosted checkout can also switch token/network, creating child orders when needed
 ```
 
 ## Community

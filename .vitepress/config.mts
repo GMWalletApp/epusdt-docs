@@ -38,13 +38,16 @@ export default defineConfig({
           "/guide/": [
             {
               text: "Guide",
-              items: [{ text: "Introduction", link: "/guide/intro" }],
+              items: [
+                { text: "Introduction", link: "/guide/intro" },
+                { text: "Release Notes", link: "/guide/changelog" },
+              ],
             },
             {
               text: "Installation",
               items: [
                 { text: "Docker (Recommended)", link: "/guide/installation/docker" },
-                { text: "BaoTa Panel", link: "/guide/installation/baota" },
+                { text: "aaPanel", link: "/guide/installation/aapanel" }
                 { text: "Manual", link: "/guide/installation/manual" },
               ],
             },
@@ -82,13 +85,16 @@ export default defineConfig({
           "/zh/guide/": [
             {
               text: "指南",
-              items: [{ text: "项目简介", link: "/zh/guide/intro" }],
+              items: [
+                { text: "项目简介", link: "/zh/guide/intro" },
+                { text: "版本日志", link: "/zh/guide/changelog" },
+              ],
             },
             {
               text: "安装部署",
               items: [
                 { text: "Docker 部署（推荐）", link: "/zh/guide/installation/docker" },
-                { text: "宝塔面板部署", link: "/zh/guide/installation/baota" },
+                { text: "aaPanel 部署", link: "/zh/guide/installation/aapanel" }
                 { text: "手动部署", link: "/zh/guide/installation/manual" },
               ],
             },

@@ -5,8 +5,8 @@ tk:
 
 hero:
   name: "Epusdt"
-  text: "Self-Hosted USDT Payment"
-  tagline: Easy Payment Usdt — Go-powered TRC20 middleware. Private, zero-fee, instant integration.
+  text: "Self-Hosted Crypto Payment"
+  tagline: Easy Payment Usdt — Go-powered Tron, Solana, and Ethereum middleware. Private, zero-fee, instant integration.
   image:
     src: /logo.png
     alt: Epusdt
@@ -27,10 +27,10 @@ features:
     details: Your server, your wallet, your keys. No risk of fund hijacking or missed orders.
   - icon: ⚡
     title: High Performance
-    details: Async queue + multi-wallet polling handles high-concurrency orders gracefully.
+    details: Async queue + multi-network wallet monitoring handles high-concurrency orders gracefully.
   - icon: 🤖
     title: Telegram Bot
-    details: Receive instant payment notifications and manage wallets via Telegram.
+    details: Receive instant payment notifications with network info through the Telegram bot.
   - icon: 🔌
     title: Simple HTTP API
     details: REST API for creating transactions and receiving async payment callbacks.

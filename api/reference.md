@@ -28,6 +28,11 @@ Current source does **not** implement separate bearer-token, query-token, or req
 
 What the live payment endpoints validate is the request `signature`, generated with the `.env` value `api_auth_token`.
 
+Current source also adds token-authenticated wallet management APIs. Those endpoints accept either:
+
+- `Authorization: <api_auth_token>` header, or
+- `?api_token=<api_auth_token>` query parameter
+
 ::: warning
 Keep `api_auth_token` secret. Never expose it in frontend code, mobile apps, or public repositories.
 :::
@@ -110,15 +115,25 @@ Current source uses top-level `status_code` for API results:
 | `10008` | Order does not exist |
 | `10009` | Failed to parse request params |
 | `10010` | Order status already changed |
+| `10011` | Cannot switch a child order again |
+| `10012` | Order is not in waiting-for-payment status |
+| `10013` | Child order limit exceeded |
 
 ## Available Endpoints
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/payments/epusdt/v1/order/create-transaction` | Create a payment transaction; legacy-compatible route that injects default `token=usdt`, `currency=cny`, `network=TRON` after signature verification when omitted |
+| `POST` | `/payments/epusdt/v1/order/create-transaction` | Create a payment transaction; legacy-compatible route that injects default `token=usdt`, `currency=cny`, `network=tron` after signature verification when omitted |
 | `POST` | `/payments/gmpay/v1/order/create-transaction` | Create a payment transaction without legacy default injection, so `currency`, `token`, and `network` must be sent explicitly |
+| `GET` | `/payments/epay/v1/order/create-transaction/submit.php` | EPay-compatible create-order entrypoint that redirects to hosted checkout |
+| `POST` | `/payments/gmpay/v1/wallet/add` | Add wallet address for a specific network, token-authenticated |
+| `GET` | `/payments/gmpay/v1/wallet/list` | List wallets, optional `network` filter, token-authenticated |
+| `GET` | `/payments/gmpay/v1/wallet/:id` | Get one wallet, token-authenticated |
+| `POST` | `/payments/gmpay/v1/wallet/:id/status` | Enable or disable wallet (`status` = `1` or `2`), token-authenticated |
+| `POST` | `/payments/gmpay/v1/wallet/:id/delete` | Delete wallet, token-authenticated |
 | `GET` | `/pay/checkout-counter/:trade_id` | Hosted checkout page |
 | `GET` | `/pay/check-status/:trade_id` | Checkout status polling endpoint |
+| `POST` | `/pay/switch-network` | Switch hosted checkout to another token/network and possibly create a child order |
 
 ::: tip
 The live API prefix is `/payments/...`. The older `/api/v1/order/create-transaction` path is legacy documentation, not a registered route in current source.
@@ -152,10 +167,12 @@ That deployment prefix comes from proxy configuration plus `app_uri`, not from a
 - Keep `api_auth_token` secret and server-side only
 - Always use HTTPS in production
 - Prefer sending `currency`, `token`, and `network` explicitly even on the legacy-compatible `/payments/epusdt/v1/...` route, so your integration does not depend on compatibility defaults
+- Use lowercase network identifiers from current source, such as `tron`, `solana`, and `ethereum`
 - Verify callback signatures before marking orders paid
 - Treat callback success as **HTTP 200 + exact body `ok`**
 - Restrict access to `.env` and admin surfaces
 - Use a stable `tron_grid_api_key` for TRC20 monitoring
+- For Solana and Ethereum monitoring, configure `solana_rpc_url` and `ethereum_ws_url`
 
 ## Next Step
 

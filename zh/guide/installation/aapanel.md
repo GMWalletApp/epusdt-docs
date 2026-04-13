@@ -1,14 +1,14 @@
-# 宝塔面板部署
+# aaPanel 部署
 
-本文说明如何使用宝塔部署 Epusdt 服务本体，而不是部署文档站、VitePress 或 Cloudflare Pages。
+本文说明如何使用 aaPanel 部署 Epusdt 服务本体，而不是部署文档站、VitePress 或 Cloudflare Pages。
 
 ## 前置条件
 
 开始前请准备：
 
-- 一台已安装宝塔面板的 Linux 服务器
-- 宝塔中已安装 Nginx
-- 宝塔中已安装 Supervisor
+- 一台已安装 aaPanel 的 Linux 服务器
+- aaPanel 中已安装 Nginx
+- aaPanel 中已安装 Supervisor
 - 已解析到服务器的公网域名，例如 `pay.example.com`
 - Epusdt 发布包，或自行编译好的 `epusdt` 二进制
 - 一个安全的 `api_auth_token`
@@ -16,7 +16,7 @@
 
 ## 1. 新增站点
 
-在宝塔中新建站点，并绑定你的收银台域名。
+在 aaPanel 中新建站点，并绑定你的收银台域名。
 
 这个站点的用途是给 Epusdt 提供公网入口和反向代理，不是部署 `epusdt-docs` 文档站。
 
@@ -106,7 +106,7 @@ postgres_max_life_time=6
 
 ## 4. 配置反向代理
 
-在宝塔站点设置中，把反向代理目标指向：
+在 aaPanel 站点设置中，把反向代理目标指向：
 
 ```text
 http://127.0.0.1:8000
@@ -116,7 +116,7 @@ http://127.0.0.1:8000
 
 ## 5. 添加 Supervisor 守护进程
 
-在宝塔 Supervisor 中新增进程，启动命令示例：
+在 aaPanel Supervisor 中新增进程，启动命令示例：
 
 ```text
 /www/wwwroot/pay.example.com/epusdt http start
@@ -145,4 +145,4 @@ POST /payments/epusdt/v1/order/create-transaction
 - 修改 `.env` 后，记得在 Supervisor 中重启进程
 - `api_auth_token` 必须保密
 - `tron_grid_api_key` 推荐填写，可提升稳定性
-- 文中的路径请按你的宝塔实际目录替换
+- 文中的路径请按你的 aaPanel 实际目录替换

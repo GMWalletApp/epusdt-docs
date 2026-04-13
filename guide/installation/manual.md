@@ -1,6 +1,6 @@
 # Manual Installation
 
-This guide covers running Epusdt on a normal Linux server without Docker or BaoTa.
+This guide covers running Epusdt on a normal Linux server without Docker or aaPanel.
 
 ## Prerequisites
 
@@ -11,6 +11,7 @@ This guide covers running Epusdt on a normal Linux server without Docker or BaoT
 - Nginx or another reverse proxy for HTTPS in production
 - A valid `api_auth_token`
 - Optional but recommended: `tron_grid_api_key`
+- Optional if using extra networks: `solana_rpc_url` and `ethereum_ws_url`
 
 ## 1. Prepare the application directory
 
@@ -83,6 +84,10 @@ order_notice_max_retry=0
 forced_usdt_rate=
 api_rate_url=
 tron_grid_api_key=
+solana_rpc_url=
+ethereum_ws_url=wss://ethereum.publicnode.com
+epay_pid=
+epay_key=
 ```
 
 MySQL example fields:
@@ -201,5 +206,7 @@ POST /payments/epusdt/v1/order/create-transaction
 
 - After editing `.env`, restart the process: `supervisorctl restart epusdt`
 - Put Epusdt behind HTTPS in production
-- Keep `api_auth_token` secret
-- `tron_grid_api_key` is recommended for better chain query stability
+- Keep `api_auth_token` secret, it is also used by wallet management APIs
+- `tron_grid_api_key` is recommended for better Tron query stability
+- If you enable Solana or Ethereum collection, configure `solana_rpc_url` and `ethereum_ws_url`
+- Current `.env.example` also includes `epay_pid` and `epay_key` for the EPay-compatible route

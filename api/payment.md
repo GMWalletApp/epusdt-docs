@@ -32,7 +32,7 @@ Request method/content-type for create-order:
 ::: info
 Signature verification runs on the **raw incoming JSON body before** the legacy `/payments/epusdt/v1/...` wrapper injects default values. That means requests omitting `currency`, `token`, and `network` on the Epusdt-compatible route are still valid as long as the signature matches the fields you actually sent.
 
-After signature verification passes, the compatibility wrapper rewrites the request body and fills missing values with `cny`, `usdt`, and `TRON` before the shared create-order handler validates it.
+After signature verification passes, the compatibility wrapper rewrites the request body and fills missing values with `cny`, `usdt`, and `tron` before the shared create-order handler validates it.
 :::
 
 | Field | Type | Required | Description |
@@ -50,7 +50,7 @@ After signature verification passes, the compatibility wrapper rewrites the requ
 
 - `currency = cny`
 - `token = usdt`
-- `network = TRON`
+- `network = tron`
 
 The `/payments/gmpay/v1/...` route does **not** inject these defaults.
 
@@ -198,6 +198,13 @@ Current JSON API responses are wrapped in HTTP 200. Inspect top-level `status_co
 
 Current create-order response does **not** include `network`.
 
+Request payload now also accepts these optional fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Optional product name, mainly used by the EPay-compatible flow |
+| `payment_type` | string | Optional payment source marker, such as `epay` |
+
 ## Payment Flow
 
 ```
@@ -209,6 +216,7 @@ Current create-order response does **not** include `network`.
 6. Epusdt POSTs a callback to `notify_url`
 7. Your server verifies the signature and returns exact body `ok`
 8. If `redirect_url` exists, the hosted checkout page redirects the user after success
+9. Customers can now switch token/network on the checkout page, and Epusdt may create child orders for the selected route
 ```
 
 ## Checkout Page
@@ -311,6 +319,8 @@ The callback body is signed with the same MD5 algorithm and `api_auth_token` use
 
 Current callback payload does **not** include `network`.
 
+For switched child orders, the child order itself does not send its own callback. Instead, source code marks the parent order as paid and emits the callback using the parent order context.
+
 ### Verifying the Callback Signature
 
 Use the same signing rules as the create-order request:
@@ -344,6 +354,60 @@ Default `.env.example` values are:
 So with default settings, Epusdt performs the first callback attempt, but no extra retries after a failure.
 :::
 
+## Switch Payment Network
+
+Hosted checkout now supports switching to another token/network combination.
+
+Endpoint:
+
+```text
+POST /pay/switch-network
+```
+
+Request body:
+
+```json
+{
+  "trade_id": "EP20240101XXXXXXXX",
+  "token": "USDC",
+  "network": "solana"
+}
+```
+
+Behavior in current source:
+
+- If the requested token/network equals the parent order, source just marks it selected and returns the existing checkout data.
+- If an active child order for that token/network already exists, source reuses it.
+- Otherwise source creates a new child order, reserves a wallet on that network, and returns the child order checkout payload.
+- Current source allows at most `2` active child orders per parent order.
+- When one route gets paid, sibling child orders are expired and their locks are released.
+
+Response shape matches checkout data and now includes `is_selected` on the checkout payload.
+
+## EPay Compatible Route
+
+Current source also exposes an EPay-style entrypoint:
+
+```text
+GET /payments/epay/v1/order/create-transaction/submit.php
+```
+
+Accepted query parameters include:
+
+- `money`
+- `name`
+- `notify_url`
+- `out_trade_no`
+- `return_url`
+- `sign`
+
+Current behavior from source:
+
+- It internally converts the request into a normal order creation flow.
+- It forces `token=usdt`, `currency=cny`, and `network=tron`.
+- It redirects the browser to `/pay/checkout-counter/{trade_id}` after order creation.
+- Signature verification currently uses the normal `api_auth_token` logic in router code.
+
 ## Full Integration Example
 
 ```python
@@ -365,7 +429,7 @@ def create_order(order_id: str, amount: float, notify_url: str):
         "notify_url": notify_url,
         "currency": "cny",
         "token": "usdt",
-        "network": "TRON",
+        "network": "tron",
     }
     params["signature"] = epusdt_sign(params, API_AUTH_TOKEN)
 
