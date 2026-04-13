@@ -47,7 +47,7 @@ export default defineConfig({
               text: "Installation",
               items: [
                 { text: "Docker (Recommended)", link: "/guide/installation/docker" },
-                { text: "aaPanel", link: "/guide/installation/aapanel" }
+                { text: "aaPanel", link: "/guide/installation/aapanel" },
                 { text: "Manual", link: "/guide/installation/manual" },
               ],
             },
@@ -94,7 +94,7 @@ export default defineConfig({
               text: "安装部署",
               items: [
                 { text: "Docker 部署（推荐）", link: "/zh/guide/installation/docker" },
-                { text: "aaPanel 部署", link: "/zh/guide/installation/aapanel" }
+                { text: "aaPanel 部署", link: "/zh/guide/installation/aapanel" },
                 { text: "手动部署", link: "/zh/guide/installation/manual" },
               ],
             },
