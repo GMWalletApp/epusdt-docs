@@ -75,6 +75,25 @@ Use **Epusdt** if you need compatibility with older integrations or legacy plugi
 
 Use **EPay** if you need an EPay-style redirect checkout flow.
 
+## How should I troubleshoot with logs?
+
+When debugging a problem, check the **Epusdt application logs** first, then compare them with your **business system logs**, **Nginx logs**, and **callback endpoint logs**.
+
+Start with these points:
+
+- Whether there is any configuration loading error during startup
+- Whether the database connection succeeds
+- Whether wallet monitoring starts normally
+- Whether order creation requests return errors
+- Whether callback retries, timeouts, or signature verification failures appear
+- Whether chain monitoring reports errors, or RPC / WS endpoints are unavailable
+
+If you use Docker, container logs are usually the first place to check.
+
+If you use manual deployment or aaPanel, check Supervisor, systemd, or application output logs.
+
+When opening an issue, include the key error snippet, when it happened, what action triggered it, and which deployment method you used. That will make troubleshooting much easier.
+
 ## Where should I ask questions or report bugs?
 
 If you find a documentation problem, deployment issue, integration bug, or feature request, please open an issue:
