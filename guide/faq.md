@@ -67,18 +67,6 @@ In production, it is recommended to place Epusdt behind **Nginx** or another rev
 
 Make sure your public domain matches the configured `app_uri`.
 
-## Where can I see the initial admin username and password after installation?
-
-In the current admin setup flow, after installation succeeds, the page will show the **initial admin username and password** directly.
-
-Recommended steps:
-
-- Save or copy the initial credentials first
-- Then click the sign-in entry manually
-- After the first successful sign-in, change the admin password as soon as possible
-
-If the admin console detects that you are still using the initial password, it may prompt you to go to the password change page before continuing.
-
 ## Which route should I use: Epusdt, GMPay, or EPay?
 
 Use **GMPay** if you want the current recommended native multi-network API.
