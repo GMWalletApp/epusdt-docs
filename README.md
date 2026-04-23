@@ -1,6 +1,6 @@
 # Epusdt Docs
 
-[繁體中文](./README.zh-CN.md)
+[繁體中文](./README.zh-TW.md)
 
 [![GitHub Repo](https://img.shields.io/badge/GitHub-GMwalletApp%2Fepusdt-blue?logo=github)](https://github.com/GMwalletApp/epusdt)
 [![GitHub Stars](https://img.shields.io/github/stars/GMwalletApp/epusdt?style=flat&logo=github)](https://github.com/GMwalletApp/epusdt/stargazers)
