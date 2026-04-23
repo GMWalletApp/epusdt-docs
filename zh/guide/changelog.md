@@ -2,6 +2,32 @@
 
 本文基于 `GMwalletApp/epusdt` 仓库中实际存在的 GitHub Releases、Tag、Release Note 和代码差异整理，不凭空编写未发布特性。
 
+## v0.9.1
+
+- 发布标签：`v0.9.1`
+- 发布时间：`2026-04-22T18:29:39Z`
+- 官方发布说明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v0.9.0...v0.9.1`
+
+### 用户可见变更
+
+- GitHub Release `v0.9.1` 表明 Docker 镜像工作流已更新，可直接使用 `docker pull gmwallet/epusdt:latest`
+
+### 部署与配置变更
+
+- Docker 镜像工作流已纳入 `.env` 文件支持，直接基于官方镜像部署更顺手
+- 当前文档站已按 `gmwallet/epusdt:latest` 更新说明；但 `GMwalletApp/epusdt` 仓库里的部分 Docker 示例仍写着 `:alpine`，这部分应等待源码仓库示例同步后再完全对齐
+
+### 接口变更
+
+- 官方发布说明中未明确描述新的公共 API 路由
+
+### 依据
+
+- GitHub Release `v0.9.1`
+- 发布对比链接 `v0.9.0...v0.9.1`
+- 提交 `b625bac`、`bc5bbf7`
+- 对当前仓库 `docker-compose.yaml` 与 `wiki/docker-RUN.md` 的复查
+
 ## v0.9.0
 
 - 发布标签：`v0.9.0`

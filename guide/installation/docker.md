@@ -1,6 +1,6 @@
 # Docker Deployment (Recommended)
 
-This guide covers deploying Epusdt using Docker Compose — the easiest way to get started.
+This guide covers deploying Epusdt with the official Docker image. You can either pull and run the image directly, or use Docker Compose for easier management.
 
 ## Prerequisites
 
@@ -91,13 +91,30 @@ epay_key=
 EOF
 ```
 
-### 3. Create `docker-compose.yaml`
+### 3. Pull the official image
+
+```bash
+docker pull gmwallet/epusdt:latest
+```
+
+### 4. Start with `docker run` (quick start)
+
+```bash
+docker run -d \
+  --name epusdt \
+  --restart always \
+  -p 8000:8000 \
+  -v $(pwd)/env:/app/.env \
+  gmwallet/epusdt:latest
+```
+
+### 5. Or create `docker-compose.yaml`
 
 ```bash
 cat <<EOF > docker-compose.yaml
 services:
   epusdt:
-    image: gmwallet/epusdt:alpine
+    image: gmwallet/epusdt:latest
     restart: always
     volumes:
       - ./env:/app/.env
@@ -106,13 +123,13 @@ services:
 EOF
 ```
 
-### 4. Start the service
+Start the service:
 
 ```bash
 docker compose up -d
 ```
 
-### 5. Configure Dujiaoka
+### 6. Configure Dujiaoka
 
 In the Dujiaoka admin panel, add a payment method:
 
@@ -125,7 +142,10 @@ In the Dujiaoka admin panel, add a payment method:
 
 ## Notes
 
-- After editing `.env`, restart the container: `docker compose restart`
+- After editing `.env`, restart the container:
+  - Docker Compose: `docker compose restart`
+  - Docker Run: `docker restart epusdt`
 - Keep `api_auth_token` secret, it is also used by wallet management APIs
 - If you use Solana or Ethereum payments, set `solana_rpc_url` and `ethereum_ws_url`
-- Current `.env.example` also includes `epay_pid` and `epay_key` for the EPay-compatible route
+- Current image supports direct pull via `docker pull gmwallet/epusdt:latest`
+- Current `.env` also includes `epay_pid` and `epay_key` for the EPay-compatible route

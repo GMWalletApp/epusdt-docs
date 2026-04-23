@@ -15,13 +15,19 @@ hero:
       text: Get Started
       link: /guide/intro
     - theme: alt
-      text: API Reference
-      link: /api/reference
+      text: Docker Install
+      link: /guide/installation/docker
+    - theme: alt
+      text: 中文
+      link: /zh/
     - theme: alt
       text: GitHub →
       link: https://github.com/GMwalletApp/epusdt
 
 features:
+  - icon: 🐳
+    title: Docker Ready
+    details: Official image now supports direct pull with `docker pull gmwallet/epusdt:latest` for faster deployment.
   - icon: 🔒
     title: Private Deployment
     details: Your server, your wallet, your keys. No risk of fund hijacking or missed orders.

@@ -8,6 +8,32 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - Supplementary source: tag compare diffs and merged commit messages
 - This page avoids inventing features that are not visible in release or code history
 
+## v0.9.1
+
+- Release tag: `v0.9.1`
+- Published at: `2026-04-22T18:29:39Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v0.9.0...v0.9.1`
+
+### User-visible changes
+
+- GitHub release `v0.9.1` indicates the Docker image workflow update that enables direct pull usage with `docker pull gmwallet/epusdt:latest`
+
+### Deployment and configuration changes
+
+- The Docker image workflow now includes `.env` file support, making direct image-based deployment smoother
+- This docs site has been updated to document `gmwallet/epusdt:latest`, while some in-repo Docker examples in `GMwalletApp/epusdt` are still shown as `:alpine` and should be treated separately until the repository examples are updated
+
+### API changes
+
+- No new public API route was explicitly described in the official release note body
+
+### Evidence used
+
+- GitHub release `v0.9.1`
+- Release compare link `v0.9.0...v0.9.1`
+- Commits including `b625bac`, `bc5bbf7`
+- Repository verification against current `docker-compose.yaml` and `wiki/docker-RUN.md`
+
 ## v0.9.0
 
 - Release tag: `v0.9.0`

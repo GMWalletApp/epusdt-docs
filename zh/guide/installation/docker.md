@@ -1,6 +1,6 @@
 # Docker 部署（推荐）
 
-本教程使用 Docker Compose 方式运行 Epusdt，适合大多数场景，是最简单的部署方式。
+本教程基于官方 Docker 镜像部署 Epusdt。你可以直接 `docker pull` + `docker run` 快速启动，也可以使用 Docker Compose 进行管理。
 
 ## 前置条件
 
@@ -83,13 +83,30 @@ tron_grid_api_key=
 EOF
 ```
 
-### 3. 创建 `docker-compose.yaml`
+### 3. 拉取官方镜像
+
+```bash
+docker pull gmwallet/epusdt:latest
+```
+
+### 4. 使用 `docker run` 快速启动
+
+```bash
+docker run -d \
+  --name epusdt \
+  --restart always \
+  -p 8000:8000 \
+  -v $(pwd)/env:/app/.env \
+  gmwallet/epusdt:latest
+```
+
+### 5. 或创建 `docker-compose.yaml`
 
 ```bash
 cat <<EOF > docker-compose.yaml
 services:
   epusdt:
-    image: gmwallet/epusdt:alpine
+    image: gmwallet/epusdt:latest
     restart: always
     volumes:
       - ./env:/app/.env
@@ -98,13 +115,13 @@ services:
 EOF
 ```
 
-### 4. 启动服务
+启动服务：
 
 ```bash
 docker compose up -d
 ```
 
-### 5. 配置独角数卡后台
+### 6. 配置独角数卡后台
 
 在独角数卡后台支付插件中填写：
 
@@ -117,5 +134,8 @@ docker compose up -d
 
 ## 注意事项
 
-- 修改 `.env` 配置后需重启容器：`docker compose restart`
+- 修改 `.env` 配置后需重启容器：
+  - Docker Compose：`docker compose restart`
+  - Docker Run：`docker restart epusdt`
 - `api_auth_token` 是 API 签名密钥，请妥善保管
+- 现在已支持直接拉取镜像：`docker pull gmwallet/epusdt:latest`

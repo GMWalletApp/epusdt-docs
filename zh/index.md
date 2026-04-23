@@ -15,13 +15,19 @@ hero:
       text: 快速开始
       link: /zh/guide/intro
     - theme: alt
-      text: API 文档
-      link: /zh/api/reference
+      text: Docker 部署
+      link: /zh/guide/installation/docker
+    - theme: alt
+      text: English
+      link: /
     - theme: alt
       text: GitHub →
       link: https://github.com/GMwalletApp/epusdt
 
 features:
+  - icon: 🐳
+    title: 官方 Docker 镜像
+    details: 现在支持直接拉取 `docker pull gmwallet/epusdt:latest`，部署更直接。
   - icon: 🔒
     title: 私有化部署
     details: 自己的服务器，自己的钱包，完全掌控。无需担心资金被篡改或吞单。
