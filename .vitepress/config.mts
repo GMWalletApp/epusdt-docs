@@ -26,6 +26,7 @@ export default defineConfig({
     ["link", { rel: "icon", href: "/logo.png" }],
   ],
 
+  locales: {
     root: {
       label: "English",
       lang: "en-US",
