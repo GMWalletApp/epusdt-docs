@@ -1,4 +1,4 @@
-# Epusdt 文档
+# Epusdt 文件
 
 [English](./README.md)
 
@@ -7,33 +7,35 @@
 [![License](https://img.shields.io/badge/license-GPLv3-blue)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Telegram](https://img.shields.io/badge/Telegram-epusdt__group-blue?logo=telegram)](https://t.me/epusdt_group)
 
-> [Epusdt](https://github.com/GMwalletApp/epusdt) 的文档站 —— 一个由 Go 编写的私有化加密支付中间件，当前源码支持 Tron、Solana、Ethereum。
+> [Epusdt](https://github.com/GMwalletApp/epusdt) 的文件站 —— 一個由 Go 編寫的私有化加密支付中介軟體，支援 Tron、Solana、Ethereum。
 
-## 简介
+## 簡介
 
-**Epusdt**（Easy Payment Usdt）是一个私有化加密支付中间件。通过 HTTP API 将代币收款集成到任意系统，订单数据可使用 MySQL/SQLite/PostgreSQL，运行时锁状态使用 SQLite，无需手续费，代币直达您的钱包。
+**Epusdt**（Easy Payment Usdt）是一個私有化加密支付中介軟體。透過 HTTP API 將代幣收款整合至任意系統，訂單資料可使用 MySQL/SQLite/PostgreSQL，無需手續費，代幣直達您的錢包。
 
-**特点：** 私有部署 · 多网络监听 · 钱包管理 API · 异步队列 · Telegram 机器人 · 跨平台二进制 · 插件支持
+**特點：** 私有部署 · 多網路監聽 · 錢包管理 API · 非同步佇列 · Telegram 機器人 · 跨平台二進位 · 內建安裝精靈
 
-## 快速开始
+## 快速開始
 
-- 📖 [项目简介](/zh/guide/intro)
-- 📝 [版本日志](/zh/guide/changelog)
+- 📖 [專案簡介](/zh/guide/intro)
+- 📝 [版本日誌](/zh/guide/changelog)
 - 🐳 [Docker 部署](/zh/guide/installation/docker)
-- 🔌 [API 文档](/zh/api/reference)
+- 🔌 [API 文件](/zh/api/reference)
 
-## Docker 快速开始
+## Docker 快速啟動
 
 ```bash
-docker pull gmwallet/epusdt:latest
+docker run -d --name epusdt --restart always -p 8000:8000 gmwallet/epusdt:latest
 ```
 
-## 链接
+啟動後開啟 `http://你的伺服器IP:8000`，透過安裝精靈完成初始設定。
+
+## 連結
 
 - GitHub: <https://github.com/GMwalletApp/epusdt>
-- Telegram 频道: <https://t.me/epusdt>
+- Telegram 頻道: <https://t.me/epusdt>
 - Telegram 交流群: <https://t.me/epusdt_group>
 
-## 许可证
+## 授權
 
 [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
