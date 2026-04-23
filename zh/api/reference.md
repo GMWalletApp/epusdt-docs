@@ -1,46 +1,46 @@
-# API 参考
+# API 參考
 
-本节说明当前源码中的 Epusdt HTTP API 基线，便于你按真实实现接入。
+本節說明當前原始碼中的 Epusdt HTTP API 基線，便於你按真實實現接入。
 
-## 基础地址
+## 基礎地址
 
-所有接口都以你的 Epusdt 部署地址作为基础 URL，例如：
+所有介面都以你的 Epusdt 部署地址作為基礎 URL，例如：
 
 ```text
 http://your-server:8000
 ```
 
-生产环境建议放到 HTTPS 反向代理之后：
+生產環境建議放到 HTTPS 反向代理之後：
 
 ```text
 https://pay.example.com
 ```
 
 ::: info
-当前源码里注册的是根路径相对路由，例如 `/payments/...` 和 `/pay/...`。
+當前原始碼裡註冊的是根路徑相對路由，例如 `/payments/...` 和 `/pay/...`。
 
-如果你对外使用了 `https://example.com/epusdt` 这类子路径部署，那么这个前缀应由反向代理或网关负责处理，不是应用内部自带的统一路由前缀。
+如果你對外使用了 `https://example.com/epusdt` 這類子路徑部署，那麼這個字首應由反向代理或閘道器負責處理，不是應用內部自帶的統一路由字首。
 :::
 
-## 鉴权与签名
+## 鑑權與簽名
 
-当前源码的支付创建接口并没有单独实现 Bearer Token、查询参数 Token 或请求体 `token` 鉴权。
+當前原始碼的支付建立介面並沒有單獨實現 Bearer Token、查詢引數 Token 或請求體 `token` 鑑權。
 
-实际校验的是请求里的 `signature`，签名密钥来自 `.env` 中的 `api_auth_token`。
+實際校驗的是請求裡的 `signature`，簽名金鑰來自 `.env` 中的 `api_auth_token`。
 
 ::: warning
-请妥善保管 `api_auth_token`，不要暴露到前端、移动端或公开仓库。
+請妥善保管 `api_auth_token`，不要暴露到前端、移動端或公開倉庫。
 :::
 
-## 请求签名规则
+## 請求籤名規則
 
-签名算法为 **MD5**，规则如下：
+簽名演算法為 **MD5**，規則如下：
 
-1. 收集所有非空参数，排除 `signature`
+1. 收集所有非空引數，排除 `signature`
 2. 按 key 的 ASCII 升序排序
-3. 拼接为 `key=value&key=value`
+3. 拼接為 `key=value&key=value`
 4. 直接在末尾追加 `api_auth_token`
-5. 计算小写 MD5，结果即为 `signature`
+5. 計算小寫 MD5，結果即為 `signature`
 
 示例：
 
@@ -54,21 +54,21 @@ amount=42&notify_url=http://example.com/notify&order_id=20220201030210321&redire
 amount=42&notify_url=http://example.com/notify&order_id=20220201030210321&redirect_url=http://example.com/redirectepusdt_password_xasddawqe
 ```
 
-## 请求格式
+## 請求格式
 
 - Method：`POST`
 - Content-Type：`application/json`
-- 编码：UTF-8
+- 編碼：UTF-8
 
 ::: warning
-当前源码仅注册了 `POST` 的 `create-transaction` 路由，且验签中间件会先按 JSON 解析原始请求体再校验签名。实际接入中，`GET` 与 `application/x-www-form-urlencoded` 不是该接口的有效请求方式。
+當前原始碼僅註冊了 `POST` 的 `create-transaction` 路由，且驗籤中介軟體會先按 JSON 解析原始請求體再校驗簽名。實際接入中，`GET` 與 `application/x-www-form-urlencoded` 不是該介面的有效請求方式。
 :::
 
-## 响应格式
+## 響應格式
 
-当前源码里的 JSON API，无论成功还是失败，HTTP 状态码都统一返回 **200**。业务结果要看顶层 `status_code` 字段。
+當前原始碼裡的 JSON API，無論成功還是失敗，HTTP 狀態碼都統一返回 **200**。業務結果要看頂層 `status_code` 欄位。
 
-成功响应统一为：
+成功響應統一為：
 
 ```json
 {
@@ -89,46 +89,46 @@ amount=42&notify_url=http://example.com/notify&order_id=20220201030210321&redire
 }
 ```
 
-## 状态码说明
+## 狀態碼說明
 
-当前源码使用顶层 `status_code` 表示接口结果：
+當前原始碼使用頂層 `status_code` 表示介面結果：
 
-| 代码 | 含义 |
+| 程式碼 | 含義 |
 |------|------|
 | `200` | 成功 |
-| `400` | 系统错误或请求校验失败 |
-| `401` | 签名校验失败 |
-| `10001` | 钱包地址已存在 |
-| `10002` | 订单已存在 |
-| `10003` | 无可用钱包地址 |
-| `10004` | 支付金额不合法 |
-| `10005` | 无可用金额通道 |
-| `10006` | 汇率计算失败 |
-| `10007` | 区块交易已处理 |
-| `10008` | 订单不存在 |
-| `10009` | 请求参数解析失败 |
-| `10010` | 订单状态已变化 |
+| `400` | 系統錯誤或請求校驗失敗 |
+| `401` | 簽名校驗失敗 |
+| `10001` | 錢包地址已存在 |
+| `10002` | 訂單已存在 |
+| `10003` | 無可用錢包地址 |
+| `10004` | 支付金額不合法 |
+| `10005` | 無可用金額通道 |
+| `10006` | 匯率計算失敗 |
+| `10007` | 區塊交易已處理 |
+| `10008` | 訂單不存在 |
+| `10009` | 請求引數解析失敗 |
+| `10010` | 訂單狀態已變化 |
 
-## 接口列表
+## 介面列表
 
-| Method | Endpoint | 说明 |
+| Method | Endpoint | 說明 |
 |--------|----------|------|
-| `POST` | `/payments/epusdt/v1/order/create-transaction` | 创建支付订单；旧兼容路由，会在验签通过后为缺省字段补 `token=usdt`、`currency=cny`、`network=TRON` |
-| `POST` | `/payments/gmpay/v1/order/create-transaction` | 创建支付订单；不做旧兼容默认值补充，因此必须显式传 `currency`、`token`、`network` |
-| `GET` | `/pay/checkout-counter/:trade_id` | 托管收银台页面 |
-| `GET` | `/pay/check-status/:trade_id` | 收银台轮询状态接口 |
+| `POST` | `/payments/epusdt/v1/order/create-transaction` | 建立支付訂單；舊相容路由，會在驗籤通過後為預設欄位補 `token=usdt`、`currency=cny`、`network=TRON` |
+| `POST` | `/payments/gmpay/v1/order/create-transaction` | 建立支付訂單；不做舊相容預設值補充，因此必須顯式傳 `currency`、`token`、`network` |
+| `GET` | `/pay/checkout-counter/:trade_id` | 託管收銀臺頁面 |
+| `GET` | `/pay/check-status/:trade_id` | 收銀臺輪詢狀態介面 |
 
 ::: tip
-当前真实 API 前缀是 `/payments/...`。旧文档中的 `/api/v1/order/create-transaction` 仅可视为历史路径说明，不应再当作当前可用接口。
+當前真實 API 字首是 `/payments/...`。舊文件中的 `/api/v1/order/create-transaction` 僅可視為歷史路徑說明，不應再當作當前可用介面。
 :::
 
-## 路由前缀说明
+## 路由字首說明
 
-需要区分三类路径：
+需要區分三類路徑：
 
-- `/payments/...`：真实 API 创建订单路由
-- `/pay/...`：收银台与状态轮询页面路由
-- `app_uri`：仅用于拼接返回的绝对地址，例如 `payment_url`
+- `/payments/...`：真實 API 建立訂單路由
+- `/pay/...`：收銀臺與狀態輪詢頁面路由
+- `app_uri`：僅用於拼接返回的絕對地址，例如 `payment_url`
 
 示例：
 
@@ -137,24 +137,24 @@ app_uri = https://pay.example.com
 payment_url = https://pay.example.com/pay/checkout-counter/{trade_id}
 ```
 
-如果你通过 `/epusdt` 这样的代理子路径对外暴露，用户最终看到的地址可能是：
+如果你透過 `/epusdt` 這樣的代理子路徑對外暴露，使用者最終看到的地址可能是：
 
 ```text
 https://example.com/epusdt/pay/checkout-counter/{trade_id}
 ```
 
-这个部署前缀来自代理配置加 `app_uri`，不是 Go 路由里额外挂了一层 `/epusdt`。
+這個部署字首來自代理配置加 `app_uri`，不是 Go 路由裡額外掛了一層 `/epusdt`。
 
-## 安全建议
+## 安全建議
 
-- `api_auth_token` 只保存在服务端
-- 生产环境务必启用 HTTPS
-- 即使在兼容旧插件的 `/payments/epusdt/v1/...` 路由上，也建议显式传 `currency`、`token`、`network`，避免业务依赖兼容默认值
-- 支付成功后先验签，再更新业务订单
-- 回调成功条件应按 **HTTP 200 + 响应体精确等于 `ok`** 处理
-- 限制 `.env` 与后台管理入口访问权限
-- 为 TRC20 监听准备稳定的 `tron_grid_api_key`
+- `api_auth_token` 只儲存在服務端
+- 生產環境務必啟用 HTTPS
+- 即使在相容舊外掛的 `/payments/epusdt/v1/...` 路由上，也建議顯式傳 `currency`、`token`、`network`，避免業務依賴相容預設值
+- 支付成功後先驗籤，再更新業務訂單
+- 回撥成功條件應按 **HTTP 200 + 響應體精確等於 `ok`** 處理
+- 限制 `.env` 與後臺管理入口訪問許可權
+- 為 TRC20 監聽準備穩定的 `tron_grid_api_key`
 
 ## 下一步
 
-- [支付接口](/zh/api/payment) — 创建订单、回调、状态查询与完整示例
+- [支付介面](/zh/api/payment) — 建立訂單、回撥、狀態查詢與完整示例

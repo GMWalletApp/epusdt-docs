@@ -6,13 +6,13 @@ tk:
 hero:
   name: "Epusdt"
   text: "私有化加密收款"
-  tagline: Easy Payment Usdt — Go 语言驱动的 Tron、Solana、Ethereum 多网络支付中间件，私有部署，零手续费，快速接入。
+  tagline: Easy Payment Usdt — Go 語言驅動的 Tron、Solana、Ethereum 多網路支付中介軟體，私有部署，零手續費，快速接入。
   image:
     src: /logo.png
     alt: Epusdt
   actions:
     - theme: brand
-      text: 快速开始
+      text: 快速開始
       link: /zh/guide/intro
     - theme: alt
       text: Docker 部署
@@ -27,23 +27,23 @@ hero:
 features:
   - icon: 🐳
     title: Docker 快速部署
-    details: 一条命令拉取启动，无需提前创建配置文件——内置安装向导引导首次配置，浏览器完成所有设置。
+    details: 一條命令拉取啟動，無需提前建立配置檔案——內建安裝嚮導引導首次配置，瀏覽器完成所有設定。
   - icon: 🔒
     title: 私有化部署
-    details: 自己的服务器，自己的钱包，完全掌控。无需担心资金被篡改或吞单。
+    details: 自己的伺服器，自己的錢包，完全掌控。無需擔心資金被篡改或吞單。
   - icon: ⚡
-    title: 高性能异步
-    details: 异步队列 + 多网络钱包监听，优雅处理高并发订单。
+    title: 高效能非同步
+    details: 非同步佇列 + 多網路錢包監聽，優雅處理高併發訂單。
   - icon: 🤖
-    title: Telegram 机器人
-    details: 实时接收包含网络信息的支付通知，并可通过 Telegram 管理钱包地址。
+    title: Telegram 機器人
+    details: 即時接收包含網路資訊的支付通知，並可透過 Telegram 管理錢包地址。
   - icon: 🔌
-    title: 简单 HTTP API
-    details: REST API 用于创建交易和接收异步支付回调，任何系统均可接入。
+    title: 簡單 HTTP API
+    details: REST API 用於建立交易和接收非同步支付回撥，任何系統均可接入。
   - icon: 🌐
-    title: 跨平台支持
-    details: 单个 Go 二进制，支持 x86/ARM 的 Windows/Linux。
+    title: 跨平臺支援
+    details: 單個 Go 二進位制，支援 x86/ARM 的 Windows/Linux。
   - icon: 🧩
-    title: 插件支持
-    details: 已适配独角数卡，并提供开放 SDK 供自定义集成。
+    title: 外掛支援
+    details: 已適配獨角數卡，並提供開放 SDK 供自定義整合。
 ---

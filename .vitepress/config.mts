@@ -65,10 +65,6 @@ export default defineConfig({
                 { text: "EPay (Redirect)", link: "/guide/integration/epay" },
               ],
             },
-            {
-              text: "Plugins",
-              items: [{ text: "Dujiaoka", link: "/guide/plugins/dujiaoka" }],
-            },
           ],
           "/api/": [
             {
@@ -84,14 +80,14 @@ export default defineConfig({
       },
     },
     zh: {
-      label: "简体中文",
-      lang: "zh-CN",
+      label: "繁體中文",
+      lang: "zh-TW",
       link: "/zh/",
       themeConfig: {
         nav: [
-          { text: "首页", link: "/zh/" },
+          { text: "首頁", link: "/zh/" },
           { text: "指南", link: "/zh/guide/intro" },
-          { text: "API 文档", link: "/zh/api/reference" },
+          { text: "API 文件", link: "/zh/api/reference" },
           { text: "GitHub", link: "https://github.com/GMwalletApp/epusdt", target: "_blank" },
           { text: "Telegram 交流群", link: "https://t.me/epusdt_group", target: "_blank" },
         ],
@@ -100,40 +96,36 @@ export default defineConfig({
             {
               text: "指南",
               items: [
-                { text: "项目简介", link: "/zh/guide/intro" },
-                { text: "版本日志", link: "/zh/guide/changelog" },
-                { text: "常见问题", link: "/zh/guide/faq" },
+                { text: "項目簡介", link: "/zh/guide/intro" },
+                { text: "版本日誌", link: "/zh/guide/changelog" },
+                { text: "常見問題", link: "/zh/guide/faq" },
               ],
             },
             {
-              text: "安装部署",
+              text: "安裝部署",
               items: [
                 { text: "教程合集", link: "/zh/guide/installation/tutorial" },
-                { text: "Docker 部署（推荐）", link: "/zh/guide/installation/docker" },
+                { text: "Docker 部署（推薦）", link: "/zh/guide/installation/docker" },
                 { text: "aaPanel 部署", link: "/zh/guide/installation/aapanel" },
-                { text: "手动部署", link: "/zh/guide/installation/manual" },
+                { text: "手動部署", link: "/zh/guide/installation/manual" },
               ],
             },
             {
-              text: "接入教程",
+              text: "接入教學",
               items: [
-                { text: "Epusdt 接入（旧版兼容）", link: "/zh/guide/integration/epusdt" },
-                { text: "GMPay 接入（推荐）", link: "/zh/guide/integration/gmpay" },
-                { text: "EPay 接入（跳转式）", link: "/zh/guide/integration/epay" },
+                { text: "Epusdt 接入（舊版相容）", link: "/zh/guide/integration/epusdt" },
+                { text: "GMPay 接入（推薦）", link: "/zh/guide/integration/gmpay" },
+                { text: "EPay 接入（跳轉式）", link: "/zh/guide/integration/epay" },
               ],
-            },
-            {
-              text: "插件",
-              items: [{ text: "独角数卡", link: "/zh/guide/plugins/dujiaoka" }],
             },
           ],
           "/zh/api/": [
             {
-              text: "API 文档",
+              text: "API 文件",
               items: [
-                { text: "概览", link: "/zh/api/reference" },
-                { text: "支付接口", link: "/zh/api/payment" },
-                { text: "接口迁移说明", link: "/zh/api/legacy" },
+                { text: "概覽", link: "/zh/api/reference" },
+                { text: "支付介面", link: "/zh/api/payment" },
+                { text: "介面遷移說明", link: "/zh/api/legacy" },
               ],
             },
           ],

@@ -1,29 +1,29 @@
-# 手动部署
+# 手動部署
 
-本文说明如何在普通 Linux 服务器上直接部署 Epusdt。
+本文說明如何在普通 Linux 伺服器上直接部署 Epusdt。
 
-**首次启动无需手动创建 `.env`。** 若未检测到配置文件，Epusdt 会自动进入内置安装向导，通过浏览器完成所有配置。
+**首次啟動無需手動建立 `.env`。** 若未檢測到配置檔案，Epusdt 會自動進入內建安裝嚮導，透過瀏覽器完成所有配置。
 
-## 前置条件
+## 前置條件
 
-- 如果准备从源码编译，需要与当前源码仓库 `src/go.mod` 兼容的 Go 工具链（当前为 `Go 1.25.0`）
-- 或者直接使用 [GitHub Releases](https://github.com/GMwalletApp/epusdt/releases) 发布包
-- 一台 Linux 服务器
-- 一个用于收银台和 API 的公网域名，例如 `pay.example.com`
-- 生产环境建议使用 Nginx 或其他反向代理提供 HTTPS
-- 一个安全的 `api_auth_token`
-- 可选但推荐填写 `tron_grid_api_key`
+- 如果準備從原始碼編譯，需要與當前原始碼倉庫 `src/go.mod` 相容的 Go 工具鏈（當前為 `Go 1.25.0`）
+- 或者直接使用 [GitHub Releases](https://github.com/GMwalletApp/epusdt/releases) 釋出包
+- 一臺 Linux 伺服器
+- 一個用於收銀臺和 API 的公網域名，例如 `pay.example.com`
+- 生產環境建議使用 Nginx 或其他反向代理提供 HTTPS
+- 一個安全的 `api_auth_token`
+- 可選但推薦填寫 `tron_grid_api_key`
 
-## 1. 准备应用目录
+## 1. 準備應用目錄
 
 ```bash
 mkdir -p /opt/epusdt
 cd /opt/epusdt
 ```
 
-可以选择以下两种方式之一安装。
+可以選擇以下兩種方式之一安裝。
 
-### 方式 A，使用发布包
+### 方式 A，使用釋出包
 
 ```bash
 wget https://github.com/GMwalletApp/epusdt/releases/latest/download/epusdt_Linux_x86_64.tar.gz -O epusdt.tar.gz
@@ -32,7 +32,7 @@ tar -xzf epusdt.tar.gz
 rm epusdt.tar.gz
 ```
 
-### 方式 B，从源码编译
+### 方式 B，從原始碼編譯
 
 ```bash
 git clone https://github.com/GMwalletApp/epusdt.git
@@ -40,7 +40,7 @@ cd epusdt/src
 go build -o /opt/epusdt/epusdt .
 ```
 
-## 2. 启动 Epusdt
+## 2. 啟動 Epusdt
 
 ```bash
 chmod +x /opt/epusdt/epusdt
@@ -48,13 +48,13 @@ cd /opt/epusdt
 ./epusdt http start
 ```
 
-若无 `.env` 文件，Epusdt 会启动安装向导。用浏览器打开 `http://你的服务器IP:8000`，按提示完成初始配置（数据库、API Token、域名等）。
+若無 `.env` 檔案，Epusdt 會啟動安裝嚮導。用瀏覽器開啟 `http://你的伺服器IP:8000`，按提示完成初始配置（資料庫、API Token、域名等）。
 
-提交后服务自动重启，即可正常使用。
+提交後服務自動重啟，即可正常使用。
 
 ## 3. 配置 Nginx 反向代理
 
-默认会监听 `:8000`。
+預設會監聽 `:8000`。
 
 ## 4. 配置 Nginx 反向代理
 
@@ -82,13 +82,13 @@ server {
 }
 ```
 
-重载 Nginx：
+過載 Nginx：
 
 ```bash
 nginx -t && systemctl reload nginx
 ```
 
-## 5. 用 Supervisor 托管
+## 5. 用 Supervisor 託管
 
 ```ini
 [program:epusdt]
@@ -103,7 +103,7 @@ redirect_stderr=true
 stdout_logfile=/var/log/supervisor/epusdt.log
 ```
 
-应用配置：
+應用配置：
 
 ```bash
 supervisorctl reread
@@ -112,23 +112,23 @@ supervisorctl start epusdt
 supervisorctl tail epusdt
 ```
 
-## 6. 验证服务与接入地址
+## 6. 驗證服務與接入地址
 
-对外接入时，使用你部署后的 Epusdt 域名作为基础地址，例如：
+對外接入時，使用你部署後的 Epusdt 域名作為基礎地址，例如：
 
 ```text
 https://pay.example.com
 ```
 
-创建订单接口例如：
+建立訂單介面例如：
 
 ```text
 POST /payments/epusdt/v1/order/create-transaction
 ```
 
-## 注意事项
+## 注意事項
 
-- 修改 `.env` 后需要重启进程，`supervisorctl restart epusdt`
-- 生产环境建议始终放在 HTTPS 反代之后
-- `api_auth_token` 必须保密
-- `tron_grid_api_key` 推荐配置，可提高链上查询稳定性
+- 修改 `.env` 後需要重啟程序，`supervisorctl restart epusdt`
+- 生產環境建議始終放在 HTTPS 反代之後
+- `api_auth_token` 必須保密
+- `tron_grid_api_key` 推薦配置，可提高鏈上查詢穩定性

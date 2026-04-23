@@ -1,22 +1,22 @@
-# Docker 部署（推荐）
+# Docker 部署（推薦）
 
-本教程基于官方 Docker 镜像部署 Epusdt，支持 Docker Compose 或 `docker run` 方式。
+本教程基於官方 Docker 映象部署 Epusdt，支援 Docker Compose 或 `docker run` 方式。
 
-**无需手动创建 `.env` 文件。** 首次启动时，若检测到没有配置文件，Epusdt 会自动进入内置安装向导，通过浏览器完成所有配置。
+**無需手動建立 `.env` 檔案。** 首次啟動時，若檢測到沒有配置檔案，Epusdt 會自動進入內建安裝嚮導，透過瀏覽器完成所有配置。
 
-## 前置条件
+## 前置條件
 
-- 已安装 Docker 和 Docker Compose
+- 已安裝 Docker 和 Docker Compose
 
-## 步骤
+## 步驟
 
-### 1. 创建目录
+### 1. 建立目錄
 
 ```bash
 mkdir epusdt && cd epusdt
 ```
 
-### 2. 创建 `docker-compose.yaml`
+### 2. 建立 `docker-compose.yaml`
 
 ```bash
 cat <<EOF > docker-compose.yaml
@@ -34,21 +34,21 @@ volumes:
 EOF
 ```
 
-### 3. 启动服务
+### 3. 啟動服務
 
 ```bash
 docker compose up -d
 ```
 
-### 4. 完成安装向导
+### 4. 完成安裝嚮導
 
-浏览器打开 `http://你的服务器IP:8000`，按页面提示完成初始配置（数据库、API Token、域名等）。
+瀏覽器開啟 `http://你的伺服器IP:8000`，按頁面提示完成初始配置（資料庫、API Token、域名等）。
 
-提交后服务自动重启，即可正常使用。
+提交後服務自動重啟，即可正常使用。
 
 ---
 
-## 备选：`docker run` 快速启动
+## 備選：`docker run` 快速啟動
 
 ```bash
 docker run -d \
@@ -58,13 +58,13 @@ docker run -d \
   gmwallet/epusdt:latest
 ```
 
-启动后同样访问 `http://你的服务器IP:8000` 完成安装向导。
+啟動後同樣訪問 `http://你的伺服器IP:8000` 完成安裝嚮導。
 
 ---
 
-## 手动管理配置文件（可选）
+## 手動管理配置檔案（可選）
 
-如果你希望以文件方式管理配置，可以挂载 `.env`：
+如果你希望以檔案方式管理配置，可以掛載 `.env`：
 
 ```bash
 docker run -d \
@@ -75,12 +75,12 @@ docker run -d \
   gmwallet/epusdt:latest
 ```
 
-> 修改 `.env` 后需重启容器：`docker restart epusdt`
+> 修改 `.env` 後需重啟容器：`docker restart epusdt`
 
 ---
 
-## 注意事项
+## 注意事項
 
-- 安装完成后，所有配置均可在管理后台调整
-- `api_auth_token` 是 API 签名密钥，请妥善保管，勿泄露
-- 升级镜像：`docker pull gmwallet/epusdt:latest && docker compose up -d`
+- 安裝完成後，所有配置均可在管理後臺調整
+- `api_auth_token` 是 API 簽名金鑰，請妥善保管，勿洩露
+- 升級映象：`docker pull gmwallet/epusdt:latest && docker compose up -d`

@@ -1,12 +1,12 @@
-# GMPay 接入（推荐）
+# GMPay 接入（推薦）
 
-如果你要使用原生多网络 API，对接时推荐使用 GMPay 路由。
+如果你要使用原生多網路 API，對接時推薦使用 GMPay 路由。
 
 ::: tip
-接口地址：`POST /payments/gmpay/v1/order/create-transaction`
+介面地址：`POST /payments/gmpay/v1/order/create-transaction`
 :::
 
-## 配置说明
+## 配置說明
 
 在 `.env` 中配置 `api_auth_token`。
 
@@ -15,12 +15,12 @@ api_auth_token=your-secret-token
 ```
 
 ::: info
-与旧版兼容的 Epusdt 路由不同，GMPay 不会自动补默认值。你必须显式传 `currency`、`token`、`network`。
+與舊版相容的 Epusdt 路由不同，GMPay 不會自動補預設值。你必須顯式傳 `currency`、`token`、`network`。
 :::
 
-## 支持的网络和币种
+## 支援的網路和幣種
 
-当前源码和已有文档对外暴露了这些组合：
+當前原始碼和已有文件對外暴露了這些組合：
 
 | Network | Token |
 |---|---|
@@ -30,15 +30,15 @@ api_auth_token=your-secret-token
 | `ethereum` | `usdt` |
 | `ethereum` | `usdc` |
 
-## 签名算法
+## 簽名演算法
 
-签名规则和 Epusdt 一致。
+簽名規則和 Epusdt 一致。
 
-1. 保留所有非空参数，排除 `signature`
-2. 按参数名 ASCII 升序排序
+1. 保留所有非空引數，排除 `signature`
+2. 按引數名 ASCII 升序排序
 3. 按 `key=value&key=value` 形式拼接
 4. 末尾拼接 `api_auth_token`
-5. 计算小写 MD5
+5. 計算小寫 MD5
 
 ::: code-group
 
@@ -94,9 +94,9 @@ func GMPaySign(params map[string]string, token string) string {
 
 :::
 
-## 创建订单
+## 建立訂單
 
-### 请求
+### 請求
 
 ```http
 POST /payments/gmpay/v1/order/create-transaction
@@ -116,22 +116,22 @@ Content-Type: application/json
 }
 ```
 
-### 请求字段
+### 請求欄位
 
-| 字段 | 类型 | 必填 | 说明 |
+| 欄位 | 型別 | 必填 | 說明 |
 |---|---|---:|---|
-| `order_id` | string | ✅ | 商户订单号，最长 32 字符 |
-| `currency` | string | ✅ | 法币币种，例如 `cny` |
-| `token` | string | ✅ | 代币符号，例如 `usdt`、`usdc` |
-| `network` | string | ✅ | 小写网络值：`tron`、`solana`、`ethereum` |
-| `amount` | float | ✅ | 法币金额，必须大于 `0.01` |
-| `notify_url` | string | ✅ | 异步回调地址 |
-| `redirect_url` | string | ❌ | 支付成功后的浏览器跳转地址 |
-| `signature` | string | ✅ | MD5 签名 |
-| `name` | string | ❌ | 可选商品名称 |
-| `payment_type` | string | ❌ | 可选来源标记 |
+| `order_id` | string | ✅ | 商戶訂單號，最長 32 字元 |
+| `currency` | string | ✅ | 法幣幣種，例如 `cny` |
+| `token` | string | ✅ | 代幣符號，例如 `usdt`、`usdc` |
+| `network` | string | ✅ | 小寫網路值：`tron`、`solana`、`ethereum` |
+| `amount` | float | ✅ | 法幣金額，必須大於 `0.01` |
+| `notify_url` | string | ✅ | 非同步回撥地址 |
+| `redirect_url` | string | ❌ | 支付成功後的瀏覽器跳轉地址 |
+| `signature` | string | ✅ | MD5 簽名 |
+| `name` | string | ❌ | 可選商品名稱 |
+| `payment_type` | string | ❌ | 可選來源標記 |
 
-### 响应
+### 響應
 
 ```json
 {
@@ -152,27 +152,27 @@ Content-Type: application/json
 }
 ```
 
-### 响应字段
+### 響應欄位
 
-| 字段 | 类型 | 说明 |
+| 欄位 | 型別 | 說明 |
 |---|---|---|
-| `trade_id` | string | Epusdt 交易号 |
-| `order_id` | string | 你的原始订单号 |
-| `amount` | float | 原始法币金额 |
-| `currency` | string | 法币币种 |
-| `actual_amount` | float | 用户实际需要支付的代币金额 |
+| `trade_id` | string | Epusdt 交易號 |
+| `order_id` | string | 你的原始訂單號 |
+| `amount` | float | 原始法幣金額 |
+| `currency` | string | 法幣幣種 |
+| `actual_amount` | float | 使用者實際需要支付的代幣金額 |
 | `receive_address` | string | 收款地址 |
-| `token` | string | 代币符号 |
-| `expiration_time` | int | 过期时间，Unix 秒级时间戳 |
-| `payment_url` | string | 托管收银台地址 |
+| `token` | string | 代幣符號 |
+| `expiration_time` | int | 過期時間，Unix 秒級時間戳 |
+| `payment_url` | string | 託管收銀臺地址 |
 
 ::: warning
-当前创建订单响应里不包含 `network`，即使请求里 `network` 是必填。
+當前建立訂單響應裡不包含 `network`，即使請求裡 `network` 是必填。
 :::
 
-## 网络切换子订单机制
+## 網路切換子訂單機制
 
-托管收银台支持切换支付路线。
+託管收銀臺支援切換支付路線。
 
 ```http
 POST /pay/switch-network
@@ -187,25 +187,25 @@ Content-Type: application/json
 }
 ```
 
-### 请求字段
+### 請求欄位
 
-| 字段 | 类型 | 必填 | 说明 |
+| 欄位 | 型別 | 必填 | 說明 |
 |---|---|---:|---|
-| `trade_id` | string | ✅ | 父订单 trade_id |
-| `token` | string | ✅ | 目标代币 |
-| `network` | string | ✅ | 目标网络 |
+| `trade_id` | string | ✅ | 父訂單 trade_id |
+| `token` | string | ✅ | 目標代幣 |
+| `network` | string | ✅ | 目標網路 |
 
-### 机制说明
+### 機制說明
 
-- 如果请求的 `token + network` 与父订单一致，源码直接返回当前收银台数据
-- 如果该路线已经存在有效子订单，源码会直接复用
-- 否则源码会创建新的子订单，并在目标网络上预留一个钱包地址
-- 当前源码每个父订单最多允许 `2` 个有效子订单
-- 某一条路线支付成功后，其它兄弟子订单会被置为过期并释放锁定
+- 如果請求的 `token + network` 與父訂單一致，原始碼直接返回當前收銀臺資料
+- 如果該路線已經存在有效子訂單，原始碼會直接複用
+- 否則原始碼會建立新的子訂單，並在目標網路上預留一個錢包地址
+- 當前原始碼每個父訂單最多允許 `2` 個有效子訂單
+- 某一條路線支付成功後，其它兄弟子訂單會被置為過期並釋放鎖定
 
-## 异步回调
+## 非同步回撥
 
-回调处理方式与 Epusdt 一致。
+回撥處理方式與 Epusdt 一致。
 
 ```json
 {
@@ -221,9 +221,9 @@ Content-Type: application/json
 }
 ```
 
-使用相同的 MD5 规则和 `api_auth_token` 验签，处理成功后返回 HTTP 200 且响应体精确为 `ok`。
+使用相同的 MD5 規則和 `api_auth_token` 驗籤，處理成功後返回 HTTP 200 且響應體精確為 `ok`。
 
-## 完整代码示例
+## 完整程式碼示例
 
 ::: code-group
 
@@ -356,7 +356,7 @@ func main() {
 
 :::
 
-## 参见
+## 參見
 
 - [/zh/api/reference](/zh/api/reference)
 - [/zh/api/payment](/zh/api/payment)

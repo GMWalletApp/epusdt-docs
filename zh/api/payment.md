@@ -1,72 +1,72 @@
-# 支付接口
+# 支付介面
 
-本页说明当前版本的支付接入流程：创建订单、跳转收银台、处理回调，以及查询订单状态。
+本頁說明當前版本的支付接入流程：建立訂單、跳轉收銀臺、處理回撥，以及查詢訂單狀態。
 
-## 创建交易
+## 建立交易
 
-创建新的支付订单。Epusdt 会在订单有效期内锁定一个收款地址和应付金额。
+建立新的支付訂單。Epusdt 會在訂單有效期內鎖定一個收款地址和應付金額。
 
-**当前线上接口：**
+**當前線上介面：**
 
 ```
 POST /payments/epusdt/v1/order/create-transaction
 ```
 
-**同时可用：**
+**同時可用：**
 
 ```
 POST /payments/gmpay/v1/order/create-transaction
 ```
 
 ::: tip
-当前源码中的真实 API 前缀是 `/payments/...`。旧文档中的 `/api/v1/order/create-transaction` 属于历史路径，不是当前注册路由。
+當前原始碼中的真實 API 字首是 `/payments/...`。舊文件中的 `/api/v1/order/create-transaction` 屬於歷史路徑，不是當前註冊路由。
 :::
 
-### 请求参数
+### 請求引數
 
-创建订单接口请求方式：
+建立訂單介面請求方式：
 
 - `POST`
 - `application/json`
 
 ::: info
-签名校验发生在**原始 JSON 请求体**上，而且执行顺序早于 `/payments/epusdt/v1/...` 这层兼容路由补默认值。所以在 Epusdt 兼容路由里，即使你省略了 `currency`、`token`、`network`，只要签名对应的是你实际提交的字段，依然可以通过。
+簽名校驗發生在**原始 JSON 請求體**上，而且執行順序早於 `/payments/epusdt/v1/...` 這層相容路由補預設值。所以在 Epusdt 相容路由裡，即使你省略了 `currency`、`token`、`network`，只要簽名對應的是你實際提交的欄位，依然可以透過。
 
-当验签通过后，这层兼容包装会重写请求体，并把缺省字段补成 `cny`、`usdt`、`TRON`，然后再进入共享的创建订单处理逻辑。
+當驗籤通過後，這層相容包裝會重寫請求體，並把預設欄位補成 `cny`、`usdt`、`TRON`，然後再進入共享的建立訂單處理邏輯。
 :::
 
-| 字段 | 类型 | 必填 | 说明 |
+| 欄位 | 型別 | 必填 | 說明 |
 |------|------|------|------|
-| `order_id` | string | ✅ | 业务订单号，最长 32 个字符 |
-| `amount` | float | ✅ | 法币金额，必须大于 `0.01` |
-| `notify_url` | string | ✅ | 异步通知地址，支付成功后会向此地址发起 POST |
-| `redirect_url` | string | ❌ | 用户支付成功后的跳转地址 |
-| `currency` | string | ✅* | 法币币种 |
-| `token` | string | ✅* | 支付币种 |
-| `network` | string | ✅* | 区块链网络 |
-| `signature` | string | ✅ | MD5 签名 |
+| `order_id` | string | ✅ | 業務訂單號，最長 32 個字元 |
+| `amount` | float | ✅ | 法幣金額，必須大於 `0.01` |
+| `notify_url` | string | ✅ | 非同步通知地址，支付成功後會向此地址發起 POST |
+| `redirect_url` | string | ❌ | 使用者支付成功後的跳轉地址 |
+| `currency` | string | ✅* | 法幣幣種 |
+| `token` | string | ✅* | 支付幣種 |
+| `network` | string | ✅* | 區塊鏈網路 |
+| `signature` | string | ✅ | MD5 簽名 |
 
-`*` 共享请求校验器要求 `currency`、`token`、`network` 必填。但当前 `/payments/epusdt/v1/...` 路由会在缺省时自动补默认值：
+`*` 共享請求校驗器要求 `currency`、`token`、`network` 必填。但當前 `/payments/epusdt/v1/...` 路由會在預設時自動補預設值：
 
 - `currency = cny`
 - `token = usdt`
 - `network = TRON`
 
-而 `/payments/gmpay/v1/...` 路由**不会**补这些默认值。
+而 `/payments/gmpay/v1/...` 路由**不會**補這些預設值。
 
 ::: warning
-新接入方即使调用 `/payments/epusdt/v1/...`，也建议显式传 `currency`、`token`、`network`。省略字段只是为了兼容旧插件，不应当作为首选接入约定。
+新接入方即使呼叫 `/payments/epusdt/v1/...`，也建議顯式傳 `currency`、`token`、`network`。省略欄位只是為了相容舊外掛，不應當作為首選接入約定。
 :::
 
-### 签名生成
+### 簽名生成
 
-`signature` 生成规则：
+`signature` 生成規則：
 
-1. 收集所有非空参数，排除 `signature`
-2. 按参数名 ASCII 升序排序
+1. 收集所有非空引數，排除 `signature`
+2. 按引數名 ASCII 升序排序
 3. 拼成 `key=value&key=value`
 4. 直接在末尾追加 `api_auth_token`
-5. 计算小写 MD5
+5. 計算小寫 MD5
 
 #### 示例
 
@@ -85,7 +85,7 @@ Token：
 api_auth_token = "epusdt_password_xasddawqe"
 ```
 
-排序后字符串：
+排序後字串：
 
 ```
 amount=42&notify_url=http://example.com/notify&order_id=20220201030210321&redirect_url=http://example.com/redirect
@@ -103,7 +103,7 @@ MD5：
 1cd4b52df5587cfb1968b0c0c6e156cd
 ```
 
-#### 代码示例
+#### 程式碼示例
 
 ::: code-group
 
@@ -159,9 +159,9 @@ func EpusdtSign(params map[string]string, token string) string {
 
 :::
 
-### 响应示例
+### 響應示例
 
-当前 JSON API 的返回外层统一是 HTTP 200，业务结果请看顶层 `status_code`。
+當前 JSON API 的返回外層統一是 HTTP 200，業務結果請看頂層 `status_code`。
 
 ```json
 {
@@ -182,38 +182,38 @@ func EpusdtSign(params map[string]string, token string) string {
 }
 ```
 
-### 响应字段说明
+### 響應欄位說明
 
-| 字段 | 类型 | 说明 |
+| 欄位 | 型別 | 說明 |
 |------|------|------|
-| `trade_id` | string | Epusdt 内部交易号 |
-| `order_id` | string | 你的业务订单号 |
-| `amount` | float | 原始法币金额 |
-| `currency` | string | 法币币种 |
-| `actual_amount` | float | 用户实际需要支付的代币金额 |
+| `trade_id` | string | Epusdt 內部交易號 |
+| `order_id` | string | 你的業務訂單號 |
+| `amount` | float | 原始法幣金額 |
+| `currency` | string | 法幣幣種 |
+| `actual_amount` | float | 使用者實際需要支付的代幣金額 |
 | `receive_address` | string | 收款地址 |
-| `token` | string | 代币符号，例如 `usdt` |
-| `expiration_time` | int | 过期时间，Unix 秒级时间戳 |
-| `payment_url` | string | 托管收银台地址 |
+| `token` | string | 代幣符號，例如 `usdt` |
+| `expiration_time` | int | 過期時間，Unix 秒級時間戳 |
+| `payment_url` | string | 託管收銀臺地址 |
 
-当前创建订单响应中**不包含** `network` 字段。
+當前建立訂單響應中**不包含** `network` 欄位。
 
 ## 支付流程
 
 ```
-1. 你的服务端调用创建交易接口
+1. 你的服務端呼叫建立交易介面
 2. Epusdt 返回 `trade_id`、`receive_address`、`payment_url`
-3. 将用户跳转到 `payment_url`，或自行展示地址 / 二维码
-4. 用户向 `receive_address` 转账
-5. Epusdt 监听到链上到账
-6. Epusdt 向 `notify_url` 发起 POST 回调
-7. 你的服务端验签并返回精确的 `ok`
-8. 如果配置了 `redirect_url`，托管收银台会在支付成功后跳转
+3. 將使用者跳轉到 `payment_url`，或自行展示地址 / 二維碼
+4. 使用者向 `receive_address` 轉賬
+5. Epusdt 監聽到鏈上到賬
+6. Epusdt 向 `notify_url` 發起 POST 回撥
+7. 你的服務端驗籤並返回精確的 `ok`
+8. 如果配置了 `redirect_url`，託管收銀臺會在支付成功後跳轉
 ```
 
-## 收银台页面
+## 收銀臺頁面
 
-托管收银台路由：
+託管收銀臺路由：
 
 ```
 GET /pay/checkout-counter/:trade_id
@@ -225,19 +225,19 @@ GET /pay/checkout-counter/:trade_id
 https://pay.example.com/pay/checkout-counter/EP20240101XXXXXXXX
 ```
 
-这个页面路由和 API 前缀是分开的。源码里 `payment_url` 的拼接方式是：
+這個頁面路由和 API 字首是分開的。原始碼裡 `payment_url` 的拼接方式是：
 
 ```text
 {app_uri}/pay/checkout-counter/{trade_id}
 ```
 
-也就是说，如果 `app_uri` 是 `https://pay.example.com`，那么收银台地址就是 `https://pay.example.com/pay/checkout-counter/{trade_id}`。
+也就是說，如果 `app_uri` 是 `https://pay.example.com`，那麼收銀臺地址就是 `https://pay.example.com/pay/checkout-counter/{trade_id}`。
 
-如果你的公网部署还带了额外子路径，比如 `https://example.com/epusdt`，那就应把 `app_uri` 设为这个公网基地址，并由代理把请求转发到应用内部根挂载的 `/pay/...` 路由。
+如果你的公網部署還帶了額外子路徑，比如 `https://example.com/epusdt`，那就應把 `app_uri` 設為這個公網基地址，並由代理把請求轉發到應用內部根掛載的 `/pay/...` 路由。
 
-## 查询订单状态
+## 查詢訂單狀態
 
-状态轮询路由：
+狀態輪詢路由：
 
 ```
 GET /pay/check-status/:trade_id
@@ -249,9 +249,9 @@ GET /pay/check-status/:trade_id
 GET https://pay.example.com/pay/check-status/EP20240101XXXXXXXX
 ```
 
-这是 `/pay/...` 下的收银台轮询接口，不是创建订单 API。
+這是 `/pay/...` 下的收銀臺輪詢介面，不是建立訂單 API。
 
-响应示例：
+響應示例：
 
 ```json
 {
@@ -265,21 +265,21 @@ GET https://pay.example.com/pay/check-status/EP20240101XXXXXXXX
 }
 ```
 
-### 订单状态值
+### 訂單狀態值
 
-| 状态值 | 含义 |
+| 狀態值 | 含義 |
 |--------|------|
 | `1` | 等待支付 |
 | `2` | 支付成功 |
-| `3` | 已过期 |
+| `3` | 已過期 |
 
-## 回调 / Webhook
+## 回撥 / Webhook
 
-当链上确认支付成功，且订单状态已经变为 `2`（已支付）后，Epusdt 会向创建订单时传入的 `notify_url` 发起 POST 请求。
+當鏈上確認支付成功，且訂單狀態已經變為 `2`（已支付）後，Epusdt 會向建立訂單時傳入的 `notify_url` 發起 POST 請求。
 
-回调体使用与创建订单相同的 MD5 算法和 `api_auth_token` 进行签名，源码里发送的是 JSON 请求体。
+回撥體使用與建立訂單相同的 MD5 演算法和 `api_auth_token` 進行簽名，原始碼裡傳送的是 JSON 請求體。
 
-### 回调数据格式
+### 回撥資料格式
 
 ```json
 {
@@ -295,53 +295,53 @@ GET https://pay.example.com/pay/check-status/EP20240101XXXXXXXX
 }
 ```
 
-### 回调字段说明
+### 回撥欄位說明
 
-| 字段 | 类型 | 说明 |
+| 欄位 | 型別 | 說明 |
 |------|------|------|
-| `trade_id` | string | Epusdt 内部交易号 |
-| `order_id` | string | 你的业务订单号 |
-| `amount` | float | 原始法币金额 |
-| `actual_amount` | float | 实际到账代币金额 |
+| `trade_id` | string | Epusdt 內部交易號 |
+| `order_id` | string | 你的業務訂單號 |
+| `amount` | float | 原始法幣金額 |
+| `actual_amount` | float | 實際到賬代幣金額 |
 | `receive_address` | string | 收款地址 |
-| `token` | string | 代币符号 |
-| `block_transaction_id` | string | 链上交易 ID |
-| `status` | int | 订单状态，`2` 表示已支付 |
-| `signature` | string | 用于验签的 MD5 签名 |
+| `token` | string | 代幣符號 |
+| `block_transaction_id` | string | 鏈上交易 ID |
+| `status` | int | 訂單狀態，`2` 表示已支付 |
+| `signature` | string | 用於驗籤的 MD5 簽名 |
 
-当前回调体中**不包含** `network` 字段。
+當前回撥體中**不包含** `network` 欄位。
 
-### 如何校验回调签名
+### 如何校驗回撥簽名
 
-规则与创建订单签名完全一致：
+規則與建立訂單簽名完全一致：
 
-1. 保留所有非空字段，排除 `signature`
+1. 保留所有非空欄位，排除 `signature`
 2. 按 key 排序
 3. 拼成 `key=value&key=value`
 4. 末尾追加 `api_auth_token`
-5. 计算小写 MD5 后比对
+5. 計算小寫 MD5 後比對
 
-### 回调响应要求
+### 回撥響應要求
 
 ::: danger 重要
-你的服务端**必须**返回 **HTTP 200**，且响应体必须是精确的纯文本 `ok`。
+你的服務端**必須**返回 **HTTP 200**，且響應體必須是精確的純文字 `ok`。
 
 例如：
 
 - `ok` ✅
 - `OK`、`ok\n`、`{"message":"ok"}` ❌
 
-当前源码中的重试行为由配置决定，不是固定写死的重试次数：
+當前原始碼中的重試行為由配置決定，不是固定寫死的重試次數：
 
-- `order_notice_max_retry`：首次尝试之后允许的最大重试次数
-- `callback_retry_base_seconds`：指数退避的基础秒数
+- `order_notice_max_retry`：首次嘗試之後允許的最大重試次數
+- `callback_retry_base_seconds`：指數退避的基礎秒數
 
-`.env.example` 默认值为：
+`.env.example` 預設值為：
 
 - `order_notice_max_retry=0`
 - `callback_retry_base_seconds=5`
 
-所以在默认配置下，会执行第一次回调；如果失败，不会继续额外重试。
+所以在預設配置下，會執行第一次回撥；如果失敗，不會繼續額外重試。
 :::
 
 ## 完整接入示例
@@ -378,29 +378,29 @@ def create_order(order_id: str, amount: float, notify_url: str):
     if result["status_code"] == 200:
         data = result["data"]
         print(f"Trade ID:     {data['trade_id']}")
-        print(f"USDT 金额:     {data['actual_amount']}")
+        print(f"USDT 金額:     {data['actual_amount']}")
         print(f"收款地址:      {data['receive_address']}")
-        print(f"收银台链接:    {data['payment_url']}")
+        print(f"收銀臺連結:    {data['payment_url']}")
         return data
     else:
-        print(f"错误: {result['message']}")
+        print(f"錯誤: {result['message']}")
         return None
 
 create_order("ORDER_001", 100.00, "https://example.com/callback")
 ```
 
-这个显式传参示例同时适用于两个当前可用的创建订单路由，也是更推荐的新接入方式。如果你调用的是 `/payments/epusdt/v1/...`，当前源码也允许省略 `currency`、`token`、`network`，因为兼容路由会在验签之后补默认值，但新客户端不建议依赖这个旧兼容行为。
+這個顯式傳參示例同時適用於兩個當前可用的建立訂單路由，也是更推薦的新接入方式。如果你呼叫的是 `/payments/epusdt/v1/...`，當前原始碼也允許省略 `currency`、`token`、`network`，因為相容路由會在驗籤之後補預設值，但新客戶端不建議依賴這個舊相容行為。
 
-如果服务是通过代理子路径对外暴露，请让这里的 `API_BASE` 与 `app_uri` 保持一致，使用对外可访问的完整基地址。
+如果服務是透過代理子路徑對外暴露，請讓這裡的 `API_BASE` 與 `app_uri` 保持一致，使用對外可訪問的完整基地址。
 
-## 错误处理建议
+## 錯誤處理建議
 
-| 状态码 | 消息 | 处理建议 |
+| 狀態碼 | 訊息 | 處理建議 |
 |--------|------|----------|
-| `400` | system / validation error | 检查请求体和必填字段 |
-| `401` | `signature verification failed` | 检查签名逻辑与 `api_auth_token` |
-| `10002` | `order already exists` | 使用未重复的 `order_id` |
-| `10003` | `no available wallet address` | 增加更多钱包地址 |
-| `10004` | `invalid payment amount` | 检查金额限制和最小值 |
-| `10005` | `no available amount channel` | 更换金额重试，或检查金额通道分配 |
-| `10008` | `order does not exist` | 检查查询的 `trade_id` 是否正确 |
+| `400` | system / validation error | 檢查請求體和必填欄位 |
+| `401` | `signature verification failed` | 檢查簽名邏輯與 `api_auth_token` |
+| `10002` | `order already exists` | 使用未重複的 `order_id` |
+| `10003` | `no available wallet address` | 增加更多錢包地址 |
+| `10004` | `invalid payment amount` | 檢查金額限制和最小值 |
+| `10005` | `no available amount channel` | 更換金額重試，或檢查金額通道分配 |
+| `10008` | `order does not exist` | 檢查查詢的 `trade_id` 是否正確 |

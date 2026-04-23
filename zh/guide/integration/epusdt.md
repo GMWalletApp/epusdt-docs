@@ -1,40 +1,40 @@
-# Epusdt 接入（旧版兼容）
+# Epusdt 接入（舊版相容）
 
-当你需要兼容旧版 Epusdt 插件行为时，使用这个路由。
+當你需要相容舊版 Epusdt 外掛行為時，使用這個路由。
 
 ::: tip
-接口地址：`POST /payments/epusdt/v1/order/create-transaction`
+介面地址：`POST /payments/epusdt/v1/order/create-transaction`
 :::
 
-## 配置说明
+## 配置說明
 
-在 `.env` 中配置 `api_auth_token`。它同时用于请求签名和异步回调验签。
+在 `.env` 中配置 `api_auth_token`。它同時用於請求籤名和非同步回撥驗籤。
 
 ```dotenv
 api_auth_token=your-secret-token
 ```
 
 ::: info
-当前源码会保留与旧版 `POST /api/v1/order/create-transaction` 一致的兼容行为。如果你不传 `currency`、`token`、`network`，包装路由会自动补：
+當前原始碼會保留與舊版 `POST /api/v1/order/create-transaction` 一致的相容行為。如果你不傳 `currency`、`token`、`network`，包裝路由會自動補：
 
 - `currency = cny`
 - `token = usdt`
 - `network = tron`
 :::
 
-## 签名算法
+## 簽名演算法
 
-签名规则与旧版 API 一致。
+簽名規則與舊版 API 一致。
 
-1. 保留所有非空参数，排除 `signature`
-2. 按参数名 ASCII 升序排序
+1. 保留所有非空引數，排除 `signature`
+2. 按引數名 ASCII 升序排序
 3. 按 `key=value&key=value` 形式拼接
 4. 在末尾直接拼接 `api_auth_token`
-5. 计算小写 MD5
+5. 計算小寫 MD5
 
 ### 示例
 
-假设参数如下：
+假設引數如下：
 
 ```text
 order_id=20220201030210321
@@ -49,13 +49,13 @@ Token：
 api_auth_token=epusdt_password_xasddawqe
 ```
 
-待签名字符串：
+待簽名字串：
 
 ```text
 amount=42&notify_url=http://example.com/notify&order_id=20220201030210321&redirect_url=http://example.com/redirectepusdt_password_xasddawqe
 ```
 
-签名结果：
+簽名結果：
 
 ```text
 1cd4b52df5587cfb1968b0c0c6e156cd
@@ -122,9 +122,9 @@ func EpusdtSign(params map[string]string, token string) string {
 
 :::
 
-## 创建订单
+## 建立訂單
 
-### 请求
+### 請求
 
 ```http
 POST /payments/epusdt/v1/order/create-transaction
@@ -141,21 +141,21 @@ Content-Type: application/json
 }
 ```
 
-### 请求字段
+### 請求欄位
 
-| 字段 | 类型 | 必填 | 说明 |
+| 欄位 | 型別 | 必填 | 說明 |
 |---|---|---:|---|
-| `order_id` | string | ✅ | 商户订单号，最长 32 字符 |
-| `amount` | float | ✅ | 法币金额，必须大于 `0.01` |
-| `notify_url` | string | ✅ | 异步回调地址 |
-| `redirect_url` | string | ❌ | 支付成功后的浏览器跳转地址 |
-| `signature` | string | ✅ | MD5 签名 |
+| `order_id` | string | ✅ | 商戶訂單號，最長 32 字元 |
+| `amount` | float | ✅ | 法幣金額，必須大於 `0.01` |
+| `notify_url` | string | ✅ | 非同步回撥地址 |
+| `redirect_url` | string | ❌ | 支付成功後的瀏覽器跳轉地址 |
+| `signature` | string | ✅ | MD5 簽名 |
 
 ::: warning
-当前源码会在兼容包装层补默认值之前先验签。如果你省略了 `currency`、`token`、`network`，就只对你实际发送的字段做签名。
+當前原始碼會在相容包裝層補預設值之前先驗籤。如果你省略了 `currency`、`token`、`network`，就只對你實際傳送的欄位做簽名。
 :::
 
-### 响应
+### 響應
 
 ```json
 {
@@ -176,23 +176,23 @@ Content-Type: application/json
 }
 ```
 
-### 响应字段
+### 響應欄位
 
-| 字段 | 类型 | 说明 |
+| 欄位 | 型別 | 說明 |
 |---|---|---|
-| `trade_id` | string | Epusdt 交易号 |
-| `order_id` | string | 你的原始订单号 |
-| `amount` | float | 原始法币金额 |
-| `currency` | string | 法币币种 |
-| `actual_amount` | float | 用户实际需要支付的代币金额 |
+| `trade_id` | string | Epusdt 交易號 |
+| `order_id` | string | 你的原始訂單號 |
+| `amount` | float | 原始法幣金額 |
+| `currency` | string | 法幣幣種 |
+| `actual_amount` | float | 使用者實際需要支付的代幣金額 |
 | `receive_address` | string | 收款地址 |
-| `token` | string | 代币符号 |
-| `expiration_time` | int | 过期时间，Unix 秒级时间戳 |
-| `payment_url` | string | 托管收银台地址 |
+| `token` | string | 代幣符號 |
+| `expiration_time` | int | 過期時間，Unix 秒級時間戳 |
+| `payment_url` | string | 託管收銀臺地址 |
 
-## 异步回调处理
+## 非同步回撥處理
 
-支付成功后，Epusdt 会向你的 `notify_url` 发送 HTTP POST。
+支付成功後，Epusdt 會向你的 `notify_url` 傳送 HTTP POST。
 
 ```json
 {
@@ -208,29 +208,29 @@ Content-Type: application/json
 }
 ```
 
-### 回调字段
+### 回撥欄位
 
-| 字段 | 类型 | 说明 |
+| 欄位 | 型別 | 說明 |
 |---|---|---|
-| `trade_id` | string | Epusdt 交易号 |
-| `order_id` | string | 你的业务订单号 |
-| `amount` | float | 原始法币金额 |
-| `actual_amount` | float | 实际到账代币金额 |
+| `trade_id` | string | Epusdt 交易號 |
+| `order_id` | string | 你的業務訂單號 |
+| `amount` | float | 原始法幣金額 |
+| `actual_amount` | float | 實際到賬代幣金額 |
 | `receive_address` | string | 收款地址 |
-| `token` | string | 代币符号 |
-| `block_transaction_id` | string | 链上交易 ID |
-| `status` | int | `1` 待支付，`2` 已支付，`3` 已过期 |
-| `signature` | string | MD5 签名 |
+| `token` | string | 代幣符號 |
+| `block_transaction_id` | string | 鏈上交易 ID |
+| `status` | int | `1` 待支付，`2` 已支付，`3` 已過期 |
+| `signature` | string | MD5 簽名 |
 
-### 验签规则
+### 驗籤規則
 
-使用相同的 MD5 签名步骤和 `api_auth_token` 验证回调，然后再更新你的业务订单。
+使用相同的 MD5 簽名步驟和 `api_auth_token` 驗證回撥，然後再更新你的業務訂單。
 
 ::: warning
-处理成功后必须返回 HTTP 200，且响应体精确为纯文本 `ok`。返回其他内容会被视为回调失败。
+處理成功後必須返回 HTTP 200，且響應體精確為純文字 `ok`。返回其他內容會被視為回撥失敗。
 :::
 
-## 完整代码示例
+## 完整程式碼示例
 
 ::: code-group
 
@@ -269,7 +269,7 @@ curl_close($ch);
 
 echo $response;
 
-// 回调处理示例
+// 回撥處理示例
 $callback = json_decode(file_get_contents('php://input'), true);
 $localSign = epusdtSign($callback, $token);
 if (($callback['signature'] ?? '') !== $localSign) {
@@ -277,7 +277,7 @@ if (($callback['signature'] ?? '') !== $localSign) {
     exit('invalid sign');
 }
 
-// 在这里更新你的业务订单状态
+// 在這裡更新你的業務訂單狀態
 http_response_code(200);
 echo 'ok';
 ```
@@ -319,7 +319,7 @@ def notify():
     if data.get('signature') != epusdt_sign(data, API_TOKEN):
         return 'invalid sign', 400
 
-    # 在这里更新你的业务订单状态
+    # 在這裡更新你的業務訂單狀態
     return 'ok', 200
 ```
 
@@ -382,7 +382,7 @@ func main() {
 
 :::
 
-## 参见
+## 參見
 
 - [/zh/api/reference](/zh/api/reference)
 - [/zh/api/payment](/zh/api/payment)

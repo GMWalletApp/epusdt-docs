@@ -1,14 +1,14 @@
-# EPay 兼容接入（跳转式）
+# EPay 相容接入（跳轉式）
 
-如果你需要 EPay 风格的跳转式支付流程，可以使用这个兼容入口。
+如果你需要 EPay 風格的跳轉式支付流程，可以使用這個相容入口。
 
 ::: tip
-接口地址：`GET /payments/epay/v1/order/create-transaction/submit.php`
+介面地址：`GET /payments/epay/v1/order/create-transaction/submit.php`
 :::
 
-## 配置说明
+## 配置說明
 
-当前 `.env.example` 中包含以下 EPay 相关配置：
+當前 `.env.example` 中包含以下 EPay 相關配置：
 
 ```dotenv
 epay_pid=
@@ -16,59 +16,59 @@ epay_key=
 ```
 
 ::: info
-当前源码会在 EPay 兼容参数中使用 `epay_pid`，并在 EPay 格式回调时使用 `epay_key` 进行签名。
+當前原始碼會在 EPay 相容引數中使用 `epay_pid`，並在 EPay 格式回撥時使用 `epay_key` 進行簽名。
 
-但对于 `/payments/epay/v1/order/create-transaction/submit.php` 这个入站创建订单请求，当前路由代码实际使用 `api_auth_token` 来校验 `sign`。
+但對於 `/payments/epay/v1/order/create-transaction/submit.php` 這個入站建立訂單請求，當前路由程式碼實際使用 `api_auth_token` 來校驗 `sign`。
 :::
 
-## 接入方式说明
+## 接入方式說明
 
-这是浏览器跳转模式。你需要先拼接 GET 请求 URL，然后把用户重定向到这个地址。
+這是瀏覽器跳轉模式。你需要先拼接 GET 請求 URL，然後把使用者重定向到這個地址。
 
 ```text
 GET /payments/epay/v1/order/create-transaction/submit.php?pid=1001&type=alipay&out_trade_no=ORDER_10003&notify_url=https%3A%2F%2Fmerchant.example.com%2Fnotify&return_url=https%3A%2F%2Fmerchant.example.com%2Freturn&name=VIP%20Order&money=100&sign=xxxx&sign_type=MD5
 ```
 
-Epusdt 创建订单后，当前源码会把浏览器继续跳转到托管收银台：
+Epusdt 建立訂單後，當前原始碼會把瀏覽器繼續跳轉到託管收銀臺：
 
 ```text
 /pay/checkout-counter/{trade_id}
 ```
 
-## 请求参数
+## 請求引數
 
-| 字段 | 类型 | 必填 | 说明 |
+| 欄位 | 型別 | 必填 | 說明 |
 |---|---|---:|---|
-| `pid` | int | ✅ | 商户 PID，应与配置的 `epay_pid` 一致 |
-| `type` | string | ✅ | EPay 客户端使用的支付类型标识，当前回调使用 `alipay` |
-| `out_trade_no` | string | ✅ | 商户订单号 |
-| `notify_url` | string | ✅ | 异步回调地址 |
-| `return_url` | string | ❌ | 浏览器返回地址 |
-| `name` | string | ❌ | 商品名称 |
-| `money` | string | ✅ | 订单金额 |
-| `sign` | string | ✅ | MD5 签名 |
-| `sign_type` | string | ✅ | 签名类型，使用 `MD5` |
+| `pid` | int | ✅ | 商戶 PID，應與配置的 `epay_pid` 一致 |
+| `type` | string | ✅ | EPay 客戶端使用的支付型別標識，當前回撥使用 `alipay` |
+| `out_trade_no` | string | ✅ | 商戶訂單號 |
+| `notify_url` | string | ✅ | 非同步回撥地址 |
+| `return_url` | string | ❌ | 瀏覽器返回地址 |
+| `name` | string | ❌ | 商品名稱 |
+| `money` | string | ✅ | 訂單金額 |
+| `sign` | string | ✅ | MD5 簽名 |
+| `sign_type` | string | ✅ | 簽名型別，使用 `MD5` |
 
 ::: warning
-当前路由代码从查询参数中读取 `money`、`name`、`notify_url`、`out_trade_no`、`return_url` 和 `sign`，然后在内部强制使用 `currency=cny`、`token=usdt`、`network=tron` 创建订单。
+當前路由程式碼從查詢引數中讀取 `money`、`name`、`notify_url`、`out_trade_no`、`return_url` 和 `sign`，然後在內部強制使用 `currency=cny`、`token=usdt`、`network=tron` 建立訂單。
 :::
 
-## 签名规则
+## 簽名規則
 
-EPay 兼容签名依然使用相同的 MD5 排序规则。
+EPay 相容簽名依然使用相同的 MD5 排序規則。
 
-1. 保留所有非空参数，排除 `sign` 或 `signature`
-2. 按参数名 ASCII 升序排序
+1. 保留所有非空引數，排除 `sign` 或 `signature`
+2. 按引數名 ASCII 升序排序
 3. 按 `key=value&key=value` 形式拼接
-4. 在末尾直接拼接签名密钥
-5. 计算小写 MD5
+4. 在末尾直接拼接簽名金鑰
+5. 計算小寫 MD5
 
-### 当前源码说明
+### 當前原始碼說明
 
-- 入站创建订单请求：当前路由代码使用 `money + name + notify_url + out_trade_no + pid + return_url` 配合 `api_auth_token` 计算签名
-- 出站 EPay 回调：当前 worker 使用 `epay_key` 对 EPay 回调字段签名
+- 入站建立訂單請求：當前路由程式碼使用 `money + name + notify_url + out_trade_no + pid + return_url` 配合 `api_auth_token` 計算簽名
+- 出站 EPay 回撥：當前 worker 使用 `epay_key` 對 EPay 回撥欄位簽名
 
-### 示例字符串
+### 示例字串
 
 ```text
 money=100&name=VIP Order&notify_url=https://merchant.example.com/notify&out_trade_no=ORDER_10003&pid=1001&return_url=https://merchant.example.com/returnYOUR_SIGN_KEY
@@ -106,27 +106,27 @@ def epay_sign(params: dict, sign_key: str) -> str:
 
 :::
 
-## 回调说明
+## 回撥說明
 
-当 `payment_type = epay` 时，当前源码会发送 EPay 格式的异步回调。
+當 `payment_type = epay` 時，當前原始碼會發送 EPay 格式的非同步回撥。
 
-### 回调字段
+### 回撥欄位
 
-| 字段 | 类型 | 说明 |
+| 欄位 | 型別 | 說明 |
 |---|---|---|
-| `pid` | int | 商户 PID |
-| `trade_no` | string | 平台交易号 |
-| `out_trade_no` | string | 商户订单号 |
-| `type` | string | 支付类型，当前源码使用 `alipay` |
-| `name` | string | 商品名称 |
-| `money` | string | 保留 4 位小数的订单金额 |
-| `trade_status` | string | 当前源码使用 `TRADE_SUCCESS` |
-| `sign` | string | MD5 签名 |
+| `pid` | int | 商戶 PID |
+| `trade_no` | string | 平臺交易號 |
+| `out_trade_no` | string | 商戶訂單號 |
+| `type` | string | 支付型別，當前原始碼使用 `alipay` |
+| `name` | string | 商品名稱 |
+| `money` | string | 保留 4 位小數的訂單金額 |
+| `trade_status` | string | 當前原始碼使用 `TRADE_SUCCESS` |
+| `sign` | string | MD5 簽名 |
 | `sign_type` | string | `MD5` |
 
-使用 `epay_key` 校验回调签名，处理成功后返回 HTTP 200 且响应体精确为纯文本 `ok`。
+使用 `epay_key` 校驗回撥簽名，處理成功後返回 HTTP 200 且響應體精確為純文字 `ok`。
 
-## 代码示例
+## 程式碼示例
 
 ::: code-group
 
@@ -134,8 +134,8 @@ def epay_sign(params: dict, sign_key: str) -> str:
 <?php
 $baseUrl = 'https://pay.example.com/payments/epay/v1/order/create-transaction/submit.php';
 $pid = 1001;
-$apiAuthToken = 'your-api-auth-token'; // 当前源码入站请求验签实际使用这个
-$epayKey = 'your-epay-key'; // 当前源码出站回调验签使用这个
+$apiAuthToken = 'your-api-auth-token'; // 當前原始碼入站請求驗籤實際使用這個
+$epayKey = 'your-epay-key'; // 當前原始碼出站回撥驗籤使用這個
 
 function epaySign(array $params, string $signKey): string {
     ksort($params);
@@ -163,14 +163,14 @@ $redirectUrl = $baseUrl . '?' . http_build_query($query);
 header('Location: ' . $redirectUrl);
 exit;
 
-// EPay 回调处理示例
+// EPay 回撥處理示例
 $callback = $_POST;
 if (($callback['sign'] ?? '') !== epaySign($callback, $epayKey)) {
     http_response_code(400);
     exit('invalid sign');
 }
 
-// 在这里更新你的业务订单状态
+// 在這裡更新你的業務訂單狀態
 http_response_code(200);
 echo 'ok';
 ```
@@ -182,8 +182,8 @@ from urllib.parse import urlencode
 
 BASE_URL = 'https://pay.example.com/payments/epay/v1/order/create-transaction/submit.php'
 PID = 1001
-API_AUTH_TOKEN = 'your-api-auth-token'  # 当前源码入站请求验签实际使用这个
-EPAY_KEY = 'your-epay-key'  # 当前源码出站回调验签使用这个
+API_AUTH_TOKEN = 'your-api-auth-token'  # 當前原始碼入站請求驗籤實際使用這個
+EPAY_KEY = 'your-epay-key'  # 當前原始碼出站回撥驗籤使用這個
 
 
 def epay_sign(params: dict, sign_key: str) -> str:
@@ -220,13 +220,13 @@ def notify():
     if data.get('sign') != epay_sign(data, EPAY_KEY):
         return 'invalid sign', 400
 
-    # 在这里更新你的业务订单状态
+    # 在這裡更新你的業務訂單狀態
     return 'ok', 200
 ```
 
 :::
 
-## 参见
+## 參見
 
 - [/zh/api/reference](/zh/api/reference)
 - [/zh/api/payment](/zh/api/payment)
