@@ -8,4 +8,4 @@
 以下教程由社区整理维护，非官方出品。
 :::
 
-👉 [**前往 gmwallet.top 查看教程**](https://gmwallet.top)
+👉 [**前往 gmwallet.top 查看教程**](https://gmwallet.top){target="_blank" rel="noopener"}

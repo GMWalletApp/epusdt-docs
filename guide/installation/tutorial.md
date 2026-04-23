@@ -8,4 +8,4 @@ The tutorials cover installation, configuration, and common integration scenario
 These tutorials are maintained by the community, not the official team.
 :::
 
-👉 [**View Tutorials at gmwallet.top**](https://gmwallet.top)
+👉 [**View Tutorials at gmwallet.top**](https://gmwallet.top){target="_blank" rel="noopener"}
