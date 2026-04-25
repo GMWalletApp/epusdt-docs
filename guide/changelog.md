@@ -8,6 +8,33 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - Supplementary source: tag compare diffs and merged commit messages
 - This page avoids inventing features that are not visible in release or code history
 
+## v0.9.3
+
+- Release tag: `v0.9.3`
+- Published at: `2026-04-25T10:50:00Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v0.9.2...v0.9.3`
+
+### User-visible changes
+
+- Fixed the root route after installation so `GET /` consistently serves the SPA instead of being intercepted by the backend root handler.
+- Install mode still redirects the root path to `/install`, so first-time setup flow remains intact.
+
+### Deployment and configuration changes
+
+- No new public environment variable or deployment flag was published for this release.
+- The main runtime route behavior was adjusted so installed instances land on the web app more reliably.
+
+### API changes
+
+- No new public API route was introduced in this release.
+- Root backend routing changed from a catch-all `Any("/")` style handler to a `POST("/")` backend handler, leaving normal browser `GET /` traffic to the SPA.
+
+### Evidence used
+
+- GitHub release `v0.9.3`
+- Compare diff `v0.9.2...v0.9.3`
+- Commits including `95879e3`, merge tag `67263da`
+
 ## v0.9.2
 
 - Release tag: `v0.9.2`
