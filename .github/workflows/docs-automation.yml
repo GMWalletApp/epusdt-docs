@@ -2,10 +2,10 @@ name: docs-automation
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 3,15 * * *"
   issues:
     types: [opened, edited, reopened, labeled]
-  repository_dispatch:
-    types: [epusdt_docs_sync]
 
 permissions:
   contents: write
@@ -40,6 +40,9 @@ jobs:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: node scripts/docs-automation-context.mjs
+
+      - name: Show collected context summary
+        run: cat .automation/context.json
 
       - name: Build docs
         run: bun run docs:build
