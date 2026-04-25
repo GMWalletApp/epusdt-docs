@@ -2,6 +2,32 @@
 
 本文基於 `GMwalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
 
+## v0.9.2
+
+- 釋出標籤：`v0.9.2`
+- 釋出時間：`2026-04-24T16:14:34Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v0.9.1...v0.9.2`
+
+### 使用者可見變更
+
+- 管理後臺的匯率設定現在支援配置強制 USDT 匯率。
+- Docker 部署示例持續與目前的 `gmwallet/epusdt:latest` 映象引用保持一致。
+
+### 部署與配置變更
+
+- 官方釋出說明中未明確公布新的公共環境變數。
+- 現有 Docker 升級示例仍使用 `gmwallet/epusdt:latest`。
+
+### 介面變更
+
+- 本次釋出在官方說明與對比差異中未見新的公共 API 路由。
+
+### 依據
+
+- GitHub Release `v0.9.2`
+- 對比差異 `v0.9.1...v0.9.2`
+- 提交 `dd1bf70`、`143bc84`
+
 ## v0.9.1
 
 - 釋出標籤：`v0.9.1`

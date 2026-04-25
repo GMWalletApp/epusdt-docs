@@ -8,6 +8,32 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - Supplementary source: tag compare diffs and merged commit messages
 - This page avoids inventing features that are not visible in release or code history
 
+## v0.9.2
+
+- Release tag: `v0.9.2`
+- Published at: `2026-04-24T16:14:34Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v0.9.1...v0.9.2`
+
+### User-visible changes
+
+- Admin rate settings now allow configuring a forced USDT rate.
+- Docker deployment examples remain aligned with the current `gmwallet/epusdt:latest` image reference.
+
+### Deployment and configuration changes
+
+- No new public environment variable was explicitly published in the release note.
+- Existing Docker upgrade examples continue to use `gmwallet/epusdt:latest`.
+
+### API changes
+
+- No new public API route was visible in the release note or compare diff for this release.
+
+### Evidence used
+
+- GitHub release `v0.9.2`
+- Compare diff `v0.9.1...v0.9.2`
+- Commits including `dd1bf70`, `143bc84`
+
 ## v0.9.1
 
 - Release tag: `v0.9.1`
