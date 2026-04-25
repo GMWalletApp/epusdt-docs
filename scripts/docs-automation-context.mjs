@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const token = process.env.DOCS_AUTOMATION_TOKEN;
@@ -10,7 +10,7 @@ if (!token) {
   process.exit(1);
 }
 
-const event = eventPath ? JSON.parse(readFileSync(eventPath, "utf8")) : {};
+const event = eventPath && existsSync(eventPath) ? JSON.parse(readFileSync(eventPath, "utf8")) : {};
 
 async function github(path) {
   const response = await fetch(`https://api.github.com${path}`, {

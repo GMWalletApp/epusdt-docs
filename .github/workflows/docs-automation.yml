@@ -8,8 +8,8 @@ on:
     types: [opened, edited, reopened, labeled]
 
 permissions:
-  contents: write
-  issues: write
+  contents: read
+  issues: read
 
 jobs:
   automate:
@@ -44,5 +44,10 @@ jobs:
       - name: Show collected context summary
         run: cat .automation/context.json
 
-      - name: Build docs
-        run: bun run docs:build
+      - name: Send webhook to OpenClaw bridge
+        env:
+          OPENCLAW_WEBHOOK_URL: ${{ secrets.OPENCLAW_WEBHOOK_URL }}
+          OPENCLAW_WEBHOOK_SECRET: ${{ secrets.OPENCLAW_WEBHOOK_SECRET }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_EVENT_ACTION: ${{ github.event.action || '' }}
+        run: node scripts/docs-automation-webhook.mjs
