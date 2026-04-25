@@ -5,8 +5,8 @@ tk:
 
 hero:
   name: "Epusdt"
-  text: "Self-Hosted Crypto Payment"
-  tagline: Easy Payment Usdt — Go-powered Tron, Solana, and Ethereum middleware. Private, zero-fee, instant integration.
+  text: "Self-Hosted Multi-Chain Crypto Payment"
+  tagline: Go-powered gateway for hosted checkout, GMPay API, and EPay-compatible redirect flow. Private deployment, direct-to-wallet settlement.
   image:
     src: /logo.png
     alt: Epusdt
@@ -18,32 +18,29 @@ hero:
       text: Docker Install
       link: /guide/installation/docker
     - theme: alt
+      text: API Reference
+      link: /api/reference
+    - theme: alt
       text: 繁體中文
       link: /zh/
-    - theme: alt
-      text: GitHub →
-      link: https://github.com/GMwalletApp/epusdt
 
 features:
   - icon: 🐳
-    title: Docker Ready
-    details: Pull and run with a single command. No config file needed — the built-in install wizard handles first-time setup in your browser.
-  - icon: 🔒
-    title: Private Deployment
-    details: Your server, your wallet, your keys. No risk of fund hijacking or missed orders.
-  - icon: ⚡
-    title: High Performance
-    details: Async queue + multi-network wallet monitoring handles high-concurrency orders gracefully.
-  - icon: 🤖
-    title: Telegram Bot
-    details: Receive instant payment notifications with network info through the Telegram bot.
-  - icon: 🔌
-    title: Simple HTTP API
-    details: REST API for creating transactions and receiving async payment callbacks.
+    title: Wizard-Based Deployment
+    details: First boot launches the install wizard in your browser. No need to handwrite a config file before startup.
+  - icon: 🔑
+    title: Unified Merchant Credentials
+    details: Each merchant uses a PID + secret_key pair from the admin panel. The same credential works for GMPay and EPay flows.
   - icon: 🌐
-    title: Cross-Platform
-    details: Single Go binary — x86 and ARM, Windows and Linux.
-  - icon: 🧩
-    title: Plugin Support
-    details: Dujiaoka plugin included. Open SDK for custom integrations.
+    title: Multi-Chain Receiving
+    details: Current source includes chain and token management backed by admin-configured chains, chain_tokens, and wallet addresses.
+  - icon: 🧾
+    title: Hosted Checkout + Callback
+    details: Create orders, redirect customers to the cashier page, and receive signed async callbacks after on-chain confirmation.
+  - icon: 🔁
+    title: EPay-Compatible Redirect Flow
+    details: Supports GET/POST redirect-style order creation at /payments/epay/v1/order/create-transaction/submit.php.
+  - icon: 🤖
+    title: Telegram + Admin Console
+    details: Manage settings, wallets, chains, API keys, and notifications from the built-in admin API and UI.
 ---

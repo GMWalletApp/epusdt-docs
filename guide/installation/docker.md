@@ -81,6 +81,6 @@ docker run -d \
 
 ## Notes
 
-- After setup completes, all configuration is managed in the admin panel
-- Keep `api_auth_token` secret — it is used for API request signing
+- After setup completes, merchant credentials and runtime options are managed from the admin panel
+- For new integrations, use the merchant `pid` + `secret_key` created in the admin panel
 - To upgrade: `docker pull gmwallet/epusdt:latest && docker compose up -d`

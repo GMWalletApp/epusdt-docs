@@ -5,8 +5,8 @@ tk:
 
 hero:
   name: "Epusdt"
-  text: "私有化加密收款"
-  tagline: Easy Payment Usdt — Go 語言驅動的 Tron、Solana、Ethereum 多網路支付中介軟體，私有部署，零手續費，快速接入。
+  text: "私有化多鏈加密收款"
+  tagline: Go 驅動的多鏈支付閘道，提供 GMPay API、EPay 相容跳轉流程與託管收銀臺。私有部署，資金直接進錢包。
   image:
     src: /logo.png
     alt: Epusdt
@@ -18,32 +18,29 @@ hero:
       text: Docker 部署
       link: /zh/guide/installation/docker
     - theme: alt
+      text: API 文件
+      link: /zh/api/reference
+    - theme: alt
       text: English
       link: /
-    - theme: alt
-      text: GitHub →
-      link: https://github.com/GMwalletApp/epusdt
 
 features:
   - icon: 🐳
-    title: Docker 快速部署
-    details: 一條命令拉取啟動，無需提前建立配置檔案——內建安裝嚮導引導首次配置，瀏覽器完成所有設定。
-  - icon: 🔒
-    title: 私有化部署
-    details: 自己的伺服器，自己的錢包，完全掌控。無需擔心資金被篡改或吞單。
-  - icon: ⚡
-    title: 高效能非同步
-    details: 非同步佇列 + 多網路錢包監聽，優雅處理高併發訂單。
-  - icon: 🤖
-    title: Telegram 機器人
-    details: 即時接收包含網路資訊的支付通知，並可透過 Telegram 管理錢包地址。
-  - icon: 🔌
-    title: 簡單 HTTP API
-    details: REST API 用於建立交易和接收非同步支付回撥，任何系統均可接入。
+    title: 安裝嚮導優先
+    details: 首次啟動直接進瀏覽器安裝嚮導，通常不需要先手動編寫配置檔。
+  - icon: 🔑
+    title: 統一商戶憑證
+    details: 每個商戶使用後臺建立的 PID + secret_key，同一組憑證可同時用於 GMPay 與 EPay 流程。
   - icon: 🌐
-    title: 跨平臺支援
-    details: 單個 Go 二進位制，支援 x86/ARM 的 Windows/Linux。
-  - icon: 🧩
-    title: 外掛支援
-    details: 已適配獨角數卡，並提供開放 SDK 供自定義整合。
+    title: 多鏈收款
+    details: 當前原始碼以後臺配置的 chains、chain_tokens、wallet_address 作為可用鏈與代幣來源。
+  - icon: 🧾
+    title: 收銀臺 + 回撥
+    details: 建立訂單後可跳轉內建收銀臺，鏈上確認後由系統發送已簽名的非同步回撥。
+  - icon: 🔁
+    title: EPay 相容跳轉
+    details: 提供 `/payments/epay/v1/order/create-transaction/submit.php` 的 GET / POST 相容入口。
+  - icon: 🤖
+    title: 管理後臺
+    details: 透過內建後臺管理 API Keys、通知通道、鏈、代幣、錢包地址與 EPay 預設值。
 ---

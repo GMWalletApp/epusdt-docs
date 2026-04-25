@@ -81,6 +81,6 @@ docker run -d \
 
 ## 注意事項
 
-- 安裝完成後，所有配置均可在管理後臺調整
-- `api_auth_token` 是 API 簽名金鑰，請妥善保管，勿洩露
+- 安裝完成後，商戶憑證與執行設定都可在管理後臺調整
+- 新接入請使用管理後臺建立的商戶 `pid` + `secret_key`
 - 升級映象：`docker pull gmwallet/epusdt:latest && docker compose up -d`

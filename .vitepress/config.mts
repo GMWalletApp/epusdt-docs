@@ -20,7 +20,7 @@ export default defineConfig({
 
   title: "Epusdt",
   description:
-    "Epusdt (Easy Payment Usdt) — a self-hosted USDT (TRC20) payment middleware written in Go. Private deployment, HTTP API, Telegram notifications.",
+    "Epusdt (Easy Payment Usdt) — a self-hosted multi-chain crypto payment gateway written in Go. GMPay API, EPay-compatible redirect checkout, hosted cashier, and Telegram notifications.",
 
   head: [
     ["link", { rel: "icon", href: "/logo.png" }],
@@ -60,9 +60,9 @@ export default defineConfig({
             {
               text: "Integration",
               items: [
-                { text: "Epusdt (Legacy)", link: "/guide/integration/epusdt" },
                 { text: "GMPay (Recommended)", link: "/guide/integration/gmpay" },
                 { text: "EPay (Redirect)", link: "/guide/integration/epay" },
+                { text: "Legacy Migration", link: "/guide/integration/epusdt" },
               ],
             },
           ],
@@ -113,9 +113,9 @@ export default defineConfig({
             {
               text: "接入教學",
               items: [
-                { text: "Epusdt 接入（舊版相容）", link: "/zh/guide/integration/epusdt" },
                 { text: "GMPay 接入（推薦）", link: "/zh/guide/integration/gmpay" },
                 { text: "EPay 接入（跳轉式）", link: "/zh/guide/integration/epay" },
+                { text: "舊版遷移說明", link: "/zh/guide/integration/epusdt" },
               ],
             },
           ],

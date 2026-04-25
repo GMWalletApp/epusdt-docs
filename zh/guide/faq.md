@@ -1,103 +1,15 @@
 # 常見問題
 
-這裡整理了 Epusdt 在部署和接入過程中經常遇到的一些問題。
+## 三種路由該怎麼選？
 
-如果這裡沒有覆蓋你的問題，歡迎去 GitHub 提交 Issue：
+- **新接入一律優先 GMPay**。
+- **只有當上游系統要求 EPay 風格跳轉收銀臺時** 才使用 EPay 相容入口。
+- **不要** 再以 `/payments/epusdt/v1/order/create-transaction` 為新接入基礎，因為當前原始碼已不再註冊它。
 
-- GitHub Issues：[https://github.com/GMWalletApp/epusdt/issues](https://github.com/GMWalletApp/epusdt/issues)
+## `pid` 和簽名金鑰從哪裡來？
 
-提問時建議儘量附上部署方式、使用網路、報錯資訊、日誌內容和復現步驟，這樣會更容易排查。
+來自管理後臺建立的 API key。每個商戶都有自己的 `pid` 與對應 `secret_key`。
 
-## 應該選哪種部署方式？
+## 為什麼不同環境看到的 supported-assets 不一樣？
 
-大多數情況下，建議優先使用 **Docker 部署**，最容易復現、升級和遷移。
-
-如果你本來就在用 aaPanel 管理站點，可以選擇 **aaPanel 部署**。
-
-如果你希望自己完全控制二進位制、程序守護和反向代理，可以選擇 **手動部署**。
-
-## `tron_grid_api_key` 是必填嗎？
-
-不是，它是 **選填**。
-
-如果你主要使用 TRON 網路，建議配置 TRON Grid API Key，這樣通常可以提高請求穩定性。
-
-申請地址：
-
-- [https://www.trongrid.io/](https://www.trongrid.io/)
-
-## 為什麼回撥收不到？
-
-常見原因包括：
-
-- 回撥地址沒有公網可訪問性
-- 你的伺服器被防火牆或反向代理規則攔截
-- 業務伺服器沒有返回預期的成功響應
-- 回撥介面響應太慢，或者返回了 4xx / 5xx
-
-建議同時檢查 Epusdt 日誌和你的業務系統日誌。
-
-## 回撥成功後應該返回什麼？
-
-按照當前 Epusdt 的實現，業務回撥介面在成功處理後應返回：
-
-```text
-ok
-```
-
-如果沒有返回 `ok`，Epusdt 可能會認為回撥失敗並繼續重試。
-
-## 為什麼訂單建立成功了，但支付一直匹配不上？
-
-建議優先檢查這些專案：
-
-- 傳入的 `network` 和 `token` 是否正確
-- 被監聽的錢包地址是否已啟用
-- 實際轉賬金額是否和鎖定訂單金額一致
-- 鏈上監聽配置是否可用、是否健康
-- 伺服器時間和執行環境是否正常
-
-如果你使用的是 Solana 或 Ethereum，也要確認相關 RPC 或 WS 配置可用。
-
-## 可以掛在 Nginx 後面或透過 HTTPS 部署嗎？
-
-可以。
-
-生產環境建議把 Epusdt 放在 **Nginx** 或其他反向代理之後，並透過 **HTTPS** 對外提供服務。
-
-同時確保你的公網訪問域名和配置裡的 `app_uri` 保持一致。
-
-## Epusdt、GMPay、EPay 三種介面該用哪個？
-
-如果你要使用當前推薦的原生多網路接入方式，優先使用 **GMPay**。
-
-如果你需要相容舊版接入方式或歷史外掛，使用 **Epusdt** 路由。
-
-如果你需要類似 EPay 的跳轉式收銀臺流程，使用 **EPay** 路由。
-
-## 遇到問題時，日誌應該怎麼排查？
-
-排查問題時，建議先看 **Epusdt 應用日誌**，再結合你的 **業務系統日誌**、**Nginx 日誌**、**回撥介面日誌** 一起判斷。
-
-重點可以先看這些內容：
-
-- 啟動時是否有配置載入錯誤
-- 資料庫連線是否成功
-- 錢包監聽是否正常啟動
-- 建立訂單時是否有請求報錯
-- 回撥階段是否有重試、超時或驗籤失敗
-- 鏈上監聽是否報錯，或者 RPC / WS 是否不可用
-
-如果你是 Docker 部署，通常可以直接檢視容器日誌。
-
-如果你是手動部署或 aaPanel 部署，建議檢視 Supervisor、systemd 或應用輸出日誌。
-
-提交 Issue 時，建議附上關鍵報錯片段，並說明錯誤出現的時間點、操作步驟和部署方式。這樣會更容易定位問題。
-
-## 遇到問題去哪裡反饋？
-
-如果你發現文件問題、部署問題、接入 Bug，或者有功能建議，都可以去 GitHub 提交 Issue：
-
-- GitHub Issues：[https://github.com/GMWalletApp/epusdt/issues](https://github.com/GMWalletApp/epusdt/issues)
-
-提交前建議先搜尋一下現有 Issue，看看是否已有相同問題。
+因為 `/payments/gmpay/v1/supported-assets` 是根據你自己後臺裡啟用的 chains、chain_tokens，以及可用 wallet_address 即時計算的。

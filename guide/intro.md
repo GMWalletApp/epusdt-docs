@@ -1,58 +1,46 @@
 # Introduction
 
-## Epusdt (Easy Payment Usdt)
+## What current source actually provides
 
-`Epusdt` is a self-hosted **crypto payment middleware** written in **Go**.
+`Epusdt` is a self-hosted **crypto payment gateway** written in **Go**.
 
-Current source supports payment collection on **Tron**, **Solana**, and **Ethereum** networks, with hosted checkout, async callbacks, and wallet management APIs. It works with **MySQL/SQLite/PostgreSQL** for order data plus a runtime SQLite database for temporary lock state.
+Current source exposes two public order-entry flows:
 
-With private deployment, there are **no transaction fees** and no third-party custody — USDT goes directly to your wallet. 💰
+- **GMPay** — `POST /payments/gmpay/v1/order/create-transaction`
+- **EPay Compatible** — `GET/POST /payments/epay/v1/order/create-transaction/submit.php`
 
-## Features
+It also exposes:
 
-- ✅ **Private deployment** — no risk of wallet hijacking or missed orders
-- ✅ **Cross-platform Go binary** — x86 and ARM, Windows and Linux
-- ✅ **Multi-wallet monitoring** — Tron, Solana, and Ethereum payment detection
-- ✅ **Multi-wallet management API** — add, list, enable, disable, and delete addresses
-- ✅ **Async queue** — callback processing and background tasks
-- ✅ **Hosted checkout** — redirect users to a built-in cashier page
-- ✅ **HTTP API** — integrate with any system
-- ✅ **Telegram bot** — instant payment notifications with network info
+- Hosted cashier pages under `/pay/*`
+- Network switching for hosted checkout: `POST /pay/switch-network`
+- Supported asset discovery: `GET /payments/gmpay/v1/supported-assets`
+- Admin API under `/admin/api/v1/*` for API keys, chains, chain tokens, wallet addresses, notification channels, and settings
 
-## Project Structure
+## Credential model
 
-```
-Epusdt
-├── plugins   # Integrated plugins (e.g. Dujiaoka)
-├── src       # Core source code
-├── sdk       # Integration SDK
-├── sql       # Database SQL files
-└── wiki      # Documentation
-```
+The live gateway no longer relies on a single global merchant key in the payment API docs.
 
-## How It Works
+Instead, each merchant uses an **API key row** created in the admin panel:
 
-Epusdt monitors supported networks for incoming transfers on configured wallet addresses. It uses **amount matching** and **time-locking** to attribute payments to orders.
+- `pid`
+- `secret_key`
+- optional `ip_whitelist`
+- optional default `notify_url`
 
-```
-Flow:
-1. Customer creates an order and gets a token amount plus a wallet address on the selected network
-2. Server locks wallet address_1 + network + amount for the order window
-3. If that amount is already taken on that wallet, source increments the amount and retries (up to 100 times)
-4. Background tasks monitor supported chain inflows and match them against locked routes
-5. When a match is confirmed, payment succeeds and Epusdt triggers the callback flow
-6. Hosted checkout can also switch token/network, creating child orders when needed
-```
+Incoming GMPay and EPay requests are both identified by `pid` and signed with the matching row's `secret_key`.
 
-## Community
+## Supported chains and tokens
 
-- Telegram Channel: [https://t.me/epusdt](https://t.me/epusdt)
-- Telegram Group: [https://t.me/epusdt_group](https://t.me/epusdt_group)
-- GitHub: [https://github.com/GMwalletApp/epusdt](https://github.com/GMwalletApp/epusdt)
-- GitHub Stars: [![GitHub Stars](https://img.shields.io/github/stars/GMwalletApp/epusdt?style=flat&logo=github)](https://github.com/GMwalletApp/epusdt/stargazers)
+Current source does **not** hardcode one public list in the docs layer.
 
-## License
+The `/payments/gmpay/v1/supported-assets` response is computed from live admin data:
 
-[GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+- enabled `chains`
+- enabled `chain_tokens`
+- available `wallet_address`
 
-> ⚠️ This project is for educational and technical purposes only. Users are responsible for compliance with local laws and regulations. Crypto assets carry high risk; GMwallet makes no guarantees regarding asset safety or outcomes.
+So the real supported networks/tokens depend on what the operator enabled in the admin console.
+
+## First-time setup
+
+If no config file is present on first boot, Epusdt launches a built-in **install wizard**. Complete database, domain, and initial settings in the browser, then continue managing runtime data from the admin UI/API.
