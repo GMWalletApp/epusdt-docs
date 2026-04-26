@@ -15,6 +15,7 @@
 - 收銀臺切換網路：`POST /pay/switch-network`
 - 可用鏈與代幣查詢：`GET /payments/gmpay/v1/supported-assets`
 - `/admin/api/v1/*` 管理 API，用於管理 API Keys、鏈、代幣、錢包地址、通知通道與設定
+- 後臺匯率設定支援二選一：配置匯率 API 位址，或直接填寫強制 USDT 匯率；如果只使用強制匯率，API 位址可以留空
 
 ## 商戶憑證模型
 

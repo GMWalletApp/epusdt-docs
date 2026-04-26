@@ -15,6 +15,7 @@ It also exposes:
 - Network switching for hosted checkout: `POST /pay/switch-network`
 - Supported asset discovery: `GET /payments/gmpay/v1/supported-assets`
 - Admin API under `/admin/api/v1/*` for API keys, chains, chain tokens, wallet addresses, notification channels, and settings
+- Admin rate settings that can use either an exchange-rate API URL or a forced USDT rate; if you rely only on the forced rate, the API URL can be left empty
 
 ## Credential model
 
