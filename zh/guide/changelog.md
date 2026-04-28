@@ -2,27 +2,36 @@
 
 本文基於 `GMwalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
 
-## 未釋出（目前 `master`，位於 `v0.9.3` 之後）
+## v0.9.4
+
+- 釋出標籤：`v0.9.4`
+- 釋出時間：`2026-04-28T16:37:20Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v0.9.3...v0.9.4`
 
 ### 使用者可見變更
 
 - TRON 支付掃鏈目前已回到按區塊監聽的路徑，先前那次對新版 TRON 流程的回退不再是當前上游有效狀態。
 - 後續支付處理修正也調整了收款成功後的訂單通知行為。
+- 託管收銀臺入口現在會先跳轉到 SPA 的 cashier 流程，而不是直接由 `/pay/checkout-counter/:trade_id` 輸出後端渲染 HTML 模板。
 
 ### 部署與配置變更
 
 - 啟動時會自動把執行檔 / 映象內建、但目標 `static_path` 缺失的收銀臺靜態檔補拷過去。
 - 這正好對應 Docker 常見情況：如果只掛 `./data:/data`，先前可能出現 `/data/static` 缺少託管收銀臺檔案，現在會在啟動時自動補齊。
+- 舊的內嵌 `static/` 收銀臺資產已退出主要執行路徑，改由 SPA 版 `www/` 前端承接。
 
 ### 介面變更
 
-- 這幾個 `v0.9.3` 之後的提交沒有新增公共 HTTP 路由。
+- `GET /pay/checkout-counter/:trade_id` 現在作為 cashier SPA 的跳轉入口。
+- 目前原始碼新增 `GET /pay/checkout-counter-resp/:trade_id`，作為新 SPA 收銀臺使用的 JSON 資料介面。
+- 本次釋出沒有引入新的商戶簽名欄位或回撥契約變更。
 
 ### 依據
 
-- 提交 `9e885d8`、`de9c45a`、`96ea748`、`51a2acc`、`d17d212`、`785a162`
+- GitHub Release `v0.9.4`
+- 對比差異 `v0.9.3...v0.9.4`
+- 提交 `9e885d8`、`de9c45a`、`96ea748`、`51a2acc`、`d17d212`、`9c533a7`、`ff68279`
 - 上游 issue `#55`（Docker 部署缺少收銀臺檔案）
-- 對比差異 `67263da...785a162`
 
 ## v0.9.3
 

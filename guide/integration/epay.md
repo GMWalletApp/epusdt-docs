@@ -53,6 +53,12 @@ On success, the endpoint redirects the browser to:
 /pay/checkout-counter/{trade_id}
 ```
 
+In current source, that path is now the redirect entry for the hosted cashier SPA. The checkout page data is served through:
+
+```text
+/pay/checkout-counter-resp/{trade_id}
+```
+
 ## Callback verification
 
 When the created order carries `payment_type = Epay`, the worker later calls your `notify_url` with EPay-style query parameters and signs them with the **same merchant `secret_key`**.

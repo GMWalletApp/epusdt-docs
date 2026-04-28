@@ -78,6 +78,8 @@ Current source verifies `sign`, checks the matched API key whitelist, then inter
 
 On success the endpoint redirects to `/pay/checkout-counter/{trade_id}`.
 
+In current source, that route now acts as a redirect entry and forwards the browser into the SPA cashier flow. The checkout data itself is fetched from `/pay/checkout-counter-resp/{trade_id}`.
+
 ## 4. Callback behavior
 
 ### Standard callback (GMPay / normal JSON flow)

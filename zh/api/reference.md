@@ -8,7 +8,8 @@
 | `GET` | `/payments/gmpay/v1/supported-assets` | 查詢已啟用且存在可用錢包的鏈 / 代幣組合 |
 | `GET` / `POST` | `/payments/epay/v1/order/create-transaction/submit.php` | EPay 相容跳轉式建立訂單入口 |
 | `POST` | `/pay/switch-network` | 在託管收銀臺切換支付網路 |
-| `GET` | `/pay/checkout-counter/:trade_id` | 託管收銀臺頁面 |
+| `GET` | `/pay/checkout-counter/:trade_id` | 跳轉入口，會把瀏覽器導向託管收銀臺 SPA |
+| `GET` | `/pay/checkout-counter-resp/:trade_id` | 託管收銀臺 SPA 使用的 JSON 資料介面 |
 | `GET` | `/pay/check-status/:trade_id` | 查詢收銀臺訂單狀態 |
 
 ## 管理 API

@@ -55,6 +55,14 @@ POST /payments/epay/v1/order/create-transaction/submit.php
 /pay/checkout-counter/{trade_id}
 ```
 
+在目前原始碼中，這條路徑現在作為託管收銀臺 SPA 的跳轉入口；收銀臺頁面資料則由：
+
+```text
+/pay/checkout-counter-resp/{trade_id}
+```
+
+提供。
+
 ## 回撥驗證
 
 當訂單 `payment_type = Epay` 時，worker 後續會以 EPay 風格 query 參數回撥你的 `notify_url`，並且使用**同一商戶的 `secret_key`** 來計算簽名。

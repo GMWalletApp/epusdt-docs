@@ -78,6 +78,8 @@ POST /payments/epay/v1/order/create-transaction/submit.php
 
 成功後會 302 跳轉到 `/pay/checkout-counter/{trade_id}`。
 
+在目前原始碼中，這條路徑現在是託管收銀臺 SPA 的跳轉入口；真正的收銀臺資料會從 `/pay/checkout-counter-resp/{trade_id}` 取得。
+
 ## 4. 回撥行為
 
 ### 標準回撥（GMPay / 一般 JSON 流程）

@@ -8,7 +8,8 @@
 | `GET` | `/payments/gmpay/v1/supported-assets` | List enabled network/token combinations with available wallets |
 | `GET` / `POST` | `/payments/epay/v1/order/create-transaction/submit.php` | EPay-compatible redirect create-order entry |
 | `POST` | `/pay/switch-network` | Switch token/network from hosted checkout |
-| `GET` | `/pay/checkout-counter/:trade_id` | Hosted cashier page |
+| `GET` | `/pay/checkout-counter/:trade_id` | Redirect entry that sends the browser into the hosted cashier SPA |
+| `GET` | `/pay/checkout-counter-resp/:trade_id` | JSON payload used by the hosted cashier SPA |
 | `GET` | `/pay/check-status/:trade_id` | Poll hosted checkout status |
 
 ## Admin API surface
