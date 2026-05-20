@@ -8,6 +8,40 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - Supplementary source: tag compare diffs and merged commit messages
 - This page avoids inventing features that are not visible in release or code history
 
+
+## v1.0.0
+
+- Release tag: `v1.0.0`
+- Published at: `2026-05-20T16:09:00Z`
+- Official release note: `feat: verify manual mark-paid payments — Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v0.9.7...v1.0.0`
+
+### User-visible changes
+
+- Admin manual mark-paid now performs on-chain verification before marking an order as paid — the transaction hash is validated against the chain before the status change is accepted.
+- Verification checks recipient address, token contract address, payment amount, confirmation count, and transaction timestamp to prevent false positives.
+- Duplicate transaction hashes are rejected — the same on-chain tx cannot be used to mark multiple orders as paid.
+- Orders that were not created as on-chain orders are excluded from the manual verification path (non-on-chain order types are rejected).
+- `supported_assets` response now includes a `display_name` field alongside the existing `network` key, making it easier for frontends to show human-readable chain names without changing the underlying network identifier.
+- BSC network key was renamed from `bsc` to `binance` in the supported assets list.
+
+### Deployment and configuration changes
+
+- No new environment variables are required.
+- No changes to Docker image configuration or docker-compose setup.
+
+### API changes
+
+- Admin mark-paid endpoint now requires a valid `tx_hash` parameter and performs on-chain validation before accepting the request; invalid or duplicate hashes result in an error response.
+- `GET /payments/gmpay/v1/config` supported assets entries now include `display_name`.
+- BSC network value in supported assets changed from `bsc` to `binance`.
+
+### Evidence used
+
+- GitHub release `v1.0.0`
+- PR `#70`: feat: verify manual mark-paid payments
+- Commit: `049a15c`
+- Files: `src/controller/admin/order_controller.go`, `src/model/service/manual_payment_verify.go`, `src/model/response/support_response.go`, `src/controller/comm/supported_asset_controller.go`
+
 ## v0.9.7
 
 - Release tag: `v0.9.7`
@@ -384,4 +418,3 @@ For future releases, the most useful release format is:
 3. API or schema changes
 4. Upgrade notes or breaking changes
 
-That structure maps cleanly to both docs readers and integrators.
