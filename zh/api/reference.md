@@ -5,7 +5,7 @@
 | 方法 | 路由 | 說明 |
 | --- | --- | --- |
 | `POST` | `/payments/gmpay/v1/order/create-transaction` | 推薦的建立訂單 API |
-| `GET` | `/payments/gmpay/v1/config` | 返回公開支付配置，包含 `supported_assets`、站點品牌資訊、EPay 預設值與 OkPay 前端配置 |
+| `GET` | `/payments/gmpay/v1/config` | 返回公開支付配置，包含 `supported_assets`、站點品牌資訊、EPay 預設值、OkPay 前端配置及伺服器 `version` |
 | `GET` / `POST` | `/payments/epay/v1/order/create-transaction/submit.php` | EPay 相容跳轉式建立訂單入口 |
 | `POST` | `/payments/okpay/v1/notify` | OkPay 伺服器端回撥入口 |
 | `POST` | `/pay/switch-network` | 在託管收銀臺切換支付網路；可接受鏈上網路值與 `okpay` |

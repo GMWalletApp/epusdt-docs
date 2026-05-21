@@ -2,6 +2,67 @@
 
 本文基於 `GMwalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
 
+
+## v1.0.1
+
+- 釋出標簽：`v1.0.1`
+- 釋出時間：`2026-05-21T11:40:39Z`
+- 官方釋出說明：`feat: expose build version in public config` (PR #72)
+
+### 使用者可見變更
+
+- `GET /payments/gmpay/v1/config` 回應新增 `version` 欄位，返回當前伺服器的建構版本（例如 `"version": "v1.0.1"`）。
+- 設定記錄在 upsert 時若已被軟刪除，現在會自動恢復，確保配置修改能正確生效。
+
+### 部署與配置變更
+
+- Docker 映像發布現在僅限 `v*` 格式的 tag 觸發，非版本 tag 的建構不再發布到容器倉庫。
+- 建構版本在編譯時透過 Docker 和 GoReleaser 注入，API 回應中的版本號與釋出 tag 一致。
+
+### API 變更
+
+- `GET /payments/gmpay/v1/config` 回應新增 `version` 字串欄位，反映伺服器建構版本。
+
+### 參考依據
+
+- GitHub Release `v1.0.1`
+- PR `#72`：feat: expose build version in public config
+- Commits：`85b81e66`、`09642d4c`、`c19a7e5f`
+- 相關檔案：`src/model/response/support_response.go`、`src/model/data/settings_data.go`、`.github/workflows/docker-alpine.yml`
+
+## v1.0.0
+
+
+- 釋出標簽：`v1.0.0`
+- 釋出時間：`2026-05-20T16:09:00Z`
+- 官方釋出說明：`feat: verify manual mark-paid payments` (PR #70)
+
+### 使用者可見變更
+
+- 管理員手動標記訂單為已付款時，現在需要先進行鏈上驗證——交易哈希會在接受狀態變更前與鏈上數據核對。
+- 驗證內容包括：收款地址、代幣合約地址、付款金額、確認數量及交易時間戳，防止誤判。
+- 同一交易哈希不可被重複使用，不能用於標記多個訂單為已付款。
+- 非鏈上訂單類型不進入手動驗證流程，會直接拒絕。
+- `supported_assets` 回應新增 `display_name` 欄位，前端可直接顯示可讀的鏈名稱。
+- 支援資產列表中 BSC 網絡識別符從 `bsc` 改名為 `binance`。
+
+### 部署與配置變更
+
+- 本次釋出未引入新的環境變數。
+- Docker 映像及 docker-compose 配置無需變更。
+
+### API 變更
+
+- 管理員標記已付款端點現在需要有效的 `tx_hash` 參數並進行鏈上驗證，無效或重複哈希將返回錯誤。
+- `GET /payments/gmpay/v1/config` 的支援資產條目新增 `display_name` 欄位。
+- 支援資產中 BSC 網絡値從 `bsc` 改為 `binance`。
+
+### 依據來源
+
+- GitHub 釋出 `v1.0.0`，Pull Request [#70](https://github.com/GMWalletApp/epusdt/pull/70)
+- 提交記錄 `049a15c`
+- `src/controller/admin/order_controller.go`、`src/model/service/manual_payment_verify.go`
+
 ## v0.9.7
 
 - 釋出標籤：`v0.9.7`

@@ -5,7 +5,7 @@
 | Method | Route | Description |
 | --- | --- | --- |
 | `POST` | `/payments/gmpay/v1/order/create-transaction` | Recommended order creation API |
-| `GET` | `/payments/gmpay/v1/config` | Return public payment config including `supported_assets`, site branding, EPay defaults, and OkPay frontend config |
+| `GET` | `/payments/gmpay/v1/config` | Return public payment config including `supported_assets`, site branding, EPay defaults, OkPay frontend config, and server `version` |
 | `GET` / `POST` | `/payments/epay/v1/order/create-transaction/submit.php` | EPay-compatible redirect create-order entry |
 | `POST` | `/payments/okpay/v1/notify` | OkPay server-side callback entry |
 | `POST` | `/pay/switch-network` | Switch token/network from hosted checkout; accepts on-chain networks and `okpay` |

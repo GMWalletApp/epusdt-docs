@@ -9,6 +9,33 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - This page avoids inventing features that are not visible in release or code history
 
 
+## v1.0.1
+
+- Release tag: `v1.0.1`
+- Published at: `2026-05-21T11:40:39Z`
+- Official release note: `feat: expose build version in public config — Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.0...v1.0.1`
+
+### User-visible changes
+
+- `GET /payments/gmpay/v1/config` response now includes a `version` field exposing the running server build version (e.g. `"version": "v1.0.1"`).
+- Soft-deleted settings records are now restored on upsert instead of being silently left deleted, ensuring configuration changes take effect correctly after a prior delete.
+
+### Deployment and configuration changes
+
+- Docker image publishing is now restricted to `v*` tag pushes; non-version-tagged builds no longer publish to the registry.
+- Build version is injected at compile time via Docker and GoReleaser builds, so the version reported in the API response matches the release tag.
+
+### API changes
+
+- `GET /payments/gmpay/v1/config` response now includes `version` (string), reflecting the server build version.
+
+### Evidence used
+
+- GitHub release `v1.0.1`
+- PR `#72`: feat: expose build version in public config
+- Commits: `85b81e66`, `09642d4c`, `c19a7e5f`
+- Files: `src/model/response/support_response.go`, `src/controller/comm/supported_asset_controller.go`, `src/model/data/settings_data.go`, `.github/workflows/docker-alpine.yml`, `src/.goreleaser.yaml`
+
 ## v1.0.0
 
 - Release tag: `v1.0.0`
