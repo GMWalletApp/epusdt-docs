@@ -3,6 +3,38 @@
 本文基於 `GMwalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
 
 
+## v1.0.2
+
+- 釋出標籤：`v1.0.2`
+- 釋出時間：`2026-05-22T15:16:34Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.1...v1.0.2`
+
+### 使用者可見變更
+
+- 管理員 API 現在同時支援 `Authorization: Bearer <token>` 及不帶 `Bearer ` 前綴的裸 JWT 格式，舊版客戶端直接傳送 token 不再遇到認證拒絕。
+- EVM ERC20 轉帳揃描現在會跳過訂單建立之前到達的轉帳記錄，避免歷史鏈上事件被誤判為有效付款。
+- OkPay 付款成功通知現在能正確傳送，不再靜默丟失。
+- Solana 簽名處理在遇到暫態錯誤時現在會重試——只有訂單匹配與付款處理全部成功後，簽名才標記為已處理，避免臨時故障導致付款靜默丟失。
+- 匯率設定新增多幣種強制匯率列表，允許運營者同時為多種幣種設置固定匯率，不再只能設置單一 USDT 匯率。
+
+### 部署與配置變更
+
+- 本次釋出未引入新的環境變數。
+- 若之前使用單一強制 USDT 匯率，升級後可在管理後台匯率設定中更新為多幣種格式。
+
+### API 變更
+
+- 管理員 JWT 中介層現在同時接受 `Authorization: Bearer <token>` 和 `Authorization: <token>`（裸 token）兩種格式。
+- 未新增或刪除任何公開路由。
+
+### 依據來源
+
+- GitHub Release `v1.0.2`
+- PR `#80`（dev 合並）
+- Commits：`f4ef71b3`、`4b4701f5`、`449d22a4`、`dec1b97b`、`8a486116`、`2a00a033`
+- 涉及檔案：admin JWT 中介層、EVM ERC20 區塊監聽器、OkPay 通知處理、Solana 簽名重試逶輯、匯率設定模型
+
+
 ## v1.0.1
 
 - 釋出標簽：`v1.0.1`

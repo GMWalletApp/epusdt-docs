@@ -9,6 +9,38 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - This page avoids inventing features that are not visible in release or code history
 
 
+## v1.0.2
+
+- Release tag: `v1.0.2`
+- Published at: `2026-05-22T15:16:34Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.1...v1.0.2`
+
+### User-visible changes
+
+- Admin API requests now accept a bare JWT token in the `Authorization` header (without the `Bearer ` prefix), in addition to the standard `Bearer <token>` form — clients that send a raw token no longer receive authentication errors.
+- EVM ERC20 transfer scanning now skips transfers that arrived before the order was created, eliminating false-positive payment matches from stale blockchain events.
+- OkPay payment success notifications are now sent correctly after an order is fulfilled via the OkPay path.
+- Solana signature processing now retries on transient errors — a signature is only marked as processed once order matching and payment handling fully succeed, so temporary failures no longer silently drop payments.
+- Rate settings now support a multi-currency forced rate list, allowing operators to pin exchange rates for multiple currencies simultaneously instead of a single global rate.
+
+### Deployment and configuration changes
+
+- No new environment variables are required.
+- The multi-currency forced rate feature may require updating rate configuration in the admin settings panel if you previously used a single forced USDT rate.
+
+### API changes
+
+- Admin JWT middleware now accepts both `Authorization: Bearer <token>` and `Authorization: <token>` (bare token) request forms.
+- No new public routes were added or removed.
+
+### Evidence used
+
+- GitHub release `v1.0.2`
+- PR `#80` (dev merge)
+- Commits: `f4ef71b3`, `4b4701f5`, `449d22a4`, `dec1b97b`, `8a486116`, `2a00a033`
+- Changes: admin JWT middleware, EVM ERC20 block listener, OkPay notification handler, Solana signature retry logic, rate settings model
+
+
 ## v1.0.1
 
 - Release tag: `v1.0.1`
