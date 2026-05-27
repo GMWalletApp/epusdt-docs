@@ -143,7 +143,7 @@ JSON body:
 
 ```json
 {
-  "trade_id": "T2026041612345678",
+  "trade_id": "3nQ9pL2xV7sK1mR8cT4yB_aZ",
   "token": "USDT",
   "network": "ethereum"
 }

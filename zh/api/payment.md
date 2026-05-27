@@ -181,7 +181,7 @@ function epaySign(array $params, string $secretKey): string
   "status_code": 200,
   "message": "success",
   "data": {
-    "trade_id": "20260523171652123456001",
+    "trade_id": "3nQ9pL2xV7sK1mR8cT4yB_aZ",
     "order_id": "ORD202605230001",
     "amount": 100,
     "currency": "CNY",
@@ -286,7 +286,7 @@ function epaySign(array $params, string $secretKey): string
   "status_code": 200,
   "message": "success",
   "data": {
-    "trade_id": "20260523171652123456001",
+    "trade_id": "3nQ9pL2xV7sK1mR8cT4yB_aZ",
     "amount": 100,
     "actual_amount": 14.29,
     "token": "USDT",
@@ -316,7 +316,7 @@ function epaySign(array $params, string $secretKey): string
   "status_code": 200,
   "message": "success",
   "data": {
-    "trade_id": "20260523171652123456001",
+    "trade_id": "3nQ9pL2xV7sK1mR8cT4yB_aZ",
     "status": 1
   },
   "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
@@ -341,7 +341,7 @@ function epaySign(array $params, string $secretKey): string
 
 ```json
 {
-  "trade_id": "20260523171652123456001",
+  "trade_id": "3nQ9pL2xV7sK1mR8cT4yB_aZ",
   "token": "USDT",
   "network": "solana"
 }
@@ -351,7 +351,7 @@ function epaySign(array $params, string $secretKey): string
 
 ```json
 {
-  "trade_id": "20260523171652123456001",
+  "trade_id": "3nQ9pL2xV7sK1mR8cT4yB_aZ",
   "token": "USDT",
   "network": "okpay"
 }
@@ -433,7 +433,7 @@ EPay 介面會使用後臺配置的預設 `token`、`currency`、`network` 建�
 ```json
 {
   "pid": "1000",
-  "trade_id": "20260523171652123456001",
+  "trade_id": "3nQ9pL2xV7sK1mR8cT4yB_aZ",
   "order_id": "ORD202605230001",
   "amount": 100,
   "actual_amount": 14.29,
