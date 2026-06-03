@@ -1,5 +1,10 @@
 # Introduction
 
+## Security Audit
+
+Epusdt has completed a third-party security audit.  
+[View Security Audit Report](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
+
 ## What current source actually provides
 
 `Epusdt` is a self-hosted **crypto payment gateway** written in **Go**.
@@ -49,3 +54,26 @@ So the real supported networks/tokens depend on what the operator enabled in the
 ## First-time setup
 
 If no config file is present on first boot, Epusdt launches a built-in **install wizard**. Complete database, domain, and initial settings in the browser, then continue managing runtime data from the admin UI/API.
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="25%">
+      <img src="/screenshots/web2.png" alt="Dashboard Overview" height="200"><br>
+      <sub>Dashboard Overview</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="/screenshots/web1.png" alt="Admin Panel" height="200"><br>
+      <sub>Admin Panel</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="/screenshots/pay1.jpeg" alt="Checkout Page" height="200"><br>
+      <sub>Checkout Page</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="/screenshots/pay2.jpeg" alt="Payment Page" height="200"><br>
+      <sub>Payment Page</sub>
+    </td>
+  </tr>
+</table>

@@ -1,5 +1,10 @@
 # 專案簡介
 
+## 安全審計
+
+Epusdt 已完成第三方安全審計。  
+[查看安全審計報告](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
+
 ## 目前原始碼實際提供什麼
 
 `Epusdt` 是一個由 **Go** 編寫的私有化 **加密支付閘道**。
@@ -7,7 +12,7 @@
 當前原始碼對外提供兩條建立訂單主流程：
 
 - **GMPay**：`POST /payments/gmpay/v1/order/create-transaction`
-- **EPay 相容**：`GET /POST /payments/epay/v1/order/create-transaction/submit.php`
+- **EPay 相容**：`GET/POST /payments/epay/v1/order/create-transaction/submit.php`
 
 另外還提供：
 
@@ -49,3 +54,26 @@ GMPay 與 EPay 入站請求都會先根據 `pid` 找到對應 API key，再使�
 ## 首次安裝
 
 若首次啟動時沒有配置檔，Epusdt 會直接進入內建 **安裝嚮導**。先在瀏覽器完成資料庫、域名與初始化設定，之後再透過管理後臺或管理 API 維護執行資料。
+
+## 程式截圖
+
+<table>
+  <tr>
+    <td align="center" valign="top" width="25%">
+      <img src="/screenshots/web2.png" alt="管理面板首頁" height="200"><br>
+      <sub>管理面板首頁</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="/screenshots/web1.png" alt="管理面板" height="200"><br>
+      <sub>管理面板</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="/screenshots/pay1.jpeg" alt="收銀臺" height="200"><br>
+      <sub>收銀臺</sub>
+    </td>
+    <td align="center" valign="top" width="25%">
+      <img src="/screenshots/pay2.jpeg" alt="支付頁面" height="200"><br>
+      <sub>支付頁面</sub>
+    </td>
+  </tr>
+</table>
