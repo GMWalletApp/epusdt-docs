@@ -22,6 +22,34 @@ It also exposes:
 - Admin API under `/admin/api/v1/*` for API keys, chains, chain tokens, wallet addresses, notification channels, and settings
 - Admin rate settings that can use either an exchange-rate API URL or a forced USDT rate; if you rely only on the forced rate, the API URL can be left empty
 
+## Security Audit
+
+Epusdt has completed third-party security audit.
+[View Security Audit Report](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" valign="top">
+      <img src="/screenshots/web2.png" alt="Epusdt Admin Dashboard Home" height="260"><br>
+      <sub>Admin Dashboard Home</sub>
+    </td>
+    <td align="center" valign="top">
+      <img src="/screenshots/web1.png" alt="Epusdt Admin Panel" height="260"><br>
+      <sub>Admin Panel</sub>
+    </td>
+    <td align="center" valign="top">
+      <img src="/screenshots/pay1.jpeg" alt="Epusdt Cashier" height="260"><br>
+      <sub>Cashier</sub>
+    </td>
+    <td align="center" valign="top">
+      <img src="/screenshots/pay2.jpeg" alt="Epusdt Payment Page" height="260"><br>
+      <sub>Payment Page</sub>
+    </td>
+  </tr>
+</table>
+
 ## Credential model
 
 The live gateway no longer relies on a single global merchant key in the payment API docs.
