@@ -9,6 +9,126 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - This page avoids inventing features that are not visible in release or code history
 
 
+## v1.0.6
+
+- Release tag: `v1.0.6`
+- Published at: `2026-06-11T16:51:24Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.5...v1.0.6`
+
+### User-visible changes
+
+- The system now supports TON blockchain and USDT Jetton payments, including liteclient-based transaction scanning, TON address normalization (raw/user-friendly/bounceable formats), and Jetton contract validation.
+- Manual payment verification now includes TON tx verification with on-chain proof validation.
+- Runtime log level can now be adjusted in the admin settings panel without restarting the server — log level changes take effect immediately across all active loggers.
+
+### Deployment and configuration changes
+
+- TON liteclient requires a public liteserver config (mainnet or testnet); the scanner will catch up from the most recent masterchain block and follow shard chains for Jetton transfers.
+- No new environment variables are required; TON chain and token configuration follows the existing RPC node and chain token setup flow.
+
+### API changes
+
+- TON is now available as a chain option in the supported assets list and order creation endpoints.
+- Admin settings API now includes `log_level` for runtime log adjustment (valid values: `debug`, `info`, `warn`, `error`).
+
+### Evidence used
+
+- GitHub release `v1.0.6`
+- PR `#87` (dev merge)
+- Commits: `9b397bd` (TON support), `9ac9894` (runtime log level)
+- Files: `src/task/listen_ton.go`, `src/util/address/ton.go`, `src/model/service/ton_task.go`, `src/util/log/log.go`, `src/controller/admin/settings_controller.go`
+
+
+## v1.0.5
+
+- Release tag: `v1.0.5`
+- Published at: `2026-06-09T16:25:25Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.4...v1.0.5`
+
+### User-visible changes
+
+- Admin dashboard now exposes real-time RPC node runtime statistics via a Server-Sent Events (SSE) endpoint, allowing the frontend to display live RPC call counts, success rates, and error stats without polling.
+- Solana RPC task statistics now track per-node and per-operation call counts (signature scan, transaction fetch, confirmation fetch) and error events.
+- EVM websocket and block scan tasks now report RPC call metrics to the in-memory stats tracker.
+- README was updated with security audit information and new screenshots.
+
+### Deployment and configuration changes
+
+- No new environment variables are required.
+- The SSE endpoint is available at `/api/admin/v1/rpc/stats/stream` and requires admin JWT authentication.
+
+### API changes
+
+- `GET /api/admin/v1/rpc/stats/stream` (SSE) returns a JSON stream of RPC node runtime stats; each event includes node ID, call counts, success counts, error counts, and last-seen timestamp.
+
+### Evidence used
+
+- GitHub release `v1.0.5`
+- PR `#86` (dev merge)
+- Commits: `08d409d` (RPC stats SSE), `54b83f8` (README update), `3879853` (asset files)
+- Files: `src/controller/admin/dashboard_controller.go`, `src/model/data/rpc_runtime_stats.go`, `src/task/listen_sol_job.go`, `src/task/listen_evm_ws.go`, `README.md`
+
+
+## v1.0.4
+
+- Release tag: `v1.0.4`
+- Published at: `2026-06-03T13:01:37Z`
+- Official release note: `feat(www): enable RPC node create and edit actions — Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.3...v1.0.4`
+
+### User-visible changes
+
+- Admin web interface now allows creating and editing RPC nodes directly in the browser — previously these actions were disabled or incomplete in the frontend.
+
+### Deployment and configuration changes
+
+- No new environment variables or backend changes are required; this is a frontend-only update.
+
+### API changes
+
+- No API routes were added or removed; the frontend now correctly calls existing RPC node management endpoints.
+
+### Evidence used
+
+- GitHub release `v1.0.4`
+- PR `#85`: feat(www): enable RPC node create and edit actions
+- Commit: `3e85bf7` (www asset update)
+- Files: `src/www/assets/*` (frontend bundle update)
+
+
+## v1.0.3
+
+- Release tag: `v1.0.3`
+- Published at: `2026-05-27T11:42:43Z`
+- Official release note: `docs: update payment API integration guide — Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.2...v1.0.3`
+
+### User-visible changes
+
+- Order trade IDs are now generated using cryptographically secure random bytes and encoded in URL-safe base64, replacing the previous timestamp-based format — this reduces collision risk and improves anonymity.
+- RPC nodes now support a `purpose` field (`general`, `manual_verify`, or `both`), allowing operators to dedicate nodes exclusively to manual payment verification without impacting scan/WSS/health-check traffic.
+- Manual payment verification now prioritizes `manual_verify` RPC nodes and falls back to `general` nodes if no dedicated nodes are available, distributing verification load separately from scanning workload.
+- Cashier payment page now allows users to manually submit a transaction hash for verification — submitted hashes are validated on-chain before the order is marked as paid.
+- Dashboard trend aggregation queries now use database-dialect-specific SQL (MySQL/PostgreSQL/SQLite) to ensure correct date truncation across all supported databases.
+- Payment callback and rate API URLs are now validated to reject private IP ranges (RFC 1918), preventing SSRF attacks via user-controlled callback URLs.
+- Payment API integration guide in the repository README was updated with clearer examples and endpoint descriptions.
+
+### Deployment and configuration changes
+
+- No new environment variables are required.
+- Operators can now tag RPC nodes with `purpose: manual_verify` in the admin panel to isolate verification traffic from scanning traffic.
+
+### API changes
+
+- `POST /api/admin/v1/order/update-trade-status` and `POST /payments/gmpay/v1/pay/submit-hash` accept a `tx_hash` parameter for manual hash submission; the hash is validated on-chain before status change.
+- RPC node creation and update endpoints now accept a `purpose` field (`general`, `manual_verify`, `both`); default is `general`.
+
+### Evidence used
+
+- GitHub release `v1.0.3`
+- PR `#81` (dev merge)
+- Commits: `c69b0d6` (RPC purpose isolation), `13c81ee` (crypto-random trade IDs), `fca75a9` (cashier hash submission), `b70995f` (dashboard SQL dialect fix), `0d97237` (README update), `7fcb7b3` (payment API doc)
+- Files: `src/model/mdb/rpc_node.go`, `src/model/data/rpc_node_data.go`, `src/controller/admin/rpc_controller.go`, `src/model/service/manual_payment_verify.go`, `src/model/mdb/orders_mdb.go`, `src/model/data/order_data_stats.go`, `src/controller/comm/pay_controller.go`, `README.md`
+
+
 ## v1.0.2
 
 - Release tag: `v1.0.2`
