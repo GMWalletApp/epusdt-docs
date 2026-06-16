@@ -15,14 +15,16 @@ POST /payments/gmpay/v1/order/create-transaction
 | `pid` | string / integer | ✅ | Merchant identifier. Required by signature middleware. |
 | `order_id` | string | ✅ | Max 32 chars |
 | `currency` | string | ✅ | Example: `cny` |
-| `token` | string | ✅ | Example: `usdt` |
-| `network` | string | ✅ | Example: `tron` |
+| `token` | string | Conditional | Example: `usdt`. Can be omitted together with `network` to create a `status=4` placeholder. |
+| `network` | string | Conditional | Example: `tron`. Can be omitted together with `token` to create a `status=4` placeholder. |
 | `amount` | number | ✅ | Must be > `0.01` |
 | `notify_url` | string | ✅ | Async callback URL |
 | `signature` | string | ✅ | MD5 of sorted params + merchant `secret_key` |
 | `redirect_url` | string | ❌ | Redirect after payment |
 | `name` | string | ❌ | Display name |
-| `payment_type` | string | ❌ | Optional source marker |
+| `payment_type` | string | ❌ | Optional source marker. If passed non-empty, must be included in GMPay signature. |
+
+`token` and `network` must **both** be present or **both** be absent. When both are omitted, the order is created with `status=4` (placeholder), without wallet assignment or on-chain amount calculation; the cashier will later call `/pay/switch-network` to select the actual chain/token or OkPay.
 
 **Example request**
 
@@ -31,7 +33,7 @@ POST /payments/gmpay/v1/order/create-transaction
   "pid": "1000",
   "order_id": "ORD20260424001",
   "currency": "cny",
-  "token": "usdt",
+  "token": "***",
   "network": "tron",
   "amount": 100,
   "notify_url": "https://merchant.example.com/notify",
@@ -43,7 +45,7 @@ POST /payments/gmpay/v1/order/create-transaction
 
 **Success response note**
 
-Current source includes `payment_url` in the create-order success payload, so callers can use that field directly as the hosted-checkout redirect target.
+Current source includes `payment_url` in the create-order success payload, so callers can use that field directly as the hosted-checkout redirect target. For `status=4` placeholder orders, `actual_amount` is `0`, `receive_address` and `token` are empty; the order transitions to `status=1` only after selecting a payment method via `/pay/switch-network`.
 
 ## 2. GMPay public config
 
@@ -57,7 +59,7 @@ Important fields inside `data` include:
 
 - `supported_assets` — enabled chain/token pairs that also have at least one available wallet address
 - `site` — public cashier branding: cashier name, logo URL, website title, support link, `background_color`, and `background_image_url`
-- `epay` — EPay default token / currency / network
+- `epay` — EPay default token / currency / network (may be empty strings)
 - `okpay` — public OkPay toggle / token allowance config
 - `amount_precision` — decimal places used when computing crypto amounts (range 2–6, default 2; configured via `system.amount_precision`)
 
@@ -81,23 +83,36 @@ POST /payments/epay/v1/order/create-transaction/submit.php
 | `return_url` | ❌ | Browser return URL |
 | `name` | ❌ | Product name |
 | `type` | ❌ | Accepted for compatibility, but current source does not persist it into the shared order payload |
+| `token` | ❌ | Optional; higher priority than `epay.default_token`. If passed, must be included in EPay signature. |
+| `network` | ❌ | Optional; higher priority than `epay.default_network`. If passed, must be included in EPay signature. |
+| `currency` | ❌ | Optional; higher priority than `epay.default_currency`. If passed, must be included in EPay signature. |
 | `sign` | ✅ | MD5 signature using merchant `secret_key` |
 | `sign_type` | ❌ | Usually `MD5` |
 
-Current source verifies `sign`, checks the matched API key whitelist, then internally builds a shared order payload using admin settings:
+Current source verifies `sign`, checks the matched API key whitelist, then resolves the final `token/network/currency` using this priority:
 
-- `epay.default_token`
-- `epay.default_currency`
-- `epay.default_network`
+- `token`: request param `token` > database `epay.default_token` > empty
+- `network`: request param `network` > database `epay.default_network` > empty
+- `currency`: request param `currency` > database `epay.default_currency` > `cny`
+
+When both final `token` and `network` are empty, the order is created with `status=4` (placeholder); when only one is empty, the request fails with a parameter error.
 
 On success the endpoint redirects to `/pay/checkout-counter/{trade_id}`.
 
 In current source, that route now acts as a redirect entry and forwards the browser into the SPA cashier flow. The checkout data itself is fetched from `/pay/checkout-counter-resp/{trade_id}`.
 
-## 4. Callback behavior
+## 4. Order status codes
+
+| Status | Meaning |
+| --- | --- |
+| `1` | Awaiting payment |
+| `2` | Payment confirmed |
+| `3` | Expired or closed |
+| `4` | Awaiting network/token selection |
+
+## 5. Callback behavior
 
 ### Standard callback (GMPay / normal JSON flow)
-
 Epusdt sends a **POST JSON** callback to `notify_url` after payment confirmation.
 
 Important fields include:
