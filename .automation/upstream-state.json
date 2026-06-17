@@ -1,8 +1,10 @@
 {
   "defaultBranch": "master",
-  "latestCommitSha": "75dfeced01b8ec61d2f24cae5cbb4e1dd3c551a5",
+  "latestCommitSha": "79ca1730cd01914c1f3b23722c4ad1ef7a795966",
   "latestRelease": {
     "tag": "v1.0.7",
+    "name": "v1.0.7",
+    "url": "https://github.com/GMWalletApp/epusdt/releases/tag/v1.0.7",
     "publishedAt": "2026-06-16T11:37:43Z"
   }
 }
