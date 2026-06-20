@@ -9,6 +9,68 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - This page avoids inventing features that are not visible in release or code history
 
 
+## v1.0.8
+
+- Release tag: `v1.0.8`
+- Published at: `2026-06-20T06:31:53Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.7...v1.0.8`
+
+### User-visible changes
+
+- Aptos blockchain is now supported for USDT and USDC payments — the system includes token support configuration, RPC routing, and on-chain transaction scanning for Aptos Move-based assets.
+- Aptos token support and RPC routing are now driven from the admin-configured chain and chain_token settings, removing hardcoded contract addresses from the scanner.
+- Manual payment verification now supports Aptos transaction validation.
+- README documentation was updated to list Aptos alongside other supported chains.
+
+### Deployment and configuration changes
+
+- Aptos chain requires an RPC endpoint configured in the admin panel — the scanner will follow Aptos ledger versions and scan Move module events for token transfers.
+- No new environment variables are required; Aptos chain and token configuration follows the existing admin chain/token setup flow.
+
+### API changes
+
+- Aptos is now available as a chain option in the supported assets list and order creation endpoints.
+- Admin chain and token management endpoints now support Aptos-specific configuration fields.
+
+### Evidence used
+
+- GitHub release `v1.0.8`
+- PR `#91` (dev merge)
+- Commits: `de96a5d` (Aptos support), `8216c91` (config-driven token support)
+- Files: `README.md`, `README.en.md`, `src/controller/admin/chain_token_controller.go`, `src/model/service/aptos_task.go`, `src/task/listen_aptos_scanner.go`, `src/util/address/move.go`
+
+
+## v1.0.7
+
+- Release tag: `v1.0.7`
+- Published at: `2026-06-16T11:37:43Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.6...v1.0.7`
+
+### User-visible changes
+
+- GMPay and EPay order creation endpoints now support placeholder orders — orders can be created without requiring an immediate on-chain payment address, enabling integrations that need order IDs before the actual payment method is selected.
+- Placeholder orders are converted to full on-chain orders when the customer selects a payment network in the cashier flow.
+- Order workflow now supports deferred network selection, allowing merchants to create orders first and let customers choose the payment chain later.
+
+### Deployment and configuration changes
+
+- No new environment variables are required.
+- Placeholder order support is enabled by default for GMPay and EPay flows.
+
+### API changes
+
+- `POST /payments/gmpay/v1/order/create-transaction` and EPay order creation endpoints now accept orders without requiring `network` or `token` parameters upfront — omitting these creates a placeholder order.
+- Placeholder orders return a `trade_id` and cashier URL but do not include a wallet address until the customer selects a network.
+- `POST /pay/switch-network` converts a placeholder order to a full on-chain order by assigning the selected network and generating a payment address.
+
+### Evidence used
+
+- GitHub release `v1.0.7`
+- PR `#89` (dev merge)
+- Commit: `3ab3659` (placeholder order support)
+- Files: `src/model/service/order_service.go`, `src/controller/comm/order_controller.go`, `src/model/mdb/orders_mdb.go`, `src/model/data/order_data.go`, `wiki/API.md`
+
+
 ## v1.0.6
 
 - Release tag: `v1.0.6`
