@@ -3,6 +3,185 @@
 本文基於 `GMwalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
 
 
+## v1.0.8
+
+- 釋出標籤：`v1.0.8`
+- 釋出時間：`2026-06-20T06:31:53Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.7...v1.0.8`
+
+### 使用者可見變更
+
+- **新增 Aptos 鏈支付能力**：現在支援 Aptos 區塊鏈上的 USDT 和 USDC 代幣支付，收款地址可直接配置 Aptos 錢包地址。
+- Aptos 代幣配置由後台管理，支援自定義代幣合約地址和 RPC 路由規則。
+- 訂單網路選項新增 `aptos`，前端收銀臺和訂單 API 均已適配。
+- 手動驗證付款流程現已支援 Aptos 交易雜湊驗證，可在後台對 Aptos 訂單進行鏈上核驗。
+
+### 部署與配置變更
+
+- 本次釋出未引入新的環境變數。
+- 若需啟用 Aptos 支付，需在後台"鏈管理"中新增 Aptos 鏈、配置 RPC 節點、新增代幣（USDT/USDC），並在"錢包管理"中新增 Aptos 收款地址。
+
+### API 變更
+
+- `GET /payments/gmpay/v1/config` 回應的 `supported_assets` 陣列新增 `aptos` 網路條目。
+- 訂單建立、網路切換、手動驗證等端點均已支援 `network=aptos` 參數。
+
+### 依據來源
+
+- GitHub Release `v1.0.8`
+- PR `#91`（dev 合併）
+- Commits：`de96a5d`（feat: add Aptos USDT/USDC payment support）、`8216c91`（fix(aptos): drive token support and RPC routing from config）
+- 涉及檔案：Aptos 鏈監聽器（`src/model/service/aptos_task.go`）、Move 生態 RPC 路由（`src/model/service/move_task.go`）、代幣/訂單/錢包資料層
+
+
+## v1.0.7
+
+- 釋出標籤：`v1.0.7`
+- 釋出時間：`2026-06-16T11:37:43Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.6...v1.0.7`
+
+### 使用者可見變更
+
+- **新增 TON 和 USDT Jetton 支付**：支援 TON 原生鏈支付及 TON 網路上的 USDT Jetton 代幣支付，收款地址現在可配置 TON 錢包地址。
+- **GMPay 和 EPay 佔位訂單支援**：允許商戶建立佔位訂單，訂單在建立階段無需立即分配收款地址，適用於分批處理場景。
+- EPay return relay 功能現已啟用，可將 EPay 訂單的 return_url 跳轉流程透過伺服器端中繼，統一管理跳轉邏輯。
+- 執行時日誌級別現可在後台設定中動態調整，無需重啟服務。
+- 新增 RPC 節點即時統計 SSE 端點，可即時監控各 RPC 節點的呼叫延遲、成功率和故障情況。
+
+### 部署與配置變更
+
+- 本次釋出未引入新的環境變數。
+- 若需啟用 TON 支付，需在後台"鏈管理"中新增 TON 鏈、配置 lite client RPC 節點、新增 TON 原生幣或 Jetton 代幣，並在"錢包管理"中新增 TON 收款地址。
+
+### API 變更
+
+- `GET /payments/gmpay/v1/config` 回應的 `supported_assets` 陣列新增 `ton` 網路條目。
+- `POST /payments/gmpay/v1/order/create-transaction` 現支援 `placeholder=true` 參數，建立佔位訂單。
+- 新增 `GET /admin/v1/rpc/stats/stream` SSE 端點，即時推送 RPC 節點統計資料。
+
+### 依據來源
+
+- GitHub Release `v1.0.7`
+- PR `#89`、`#87`（dev 合併）
+- Commits：`9b397bd`（feat: support TON and USDT Jetton payments）、`3ab3659`（feat(payment): support placeholder orders for GMPay and EPay）、`9ac9894`（feat: add runtime log level settings）、`08d409d`（feat: add in-memory RPC runtime stats SSE endpoint）、`0215b27`（feat: add epay return relay and simplify multi-arch builds）
+- 涉及檔案：TON liteclient 掃鏈器（`src/task/listen_ton.go`）、訂單服務、EPay 控制器、RPC 統計、設定管理
+
+
+## v1.0.6
+
+- 釋出標籤：`v1.0.6`
+- 釋出時間：`2026-06-11T16:51:24Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.5...v1.0.6`
+
+### 使用者可見變更
+
+- README 新增安全稽核與產品截圖，提升專案可信度與視覺化文件品質。
+- 前端管理後臺資源已同步更新至最新構建版本。
+
+### 部署與配置變更
+
+- 本次釋出未引入新的環境變數或部署行為變更。
+
+### API 變更
+
+- 本次釋出未新增或移除任何公開 API 路由。
+
+### 依據來源
+
+- GitHub Release `v1.0.6`
+- PR `#87`（dev 合併）
+- Commits：`54b83f8`（Update README with security audit and screenshots）、`3879853`（Add files）
+- 涉及檔案：README、靜態資源
+
+
+## v1.0.5
+
+- 釋出標籤：`v1.0.5`
+- 釋出時間：`2026-06-09T16:25:25Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.4...v1.0.5`
+
+### 使用者可見變更
+
+- 新增 RPC 節點即時統計 SSE 端點，管理員可即時監控各 RPC 節點的呼叫延遲、成功率和故障情況。
+- 前端管理後臺資源已同步更新。
+
+### 部署與配置變更
+
+- 本次釋出未引入新的環境變數或部署行為變更。
+
+### API 變更
+
+- 新增 `GET /admin/v1/rpc/stats/stream` SSE 端點，即時推送 RPC 節點統計資料。
+
+### 依據來源
+
+- GitHub Release `v1.0.5`
+- PR `#86`（dev 合併）
+- Commits：`08d409d`（feat: add in-memory RPC runtime stats SSE endpoint）
+- 涉及檔案：RPC 控制器、統計資料模型
+
+
+## v1.0.4
+
+- 釋出標籤：`v1.0.4`
+- 釋出時間：`2026-06-03T13:01:37Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.3...v1.0.4`
+
+### 使用者可見變更
+
+- 管理後臺新增 RPC 節點建立與編輯功能，運營者現可直接在後台介面新增、修改 RPC 節點配置，無需手動編輯配置檔案。
+- 前端管理後臺已同步最新構建。
+
+### 部署與配置變更
+
+- 本次釋出未引入新的環境變數。
+- RPC 節點配置可完全透過後台管理，不再依賴 `.env` 或配置檔案。
+
+### API 變更
+
+- 後台 RPC 節點管理 API 新增建立和編輯端點（具體路徑為 `POST /admin/v1/rpc/node` 和 `PUT /admin/v1/rpc/node/:id`）。
+
+### 依據來源
+
+- GitHub Release `v1.0.4`
+- PR `#85`（dev 合併）
+- Commits：`3e85bf7`（update www）
+- 涉及檔案：前端管理後臺資源、RPC 節點控制器
+
+
+## v1.0.3
+
+- 釋出標籤：`v1.0.3`
+- 釋出時間：`2026-05-27T11:42:43Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.2...v1.0.3`
+
+### 使用者可見變更
+
+- **訂單 ID 改用加密隨機 URL 安全字串**：訂單的 `trade_id` 現在由加密隨機生成器產生，長度更長且不可預測，提升訂單連結的安全性。
+- **RPC 節點用途隔離**：RPC 節點新增 `purpose` 欄位，可配置為 `general`（一般掃鏈/健康檢查）、`manual_verify`（僅用於手動驗證付款）或 `both`。manual_verify 節點不參與自動掃鏈流程，避免手動驗證操作與高頻掃鏈任務搶佔 RPC 配額。
+- **收銀臺新增手動交易雜湊提交功能**：使用者在收銀臺頁面可手動輸入交易雜湊（tx hash），伺服器會自動進行鏈上驗證，驗證通過後訂單狀態立即更新為已付款，無需等待自動掃鏈。
+- **後台趨勢統計按資料庫方言最佳化**：儀表板的趨勢聚合查詢現在會根據 SQLite 或 PostgreSQL 方言自動選擇對應的日期函式，避免跨資料庫相容性問題。
+- **拒絕私有 IP 回撥與匯率 API**：系統現在會拒絕配置指向私有 IP 或 localhost 的 `notify_url` 和匯率 API URL，防止 SSRF 攻擊。
+
+### 部署與配置變更
+
+- 本次釋出未引入新的環境變數。
+- 若需使用 RPC 節點用途隔離功能，可在後台 RPC 節點管理中編輯 `purpose` 欄位。
+
+### API 變更
+
+- 訂單 API 回應中的 `trade_id` 格式變更為更長的 URL 安全隨機字串（例如：`3Kx9mP2qR7nL4sT8`），舊格式的短數字 ID 已廢棄。
+- 新增公開收銀臺手動交易雜湊提交端點：`POST /pay/submit-hash/:trade_id`，請求體包含 `tx_hash` 欄位。
+- 管理後台 RPC 節點建立/編輯端點新增 `purpose` 欄位（可選值：`general`、`manual_verify`、`both`）。
+
+### 依據來源
+
+- GitHub Release `v1.0.3`
+- PR `#82`、`#81`（dev 合併）
+- Commits：`c69b0d6`（feat: isolate manual verification RPC usage）、`13c81ee`（feat(order): use crypto-random url-safe trade IDs and update docs examples）、`fca75a9`（feat(payment): allow cashier manual tx hash submission）、`b70995f`（fix: aggregate dashboard trends by database dialect）、`8bf2ada`（fix: reject private callback and rate API URLs）、`7fcb7b3`（docs: update payment API integration guide）
+- 涉及檔案：訂單服務、RPC 節點資料層、手動驗證服務、收銀臺控制器、儀表板控制器、設定控制器
+
+
 ## v1.0.2
 
 - 釋出標籤：`v1.0.2`
