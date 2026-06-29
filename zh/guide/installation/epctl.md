@@ -42,7 +42,15 @@
 
 ## 快速開始
 
-直接在倉庫根目錄執行互動選單：
+Linux 伺服器上一鍵部署時，直接從上游 `master` 分支下載最新 `epctl`，賦予執行權限後進入互動選單：
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/GMWalletApp/epusdt/refs/heads/master/epctl
+chmod +x epctl
+./epctl
+```
+
+如果你已經 clone 了倉庫，也可以在倉庫根目錄直接執行：
 
 ```bash
 ./epctl

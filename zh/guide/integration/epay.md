@@ -80,6 +80,23 @@ EPay submit.php 的解析優先級是：
 
 提供。
 
+
+## 直接指定鏈和幣種
+
+上游「New API」或自訂支付方式列表可以把不同鏈 / 幣種拆成獨立支付選項，並把 `type` 設為有效的 `token.network` 選擇器。例如 `usdt.tron` 會直接建立 TRON USDT 訂單；如果 Binance/BSC 的 USDT 已啟用，`usdt.binance` 會直接建立對應訂單。
+
+示例支付方式配置：
+
+```json
+[
+  { "color": "rgba(var(--semi-blue-5), 1)", "name": "GM Pay", "type": "custom1" },
+  { "color": "rgba(var(--semi-blue-5), 1)", "name": "GM Pay usdt.binance", "type": "usdt.binance" },
+  { "color": "rgba(var(--semi-blue-5), 1)", "name": "GM Pay usdt.tron", "type": "usdt.tron" }
+]
+```
+
+`custom1` 只是上游的通用支付選項名稱，不是 Epusdt 的鏈上選擇器。不要把 `custom1` 原樣提交到 EPay submit.php；通用入口應改為不傳 `type`、傳 `type=alipay`，或走普通 GMPay 占位訂單流程。
+
 ## 回撥驗證
 
 當訂單 `payment_type = Epay` 時，worker 後續會以 EPay 風格 query 參數回撥你的 `notify_url`，並且使用**同一商戶的 `secret_key`** 來計算簽名。

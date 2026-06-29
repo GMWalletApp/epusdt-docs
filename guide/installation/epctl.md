@@ -42,7 +42,15 @@ Notes:
 
 ## Quick Start
 
-Run the interactive menu from the repo root:
+For a one-click deployment on a Linux server, download the latest `epctl` script from the upstream `master` branch, make it executable, then run the interactive menu:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/GMWalletApp/epusdt/refs/heads/master/epctl
+chmod +x epctl
+./epctl
+```
+
+If you already cloned the repository, you can also run the repo-root script directly:
 
 ```bash
 ./epctl

@@ -477,6 +477,41 @@ EPay 接口解析 `type/token/network/currency` 的优先级：
 
 后台默认配置可通过 `/payments/gmpay/v1/config` 的 `epay` 字段查看；新安装默认只预置 `epay.default_currency=cny`，`epay.default_token` 和 `epay.default_network` 为空，因此 EPay 未显式传 token/network 时会创建状态 `4` 占位订单。已有数据库的配置不会被 seed 覆盖，删除或置空 `epay.default_token` 和 `epay.default_network` 后，这两个字段会返回空字符串。
 
+### 直接指定链和币种
+
+支持传递 `type=token.network` 直接创建指定链上订单。适合上游「New API」或自定义支付方式列表把不同链/币种拆成独立支付选项的场景。
+
+示例支付方式配置：
+
+```json
+[
+  {
+    "color": "rgba(var(--semi-blue-5), 1)",
+    "name": "GM Pay",
+    "type": "custom1"
+  },
+  {
+    "color": "rgba(var(--semi-blue-5), 1)",
+    "name": "GM Pay usdt.binance",
+    "type": "usdt.binance"
+  },
+  {
+    "color": "rgba(var(--semi-blue-5), 1)",
+    "name": "GM Pay usdt.tron",
+    "type": "usdt.tron"
+  }
+]
+```
+
+其中：
+
+- `type=usdt.binance` 会直接解析为 `token=usdt`、`network=binance`。
+- `type=usdt.tron` 会直接解析为 `token=usdt`、`network=tron`。
+- 这类 `type` 必须是当前服务端可用的 `token.network` 组合；可用组合以 `/payments/gmpay/v1/config` 返回的 `supported_assets` 为准。
+- `custom1` 不是 Epusdt 的链上选择器；如果上游用于「GM Pay 通用入口」，应由上游插件映射为不传 `type`、传 `type=alipay`，或走普通 GMPay 占位订单流程。不要把 `custom1` 原样提交到 EPay submit.php，否则当前服务端会按参数错误拒绝。
+
+提交到 EPay submit.php 时，`type` 是原始入站参数，必须参与 EPay 签名。
+
 ## 商户异步回调
 
 订单支付成功后，Epusdt 会向订单的 `notify_url` 发送异步通知。目标服务器处理完成后需返回 HTTP 200，响应体为 `ok` 或 `success`（大小写不敏感）。否则会按队列配置重试：首次失败后最多重试 `order_notice_max_retry` 次，重试间隔按 `callback_retry_base_seconds` 指数退避，最大 5 分钟。

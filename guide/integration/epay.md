@@ -76,6 +76,23 @@ In current source, that path is now the redirect entry for the hosted cashier SP
 /pay/checkout-counter-resp/{trade_id}
 ```
 
+
+## Direct token/network choices
+
+For upstream "New API" payment-method lists, expose separate options whose `type` is a supported `token.network` selector. For example, `usdt.tron` creates a TRON USDT order directly, while `usdt.binance` creates a Binance/BSC USDT order when that asset is enabled.
+
+Example upstream method list:
+
+```json
+[
+  { "color": "rgba(var(--semi-blue-5), 1)", "name": "GM Pay", "type": "custom1" },
+  { "color": "rgba(var(--semi-blue-5), 1)", "name": "GM Pay usdt.binance", "type": "usdt.binance" },
+  { "color": "rgba(var(--semi-blue-5), 1)", "name": "GM Pay usdt.tron", "type": "usdt.tron" }
+]
+```
+
+`custom1` is only an upstream generic option name. Do not submit it unchanged to EPay submit.php; submit no `type`, `type=alipay`, or a valid selector such as `usdt.tron`.
+
 ## Callback verification
 
 When the created order carries `payment_type = Epay`, the worker later calls your `notify_url` with EPay-style query parameters and signs them with the **same merchant `secret_key`**.
