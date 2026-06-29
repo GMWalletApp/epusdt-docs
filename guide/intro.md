@@ -1,10 +1,5 @@
 # Introduction
 
-## Security Audit
-
-Epusdt has completed a third-party security audit.  
-[View Security Audit Report](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
-
 ## What current source actually provides
 
 `Epusdt` is a self-hosted **crypto payment gateway** written in **Go**.
@@ -24,31 +19,9 @@ It also exposes:
 
 ## Security Audit
 
-Epusdt has completed third-party security audit.
+Epusdt has completed a third-party security audit.
 [View Security Audit Report](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
 
-## Screenshots
-
-<table>
-  <tr>
-    <td align="center" valign="top">
-      <img src="/screenshots/web2.png" alt="Epusdt Admin Dashboard Home" height="260"><br>
-      <sub>Admin Dashboard Home</sub>
-    </td>
-    <td align="center" valign="top">
-      <img src="/screenshots/web1.png" alt="Epusdt Admin Panel" height="260"><br>
-      <sub>Admin Panel</sub>
-    </td>
-    <td align="center" valign="top">
-      <img src="/screenshots/pay1.jpeg" alt="Epusdt Cashier" height="260"><br>
-      <sub>Cashier</sub>
-    </td>
-    <td align="center" valign="top">
-      <img src="/screenshots/pay2.jpeg" alt="Epusdt Payment Page" height="260"><br>
-      <sub>Payment Page</sub>
-    </td>
-  </tr>
-</table>
 
 ## Credential model
 

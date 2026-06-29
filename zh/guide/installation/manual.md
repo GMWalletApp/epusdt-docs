@@ -17,13 +17,13 @@ cd /opt/epusdt
 
 請先到目前的 release 頁面依伺服器架構選擇對應檔案，例如：
 
-- `epusdt-0.9.5-linux-amd64.tar.gz`
-- `epusdt-0.9.5-linux-arm64.tar.gz`
+- `epusdt-1.0.9-linux-amd64.tar.gz`
+- `epusdt-1.0.9-linux-arm64.tar.gz`
 
 以下示例適用於 Linux x86_64 / amd64：
 
 ```bash
-wget https://github.com/GMwalletApp/epusdt/releases/download/v0.9.6/epusdt-0.9.6-linux-amd64.tar.gz -O epusdt.tar.gz
+wget https://github.com/GMWalletApp/epusdt/releases/download/v1.0.9/epusdt-1.0.9-linux-amd64.tar.gz -O epusdt.tar.gz
 tar -xzf epusdt.tar.gz
 rm epusdt.tar.gz
 ```
@@ -31,7 +31,7 @@ rm epusdt.tar.gz
 如果你的主機不是 amd64，請直接到 release 頁面下載對應架構的壓縮包：
 
 ```text
-https://github.com/GMwalletApp/epusdt/releases/latest
+https://github.com/GMWalletApp/epusdt/releases/latest
 ```
 
 ### 方式 B：從原始碼編譯
@@ -42,7 +42,7 @@ https://github.com/GMwalletApp/epusdt/releases/latest
 - `Go`
 
 ```bash
-git clone https://github.com/GMwalletApp/epusdt.git
+git clone https://github.com/GMWalletApp/epusdt.git
 cd epusdt/src
 go build -o /opt/epusdt/epusdt .
 ```

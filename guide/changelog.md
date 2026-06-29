@@ -4,7 +4,7 @@ This page summarizes published Epusdt releases using the repository's actual Git
 
 ## Scope and Source Rules
 
-- Primary source: GitHub Releases in `GMwalletApp/epusdt`
+- Primary source: GitHub Releases in `GMWalletApp/epusdt`
 - Supplementary source: tag compare diffs and merged commit messages
 - This page avoids inventing features that are not visible in release or code history
 

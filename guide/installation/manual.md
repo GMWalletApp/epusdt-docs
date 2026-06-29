@@ -17,13 +17,13 @@ cd /opt/epusdt
 
 Choose the archive that matches your server architecture from the current release page:
 
-- `epusdt-0.9.5-linux-amd64.tar.gz`
-- `epusdt-0.9.5-linux-arm64.tar.gz`
+- `epusdt-1.0.9-linux-amd64.tar.gz`
+- `epusdt-1.0.9-linux-arm64.tar.gz`
 
 Example for Linux x86_64 / amd64:
 
 ```bash
-wget https://github.com/GMwalletApp/epusdt/releases/download/v0.9.6/epusdt-0.9.6-linux-amd64.tar.gz -O epusdt.tar.gz
+wget https://github.com/GMWalletApp/epusdt/releases/download/v1.0.9/epusdt-1.0.9-linux-amd64.tar.gz -O epusdt.tar.gz
 tar -xzf epusdt.tar.gz
 rm epusdt.tar.gz
 ```
@@ -31,7 +31,7 @@ rm epusdt.tar.gz
 If you are not on amd64, open the release page and download the matching archive for your architecture:
 
 ```text
-https://github.com/GMwalletApp/epusdt/releases/latest
+https://github.com/GMWalletApp/epusdt/releases/latest
 ```
 
 ### Option B. Build from source
@@ -42,7 +42,7 @@ Prerequisites:
 - `Go`
 
 ```bash
-git clone https://github.com/GMwalletApp/epusdt.git
+git clone https://github.com/GMWalletApp/epusdt.git
 cd epusdt/src
 go build -o /opt/epusdt/epusdt .
 ```

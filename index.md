@@ -49,7 +49,7 @@ features:
 ---
 
 <div class="home-star-cta">
-  <a href="https://github.com/GMwalletApp/epusdt/stargazers" target="_blank" rel="noreferrer" aria-label="View Epusdt GitHub star count">
-    <img src="https://img.shields.io/github/stars/GMwalletApp/epusdt?style=social" alt="GitHub stars">
+  <a href="https://github.com/GMWalletApp/epusdt/stargazers" target="_blank" rel="noreferrer" aria-label="View Epusdt GitHub star count">
+    <img src="https://img.shields.io/github/stars/GMWalletApp/epusdt?style=social" alt="GitHub stars">
   </a>
 </div>

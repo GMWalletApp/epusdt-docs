@@ -36,8 +36,6 @@ The system uses an exchange rate API to convert fiat amounts to crypto equivalen
 
 ### Which exchange rate API is used?
 
-### Which exchange rate API is used?
-
 The system can be configured to fetch rates from the community-provided [Fawaz Ahmed Currency API](https://github.com/fawazahmed0/exchange-api).
 
 API base URL:

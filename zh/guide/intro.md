@@ -2,7 +2,7 @@
 
 ## 安全審計
 
-Epusdt 已完成第三方安全審計。  
+Epusdt 已完成第三方安全審計。
 [查看安全審計報告](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
 
 ## 目前原始碼實際提供什麼

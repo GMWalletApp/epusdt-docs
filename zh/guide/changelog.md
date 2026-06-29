@@ -1,6 +1,6 @@
 # 版本日誌
 
-本文基於 `GMwalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
+本文基於 `GMWalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
 
 
 ## v1.0.9
