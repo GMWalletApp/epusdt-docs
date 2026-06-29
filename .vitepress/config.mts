@@ -1,6 +1,15 @@
 import { defineConfig } from "vitepress";
 import { defineTeekConfig } from "vitepress-theme-teek/config";
 
+const ignoredGeneratedPaths = [
+  ".git",
+  ".github",
+  ".automation",
+  "node_modules",
+  "dist",
+  "scripts",
+];
+
 const teekConfig = defineTeekConfig({
   themeEnhance: {
     themeColor: {
@@ -9,6 +18,12 @@ const teekConfig = defineTeekConfig({
   },
   article: { author: "Epusdt" },
   footer: { copyright: "Copyright © 2025 GMwallet" },
+  vitePlugins: {
+    sidebarOption: {
+      ignoreList: ignoredGeneratedPaths,
+    },
+    fileContentLoaderIgnore: ignoredGeneratedPaths.map((path) => `${path}/**`),
+  },
   toComment: {
     enabled: true,
     done: () => { window.open("https://t.me/epusdt_group", "_blank"); },

@@ -67,13 +67,13 @@ Do **not** use `127.0.0.1`. The current installer default can still show `127.0.
 
 If you already finished the wizard with the wrong value, edit `./data/.env` on the host and change:
 
-```env
+```ini
 http_listen=127.0.0.1:8000
 ```
 
 into:
 
-```env
+```ini
 http_listen=0.0.0.0:8000
 ```
 

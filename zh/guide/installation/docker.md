@@ -67,13 +67,13 @@ Docker 部署時，`http_bind_addr` 必須填 `0.0.0.0`。
 
 如果你已經用錯預設值完成安裝，請直接在宿主機編輯 `./data/.env`，把：
 
-```env
+```ini
 http_listen=127.0.0.1:8000
 ```
 
 改成：
 
-```env
+```ini
 http_listen=0.0.0.0:8000
 ```
 
