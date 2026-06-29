@@ -3,6 +3,39 @@
 本文基於 `GMwalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
 
 
+## v1.0.9
+
+- 釋出標籤：`v1.0.9`
+- 釋出時間：`2026-06-29T10:11:08Z`
+- 官方釋出說明：`Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.8...v1.0.9`
+
+### 使用者可見變更
+
+- **EPay type 選擇器**：EPay submit.php 現在接受 `type=alipay` 或有效的 `type=token.network` 選擇器，例如 `usdt.tron`；有效選擇器會直接決定支付 token/network。
+- EPay 同步返回與非同步回撥現在會沿用訂單保存的請求 `type`，不再一律固定回傳 `alipay`。
+- 安裝流程能在首次初始化時回傳管理員初始密碼；已暴露的管理 API 則保留初始化密碼雜湊端點，用於前端提示是否仍在使用初始密碼。
+- 新增倉庫根目錄的 `epctl` Linux 二進位安裝 / 服務管理腳本，以及 `epctl-docker-test.sh` Docker 端到端驗收腳本。
+
+### 部署與配置變更
+
+- `epctl` 會把 release 二進位安裝到 `/opt/epusdt`、建立 `epusdt.service`，安裝 / 升級時保留既有 `/opt/epusdt/.env`，也可透過 `self-install` 安裝到 `/usr/local/bin/epctl`。
+- 當 EPay 傳入有效 `type=token.network` 選擇器時，`epay.default_token` 與 `epay.default_network` 會被忽略；`epay.default_currency` 仍負責法幣幣種回退。
+- 本次釋出未引入新的環境變數。
+
+### API 變更
+
+- `GET` / `POST /payments/epay/v1/order/create-transaction/submit.php` 現在限制非空 `type` 只能是 `alipay` 或目前可用的 `token.network` 選擇器。
+- `GET /pay/return/{trade_id}` 與 EPay 非同步通知會沿用訂單保存的 `type`；建單時未傳 `type` 則回退為 `alipay`。
+- `GET /admin/api/v1/auth/init-password-hash` 是本版保留的初始化密碼狀態端點；舊的明文 `init-password` 管理路由在本版未註冊。
+
+### 依據來源
+
+- GitHub Release `v1.0.9`
+- PR `#92`（dev 合併）
+- Commits：`2dc538c`（EPay type 選擇器）、`73aef80`（限制 submit type）、`15de0e6`（初始化密碼保持可用）、`7d09adf`（安裝流程回傳初始化密碼）、`1cdb1ed`（epctl 安裝器與文件）
+- 涉及檔案：`src/route/router.go`、`src/controller/comm/order_controller.go`、`src/model/service/epay_return.go`、`src/install/installer.go`、`epctl`、`epctl-docker-test.sh`、`wiki/EPCTL.md`
+
+
 ## v1.0.8
 
 - 釋出標籤：`v1.0.8`

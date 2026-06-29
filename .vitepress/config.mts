@@ -52,6 +52,7 @@ export default defineConfig({
               text: "Installation",
               items: [
                 { text: "Tutorial", link: "/guide/installation/tutorial" },
+                { text: "epctl Binary Installer", link: "/guide/installation/epctl" },
                 { text: "Docker (Recommended)", link: "/guide/installation/docker" },
                 { text: "aaPanel", link: "/guide/installation/aapanel" },
                 { text: "Manual", link: "/guide/installation/manual" },
@@ -113,6 +114,7 @@ export default defineConfig({
               text: "安裝部署",
               items: [
                 { text: "教程合集", link: "/zh/guide/installation/tutorial" },
+                { text: "epctl 二進位安裝", link: "/zh/guide/installation/epctl" },
                 { text: "Docker 部署（推薦）", link: "/zh/guide/installation/docker" },
                 { text: "aaPanel 部署", link: "/zh/guide/installation/aapanel" },
                 { text: "手動部署", link: "/zh/guide/installation/manual" },

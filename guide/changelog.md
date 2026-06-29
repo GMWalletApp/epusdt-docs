@@ -9,6 +9,39 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - This page avoids inventing features that are not visible in release or code history
 
 
+## v1.0.9
+
+- Release tag: `v1.0.9`
+- Published at: `2026-06-29T10:11:08Z`
+- Official release note: `Full Changelog: https://github.com/GMWalletApp/epusdt/compare/v1.0.8...v1.0.9`
+
+### User-visible changes
+
+- **EPay type selectors**: EPay submit.php now accepts `type=alipay` or a supported `type=token.network` selector such as `usdt.tron`; valid selectors choose the payment token/network directly.
+- EPay return and notify callbacks now preserve the stored request `type` instead of always returning `alipay`.
+- The install flow can return the initial admin password during first-time setup, while the exposed admin API now keeps only the initial-password hash endpoint for frontend warnings.
+- Added the repo-root `epctl` Linux binary installer/service manager plus `epctl-docker-test.sh` for Docker-based end-to-end validation.
+
+### Deployment and configuration changes
+
+- `epctl` installs released binaries under `/opt/epusdt`, creates `epusdt.service`, keeps existing `/opt/epusdt/.env` on install/upgrade, and can be installed globally to `/usr/local/bin/epctl`.
+- EPay `epay.default_token` and `epay.default_network` are ignored when a valid `type=token.network` selector is supplied; `epay.default_currency` still provides the currency fallback.
+- No new environment variables are required.
+
+### API changes
+
+- `GET` / `POST /payments/epay/v1/order/create-transaction/submit.php` now restricts non-empty `type` to `alipay` or a currently supported `token.network` selector.
+- `GET /pay/return/{trade_id}` and EPay async notify payloads reuse the stored `type`; missing `type` falls back to `alipay`.
+- `GET /admin/api/v1/auth/init-password-hash` remains the exposed initial-password state endpoint; the old plaintext `init-password` admin route is not registered in this release.
+
+### Evidence used
+
+- GitHub release `v1.0.9`
+- PR `#92` (dev merge)
+- Commits: `2dc538c` (EPay type selectors), `73aef80` (restrict submit type), `15de0e6` (keep init password available), `7d09adf` (return initial admin password), `1cdb1ed` (epctl installer and docs)
+- Files: `src/route/router.go`, `src/controller/comm/order_controller.go`, `src/model/service/epay_return.go`, `src/install/installer.go`, `epctl`, `epctl-docker-test.sh`, `wiki/EPCTL.md`
+
+
 ## v1.0.8
 
 - Release tag: `v1.0.8`

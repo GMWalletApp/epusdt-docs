@@ -41,6 +41,7 @@
 - 簽名欄位：`sign`
 - 簽名金鑰：對應 `pid` 的已啟用 `api_keys.secret_key`
 - `sign_type` 一般傳 `MD5`
+- EPay 的 `type` 接受 `alipay` 或有效的 `token.network` 選擇器（如 `usdt.tron`）；已接受的選擇器會沿用到 EPay 同步返回與非同步回撥。
 
 ## 建議接入順序
 

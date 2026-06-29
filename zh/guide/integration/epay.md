@@ -35,9 +35,17 @@ POST /payments/epay/v1/order/create-transaction/submit.php
 - `return_url`
 - `name`
 - `type`
+- `token`
+- `network`
+- `currency`
 - `sign_type`
 
-`type` 目前主要只是相容舊式入站欄位。現行原始碼會接受它，但不會把它寫入後續共用訂單資料。
+`type` 現在支援兩種形式：
+
+- `alipay`：相容值；實際 token/network 會依序從請求中的 `token` + `network`、後臺 EPay 預設值解析。
+- `token.network` 選擇器，例如 `usdt.tron`：只有當該 token/network 組合目前可用時才接受。有效選擇器會覆蓋 `token`、`network`、`epay.default_token` 和 `epay.default_network`。
+
+其他非空 `type` 會被視為參數錯誤。通過校驗的 `type` 會保存到訂單，後續 EPay 同步返回和非同步回撥會沿用。
 
 ## EPay 預設值來源
 
@@ -47,7 +55,14 @@ POST /payments/epay/v1/order/create-transaction/submit.php
 - `epay.default_currency`
 - `epay.default_network`
 
-如果你的跳轉流程需要改代幣、法幣或網路，請在後臺設定頁調整這三個值。
+EPay submit.php 的解析優先級是：
+
+1. 有效的 `type=token.network` 選擇器
+2. 請求中顯式傳入的 `token` / `network`
+3. 後臺 `epay.default_token` / `epay.default_network`
+4. 如果 token 和 network 最終仍同時為空，建立狀態 `4` 的占位訂單，由收銀臺引導使用者選擇
+
+法幣幣種獨立解析：請求 `currency` → `epay.default_currency` → `cny`。
 
 ## 成功後行為
 
@@ -69,6 +84,6 @@ POST /payments/epay/v1/order/create-transaction/submit.php
 
 當訂單 `payment_type = Epay` 時，worker 後續會以 EPay 風格 query 參數回撥你的 `notify_url`，並且使用**同一商戶的 `secret_key`** 來計算簽名。
 
-有一個目前原始碼層面的細節需要注意：回撥中的 `type` 現在固定是 `alipay`，**不會**沿用商戶建單時傳入的 `type`。
+回撥中的 `type` 會沿用訂單保存的請求類型，也就是 `alipay` 或已接受的 `usdt.tron` 這類選擇器；如果建單時沒有傳 `type`，出站回撥會為相容性回退到 `alipay`。
 
 不要再用舊文件裡獨立的 `epay_key` 去驗這類回撥。

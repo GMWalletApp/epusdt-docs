@@ -41,6 +41,7 @@ Key groups visible in current source:
 - Signature field: `sign`
 - Signature key: the `secret_key` of the enabled `api_keys` row matching `pid`
 - `sign_type` is accepted and typically `MD5`
+- EPay `type` accepts `alipay` or a supported `token.network` selector such as `usdt.tron`; accepted selectors are preserved in EPay return/notify callbacks.
 
 ## Recommended integration order
 

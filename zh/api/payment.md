@@ -441,7 +441,7 @@ function epaySign(array $params, string $secretKey): string
 | `notify_url` | query/form | string | 是 | 异步回调地址。 |
 | `return_url` | query/form | string | 否 | 支付完成后的同步跳转地址。 |
 | `name` | query/form | string | 否 | 商品/订单名称。 |
-| `type` | query/form | string | 否 | 兼容字段，如 `alipay`。创建订单时不决定实际链上币种。 |
+| `type` | query/form | string | 否 | `alipay` 或有效的 `token.network` 选择器（如 `usdt.tron`）。有效选择器会决定实际链上币种和网络，并覆盖 EPay 默认 token/network。 |
 | `token` | query/form | string | 否 | 可选收款币种。优先级高于后台 `epay.default_token`；传了就必须参与 EPay 签名。 |
 | `network` | query/form | string | 否 | 可选收款网络。优先级高于后台 `epay.default_network`；传了就必须参与 EPay 签名。 |
 | `currency` | query/form | string | 否 | 可选法币币种。优先级高于后台 `epay.default_currency`；传了就必须参与 EPay 签名。 |
@@ -466,13 +466,14 @@ money=100&name=VIP&notify_url=https://merchant.example/notify&out_trade_no=ORD20
 sign=b865b0acbb2b01554c35a1bd33351452
 ```
 
-EPay 接口解析 `token/network/currency` 的优先级：
+EPay 接口解析 `type/token/network/currency` 的优先级：
 
-- `token`：请求参数 `token` > 数据库 `epay.default_token` > 空。
-- `network`：请求参数 `network` > 数据库 `epay.default_network` > 空。
-- `currency`：请求参数 `currency` > 数据库 `epay.default_currency` > `cny`。
+- `type=token.network`：如果是当前可用的链上组合（如 `usdt.tron`），优先决定 `token/network`；如果 `type` 既不是有效选择器也不是 `alipay`，返回参数错误。
+- `token` / `network`：未使用有效 `type` 选择器时，读取请求参数；显式传入的字段必须参与 EPay 签名。
+- `epay.default_token` / `epay.default_network`：请求未提供对应字段时使用后臺默认值；有效 `type` 选择器会绕过这两个默认值。
+- `currency`：请求参数 `currency` > 数据库 `epay.default_currency` > `cny`；即使用了有效 `type` 选择器，币种回退规则也不变。
 - 最终 `token/network` 同时有值时，创建具体链上订单；同时为空时，创建状态 `4` 占位订单；只缺一个时返回参数错误。
-- 服务端会在 EPay 签名校验通过后内部注入 `payment_type=Epay`，该字段不参与 EPay 入站签名；但请求里显式传入的 `token/network/currency` 属于原始 EPay 参数，必须参与签名。
+- 服务端会在 EPay 签名校验通过后内部注入 `payment_type=Epay`，该字段不参与 EPay 入站签名；但请求里显式传入的 `type/token/network/currency` 属于原始 EPay 参数，必须参与签名。
 
 后台默认配置可通过 `/payments/gmpay/v1/config` 的 `epay` 字段查看；新安装默认只预置 `epay.default_currency=cny`，`epay.default_token` 和 `epay.default_network` 为空，因此 EPay 未显式传 token/network 时会创建状态 `4` 占位订单。已有数据库的配置不会被 seed 覆盖，删除或置空 `epay.default_token` 和 `epay.default_network` 后，这两个字段会返回空字符串。
 
