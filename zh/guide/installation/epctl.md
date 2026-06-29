@@ -94,6 +94,18 @@ epctl
 ./epctl upgrade --tag v1.0.9
 ```
 
+升級二進位制檔案後，需要重啟 systemd 服務，讓正在執行的程序載入新版本：
+
+```bash
+systemctl restart epusdt
+```
+
+如果目前使用者不是 root，請加 `sudo`：
+
+```bash
+sudo systemctl restart epusdt
+```
+
 檢視配置、狀態、日誌：
 
 ```bash

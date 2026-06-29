@@ -94,6 +94,18 @@ Upgrade to a newer release:
 ./epctl upgrade --tag v1.0.9
 ```
 
+After upgrading the binary, restart the systemd service so the running process loads the new version:
+
+```bash
+systemctl restart epusdt
+```
+
+If the current user is not root, run it through `sudo`:
+
+```bash
+sudo systemctl restart epusdt
+```
+
 Inspect config, status, and logs:
 
 ```bash
