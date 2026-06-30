@@ -1,7 +1,7 @@
 # epctl 安裝與驗證指令碼
 
 `epctl` 是倉庫頂層的 Linux 二進位制安裝管理指令碼，面向已經發布到 GitHub Releases 的 `epusdt` 二進位制包。
-`epctl-docker-test.sh` 是配套的真實驗收指令碼，用本機 Docker 啟動 Ubuntu + systemd 容器，完整驗證安裝、啟動、升級和服務流程。
+`epctl-docker-test.sh` 是配套的真實驗收指令碼，用本機 Docker 啟動 Ubuntu + systemd 容器，完整驗證下載、安裝、啟動、升級和初始化密碼流程。
 
 ## 適用範圍
 
@@ -94,17 +94,9 @@ epctl
 ./epctl upgrade --tag v1.0.9
 ```
 
-升級二進位制檔案後，需要重啟 systemd 服務，讓正在執行的程序載入新版本：
-
-```bash
-systemctl restart epusdt
-```
-
-如果目前使用者不是 root，請加 `sudo`：
-
-```bash
-sudo systemctl restart epusdt
-```
+直接執行 `./epctl upgrade --tag ...` 時，指令碼會在檔案替換完成後預設立即執行 `systemctl restart epusdt`。
+如果你只想替換檔案而不重啟，請顯式傳入 `--no-restart`。
+如果你希望人工確認，再傳 `--prompt-restart`；互動終端下提示為 `[Y/n]`，直接回車預設重啟。
 
 檢視配置、狀態、日誌：
 
@@ -160,6 +152,27 @@ EPCTL_ASSUME_YES=1 ./epctl download
 - `http_listen=<--listen，預設 127.0.0.1:8000>`
 
 如果 `/opt/epusdt/.env` 已存在，則安裝和升級都會保留它，不會覆蓋。
+`/opt/epusdt/.env.example` 則會在每次 install / upgrade 時按當前 release 重新刷新。
+
+## 升級時會發生什麼
+
+執行 `upgrade` 時，指令碼會：
+
+1. 按當前機器架構下載目標 GitHub Release 壓縮包
+2. 解壓到 `/tmp/epusdt/<tag>/extract/`
+3. 要求現有 `/opt/epusdt/.env` 已存在；若不存在會直接失敗，並提示先執行 `install`
+4. 覆蓋 `/opt/epusdt/epusdt`
+5. 覆蓋 `/opt/epusdt/.env.example`
+6. 保留現有 `/opt/epusdt/.env`
+7. 刷新 `epusdt.service` 並執行 `systemctl daemon-reload`
+8. 預設立即執行 `systemctl restart epusdt`
+
+補充行為：
+
+- `upgrade` 不會再補寫 `.env`，也不會再執行 `systemctl enable`
+- `upgrade --no-restart` 只替換檔案，不重啟服務，並輸出手動 restart 提示
+- `upgrade --prompt-restart` 會在互動終端下詢問是否重啟
+- 如果重啟前的檔案部署失敗，或升級後的重啟失敗，指令碼會嘗試回滾舊的二進位制、`.env.example` 和 unit 檔案
 
 ## systemd 服務說明
 
@@ -215,13 +228,14 @@ GET /admin/api/v1/auth/init-password
 
 它會在本機：
 
-- 構建 `ubuntu:24.04` + systemd 測試映象
+- 直接從 `ubuntu:24.04` 啟動容器，並在容器啟動階段安裝 systemd 與測試依賴
 - 啟動一個特權容器
 - 在容器內執行 `epctl self-install`
 - 下載真實 GitHub Release
 - 安裝 `epusdt`
+- 若傳入 `upgrade-tag`，驗證 `upgrade --no-restart`、預設非互動 `upgrade`，以及 `upgrade --prompt-restart` 的 `n` / 回車分支
 - 檢查 `systemd` 服務、`www/index.html`、配置檔案、日誌、狀態輸出
-- 以真實 release artifact 驗證服務行為；較早的指令碼版本也會嘗試驗證舊版明文 `init-password` 路由
+- 以真實 release artifact 驗證 init-password 行為；如果部署版本缺少舊版明文路由，檢查會輸出原始 HTTP 失敗內容以方便排查
 
 執行前提：
 

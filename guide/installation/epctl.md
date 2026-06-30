@@ -1,7 +1,7 @@
 # epctl Installation and Verification Scripts
 
 `epctl` is the repo-root Linux binary installer and service manager for released `epusdt` binaries on GitHub Releases.
-`epctl-docker-test.sh` is the matching end-to-end validation script. It launches Ubuntu + systemd in Docker and verifies download, install, startup, upgrade, and service behavior with real release artifacts.
+`epctl-docker-test.sh` is the matching end-to-end validation script. It launches Ubuntu + systemd in Docker and verifies download, install, startup, upgrade, and init-password behavior with real release artifacts.
 
 ## Scope
 
@@ -94,17 +94,9 @@ Upgrade to a newer release:
 ./epctl upgrade --tag v1.0.9
 ```
 
-After upgrading the binary, restart the systemd service so the running process loads the new version:
-
-```bash
-systemctl restart epusdt
-```
-
-If the current user is not root, run it through `sudo`:
-
-```bash
-sudo systemctl restart epusdt
-```
+Running `./epctl upgrade --tag ...` directly restarts `epusdt` immediately after the files are replaced.
+If you want to replace files only, pass `--no-restart`.
+If you want an explicit confirmation step, pass `--prompt-restart`; in an interactive terminal the prompt is `[Y/n]`, so pressing Enter restarts by default.
 
 Inspect config, status, and logs:
 
@@ -160,6 +152,27 @@ When `.env` is auto-created, the script applies only the minimum bootstrap chang
 - `http_listen=<--listen, default 127.0.0.1:8000>`
 
 If `/opt/epusdt/.env` already exists, install and upgrade keep it unchanged.
+`/opt/epusdt/.env.example` is refreshed from the current release on every install / upgrade.
+
+## What Happens During Upgrade
+
+`upgrade` performs these steps:
+
+1. Detect the current CPU architecture and download the target GitHub Release archive
+2. Extract into `/tmp/epusdt/<tag>/extract/`
+3. Require the existing `/opt/epusdt/.env`; if it is missing, the command fails and tells you to run `install` first
+4. Replace `/opt/epusdt/epusdt`
+5. Replace `/opt/epusdt/.env.example`
+6. Keep the existing `/opt/epusdt/.env`
+7. Refresh `epusdt.service` and run `systemctl daemon-reload`
+8. Restart `epusdt` immediately by default
+
+Additional behavior:
+
+- `upgrade` no longer creates `.env` and no longer runs `systemctl enable`
+- `upgrade --no-restart` replaces files only and prints a manual restart warning
+- `upgrade --prompt-restart` asks whether to restart when an interactive terminal is available
+- if file deployment fails before restart, or the restart fails after an upgrade, the script attempts to roll back the previous binary, `.env.example`, and unit file
 
 ## systemd Service Details
 
@@ -215,13 +228,14 @@ Examples:
 
 It performs these checks on the local machine:
 
-- builds an `ubuntu:24.04` + systemd test image
+- starts directly from `ubuntu:24.04` and installs systemd plus the test dependencies during container bootstrap
 - starts a privileged container
 - runs `epctl self-install` inside the container
 - downloads real GitHub Release artifacts
 - installs `epusdt`
+- when `upgrade-tag` is provided, verifies `upgrade --no-restart`, the default non-interactive `upgrade`, and both the `n` / Enter branches of `upgrade --prompt-restart`
 - verifies the systemd service, `www/index.html`, config output, logs, and status
-- verifies service behavior against real release artifacts; older script revisions also attempted to verify the legacy plaintext `init-password` route
+- verifies init-password behavior against real release artifacts; on releases where the legacy plaintext route is absent, the check reports the original HTTP failure for diagnosis
 
 Requirements:
 
