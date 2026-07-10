@@ -12,6 +12,7 @@
 | `GET` | `/pay/checkout-counter/:trade_id` | Redirect entry that sends the browser into the hosted cashier SPA |
 | `GET` | `/pay/checkout-counter-resp/:trade_id` | JSON payload used by the hosted cashier SPA |
 | `GET` | `/pay/check-status/:trade_id` | Poll hosted checkout status |
+| `POST` | `/pay/submit-tx-hash/:trade_id` | Submit an on-chain transaction hash from the cashier for a waiting order |
 
 ## Admin API surface
 
@@ -19,6 +20,8 @@ Management APIs live under `/admin/api/v1/*` and are JWT-protected except login 
 
 Key groups visible in current source:
 
+- Admin manual mark-paid accepts waiting or expired on-chain orders after transaction verification; public cashier hash submission remains waiting-order only.
+- Rate settings: `rate.forced_rate_list` restores the built-in CNY USDT/USDC default when empty, and `rate.api_url` is optional but must be a public HTTP/HTTPS URL when set.
 - `/auth/*`
 - `/api-keys/*`
 - `/notification-channels/*`

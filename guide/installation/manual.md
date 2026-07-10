@@ -17,13 +17,13 @@ cd /opt/epusdt
 
 Choose the archive that matches your server architecture from the current release page:
 
-- `epusdt-1.0.9-linux-amd64.tar.gz`
-- `epusdt-1.0.9-linux-arm64.tar.gz`
+- `epusdt-1.0.10-linux-amd64.tar.gz`
+- `epusdt-1.0.10-linux-arm64.tar.gz`
 
 Example for Linux x86_64 / amd64:
 
 ```bash
-wget https://github.com/GMWalletApp/epusdt/releases/download/v1.0.9/epusdt-1.0.9-linux-amd64.tar.gz -O epusdt.tar.gz
+wget https://github.com/GMWalletApp/epusdt/releases/download/v1.0.10/epusdt-1.0.10-linux-amd64.tar.gz -O epusdt.tar.gz
 tar -xzf epusdt.tar.gz
 rm epusdt.tar.gz
 ```

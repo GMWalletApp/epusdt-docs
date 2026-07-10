@@ -371,6 +371,44 @@ Order statuses:
 | `3` | Expired |
 | `4` | Waiting for payment network/token selection |
 
+## Submit Cashier Transaction Hash
+
+`POST /pay/submit-tx-hash/{trade_id}`
+
+This endpoint lets the hosted cashier submit an on-chain transaction hash for manual verification. It is intentionally narrower than the admin mark-paid action:
+
+- the order must be an on-chain order
+- the order must still be `status=1` waiting for payment
+- expired orders are rejected before chain verification
+- OkPay/provider orders are not supported
+
+Admin mark-paid can repair waiting or expired on-chain orders after the submitted chain transaction is verified. The cashier endpoint stays waiting-order only.
+
+### Submit Transaction Hash Request
+
+```json
+{
+  "block_transaction_id": "0xabc123..."
+}
+```
+
+### Submit Transaction Hash Success Response
+
+```json
+{
+  "status_code": 200,
+  "message": "success",
+  "data": {
+    "trade_id": "20260523171652123456001",
+    "block_transaction_id": "0xabc123...",
+    "status": 2
+  },
+  "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
+}
+```
+
+TON accepts canonical `ton:<receive_raw>:<lt>:<hash>`, `lt:hash`, or a unique recent hash-only reference for the order receive address. Aptos accepts a transaction hash.
+
 ## Switch Payment Network/Channel
 
 `POST /pay/switch-network`

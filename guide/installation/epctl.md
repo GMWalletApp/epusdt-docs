@@ -77,13 +77,13 @@ epctl
 Download a specific release:
 
 ```bash
-./epctl download --tag v1.0.8
+./epctl download --tag v1.0.10
 ```
 
 Install the service:
 
 ```bash
-./epctl install --tag v1.0.8 \
+./epctl install --tag v1.0.10 \
   --app-uri https://pay.example.com \
   --listen 127.0.0.1:18000
 ```
@@ -91,7 +91,7 @@ Install the service:
 Upgrade to a newer release:
 
 ```bash
-./epctl upgrade --tag v1.0.9
+./epctl upgrade --tag v1.0.10
 ```
 
 Running `./epctl upgrade --tag ...` directly restarts `epusdt` immediately after the files are replaced.

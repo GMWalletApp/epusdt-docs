@@ -9,6 +9,40 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - This page avoids inventing features that are not visible in release or code history
 
 
+## v1.0.10
+
+- Release tag: `v1.0.10`
+- Published at: `2026-07-10T13:24:42Z`
+- Official release note: `Allow admin to mark expired on-chain orders as paid and seed rates`
+- Full changelog: `https://github.com/GMWalletApp/epusdt/compare/v1.0.9...v1.0.10`
+
+### User-visible changes
+
+- Admin manual mark-paid can now repair **expired on-chain orders** after the submitted transaction hash is verified. The public cashier transaction-hash submission path still only accepts waiting orders and continues to reject expired orders and OkPay/provider orders.
+- A built-in forced-rate default is seeded for CNY stablecoin conversion: `cny.usdt` and `cny.usdc` both default to `0.14705882352941177`.
+- Empty `rate.forced_rate_list` is restored to the built-in CNY stablecoin default after rate settings are updated or the setting is deleted; any non-empty custom JSON remains user-owned and is not merged or overwritten.
+- `rate.api_url` is now optional; when provided, it still must be a public HTTP/HTTPS URL.
+
+### Deployment and configuration changes
+
+- `epctl upgrade` now requires an existing `/opt/epusdt/.env`, so upgrade no longer creates a new config. Run `install` first on a fresh machine.
+- Direct `epctl upgrade` replaces release files and restarts `epusdt` by default. Use `--no-restart` to stage files without restarting, or `--prompt-restart` to ask in an interactive terminal.
+- Upgrade deployment keeps rollback backups for the current binary, `.env.example`, and systemd unit. If file deployment or restart fails, `epctl` attempts to restore the previous release files.
+
+### API changes
+
+- Admin mark-paid accepts waiting and expired on-chain orders after chain transaction verification.
+- `POST /pay/submit-tx-hash/{trade_id}` remains stricter: it only accepts waiting on-chain orders; expired orders are rejected before verification.
+- Rate settings documentation now treats `rate.api_url` as optional and documents the default-restoration behavior for `rate.forced_rate_list`.
+
+### Evidence used
+
+- GitHub release `v1.0.10`
+- PR `#97` (dev merge)
+- Commits: `392240e` (admin mark-paid for expired on-chain orders), `d18965d` (seed default forced rates for CNY stablecoins), `6589ad1` (epctl upgrade restart controls and rollback-safe deploy), `8f03599` / `5668a2a` (frontend build sync)
+- Files: `src/controller/admin/order_controller.go`, `src/controller/comm/pay_controller.go`, `src/model/service/order_service.go`, `src/model/data/settings_data.go`, `src/model/mdb/settings.go`, `src/model/dao/mdb_table_init.go`, `src/controller/admin/settings_controller.go`, `epctl`, `wiki/EPCTL.md`, `wiki/EPCTL.en.md`
+
+
 ## v1.0.9
 
 - Release tag: `v1.0.9`

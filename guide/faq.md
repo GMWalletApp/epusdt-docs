@@ -53,3 +53,16 @@ https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usdt
 
 In the admin panel, go to **Settings - Exchange Rate** and enter your preferred API endpoint.
 The system will poll it periodically to keep rates up to date.
+
+### What happens if I leave forced rates empty?
+
+Current releases seed `rate.forced_rate_list` with a built-in CNY stablecoin map:
+
+```json
+{"cny":{"usdt":0.14705882352941177,"usdc":0.14705882352941177}}
+```
+
+If the forced-rate setting is deleted or saved as empty, Epusdt restores this built-in default. If you save any non-empty JSON map, Epusdt treats it as intentional and does not merge or overwrite it.
+
+`rate.api_url` is optional. When it is set, it must be a public `http://` or `https://` URL.
+
