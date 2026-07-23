@@ -21,6 +21,9 @@ hero:
       text: API 文件
       link: /zh/api/reference
     - theme: alt
+      text: GMPay Edge
+      link: /zh/guide/gmpay-edge
+    - theme: alt
       text: English
       link: /
 
@@ -43,6 +46,9 @@ features:
   - icon: 🤖
     title: 管理後臺
     details: 透過內建後臺管理 API Keys、通知通道、鏈、代幣、錢包地址與 EPay 預設值。
+  - icon: ⚡
+    title: GMPay Edge 相關專案
+    details: GMWalletApp/gmpay-edge 是獨立的 Cloudflare Workers 閘道，使用 D1、KV、R2、Queues、Cron，支援 GMPay HMAC-SHA256 與 EPay 相容流程。
 ---
 
 <div class="home-star-cta">

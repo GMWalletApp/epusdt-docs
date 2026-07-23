@@ -58,6 +58,7 @@ export default defineConfig({
               text: "Guide",
               items: [
                 { text: "Introduction", link: "/guide/intro" },
+                { text: "GMPay Edge", link: "/guide/gmpay-edge" },
                 { text: "Release Notes", link: "/guide/changelog" },
                 { text: "FAQ", link: "/guide/faq" },
                 { text: "Sponsor", link: "/guide/sponsor" },
@@ -120,6 +121,7 @@ export default defineConfig({
               text: "指南",
               items: [
                 { text: "項目簡介", link: "/zh/guide/intro" },
+                { text: "GMPay Edge", link: "/zh/guide/gmpay-edge" },
                 { text: "版本日誌", link: "/zh/guide/changelog" },
                 { text: "常見問題", link: "/zh/guide/faq" },
                 { text: "贊助支持", link: "/zh/guide/sponsor" },

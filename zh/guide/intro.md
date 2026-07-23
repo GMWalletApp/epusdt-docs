@@ -9,6 +9,8 @@ Epusdt 已完成第三方安全審計。
 
 `Epusdt` 是一個由 **Go** 編寫的私有化 **加密支付閘道**。
 
+GMWalletApp 組織也維護 [GMPay Edge](./gmpay-edge.md)。它是面向 Cloudflare Workers 的獨立邊緣原生閘道，共用 GMPay / EPay 商戶協議語境，但不是 Epusdt 的同一套執行時或部署模型。
+
 當前原始碼對外提供兩條建立訂單主流程：
 
 - **GMPay**：`POST /payments/gmpay/v1/order/create-transaction`

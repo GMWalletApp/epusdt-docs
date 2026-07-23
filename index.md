@@ -21,6 +21,9 @@ hero:
       text: API Reference
       link: /api/reference
     - theme: alt
+      text: GMPay Edge
+      link: /guide/gmpay-edge
+    - theme: alt
       text: 繁體中文
       link: /zh/
     - theme: alt
@@ -46,6 +49,9 @@ features:
   - icon: 🤖
     title: Telegram + Admin Console
     details: Manage settings, wallets, chains, API keys, and notifications from the built-in admin API and UI.
+  - icon: ⚡
+    title: GMPay Edge Companion
+    details: GMWalletApp/gmpay-edge is a separate Cloudflare Workers gateway with D1, KV, R2, Queues, Cron, GMPay HMAC-SHA256, and EPay compatibility.
 ---
 
 <div class="home-star-cta">
