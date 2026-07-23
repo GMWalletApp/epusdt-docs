@@ -30,17 +30,19 @@ POST /payments/gmpay/v1/order/create-transaction
   "network": "tron",
   "amount": 100,
   "notify_url": "https://merchant.example.com/notify",
-  "signature": "md5(...)"
+  "signature": "hmac-sha256-hex(...)"
 }
 ```
 
 ## 簽名規則
 
+> 自 `v2.0.0` 起，GMPay 使用 HMAC-SHA256，不再使用 MD5。部署 v2 前請先升級客戶端，否則會收到 `401 Unauthorized`；EPay 相容請求不受影響。
+
 1. 保留所有非空欄位，排除 `signature`
 2. 依 ASCII 鍵名排序
 3. 拼成 `key=value&...`
-4. 末尾追加商戶 `secret_key`
-5. 計算小寫 MD5
+4. 使用商戶 `secret_key` 作為 HMAC key 計算 HMAC-SHA256
+5. 將 64 位小寫十六進位摘要作為 `signature`
 
 ## 常用配套介面
 
@@ -55,7 +57,7 @@ POST /payments/gmpay/v1/order/create-transaction
 
 GMPay 成功回撥會以 JSON `POST` 發送到 `notify_url`。
 
-使用同一商戶的 `secret_key` 驗證回傳 `signature`，然後返回純文字 `ok`。
+使用同一商戶的 `secret_key` 依相同 HMAC-SHA256 規則驗證回傳 `signature`，然後返回純文字 `ok`。
 
 ## 成功回應補充
 

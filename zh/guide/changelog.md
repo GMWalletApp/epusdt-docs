@@ -3,6 +3,76 @@
 本文基於 `GMWalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
 
 
+## v2.0.0
+
+- 釋出標籤：`v2.0.0`
+- 釋出時間：`2026-07-23T06:04:47Z`
+- 官方釋出說明：`GMPay 接入存在破壞性變更：簽名從 MD5 改為 HMAC-SHA256`
+- 完整變更：`https://github.com/GMWalletApp/epusdt/compare/v1.0.10...v2.0.0`
+
+### 使用者可見變更
+
+- **GMPay 簽名破壞性變更**：GMPay 請求與回撥簽名改用 HMAC-SHA256，HMAC key 為商戶 `secret_key`。既有 MD5 GMPay 客戶端若未升級，會收到 `401 Unauthorized`。
+- EPay 相容請求與回撥不受影響，仍使用 `sign` / `sign_type` 的 MD5 規則。
+- 託管收銀臺初始化資料新增 `server_time`，前端可用服務端時間計算倒數，避免依賴瀏覽器本機時鐘。
+- 新增不依賴第三方套件的 Python GMPay 建單示例：`sdk/python/gmpay_create_order.py`。
+- 改善 EVM 支付回補恢復能力，中斷後的掃描區間可更可靠地追回。
+
+### 部署與配置變更
+
+- 部署 v2.0.0 前必須先升級 GMPay 客戶端：排除 `signature` 與空值，按 ASCII 鍵名排序，拼接為 `key=value&key=value`，再用 `secret_key` 計算小寫十六進位 HMAC-SHA256。
+- 匯率設定新增 `rate.mode=fixed|auto` 與 `rate.cache_ttl_seconds`（`10` 到 `86400` 秒）。fixed 模式使用 `rate.forced_rate_list`；auto 模式拉取 `rate.api_url` 並持久化快取。
+- auto 匯率刷新遇到供應商回傳部分資料時會保留上一次成功的幣種匯率；刷新或持久化失敗時會繼續使用最後一次可用的持久化快取。
+
+### API 變更
+
+- `POST /payments/gmpay/v1/order/create-transaction` 現以 HMAC-SHA256 驗證 GMPay `signature`，不再使用 MD5。
+- GMPay 商戶回撥也必須使用同一套 HMAC-SHA256 規範化引數規則驗簽。
+- `GET /pay/checkout-counter-resp/{trade_id}` 回應資料新增 `server_time`。
+- 管理 API 新增 `GET /admin/api/v1/settings/rate/status` 與 `POST /admin/api/v1/settings/rate/refresh`，用於查看匯率快取狀態與強制刷新。
+
+### 依據來源
+
+- GitHub Release `v2.0.0`
+- PR `#104`（dev 合併）與 PR `#99`（EVM 回補恢復）
+- Commits：`44d90b6`（EVM 回補恢復）、`f086d8b`（收銀臺 `server_time`）、`3dc8ab0`（auto 匯率模式與持久化回退快取）、`58141cd`（GMPay HMAC-SHA256 簽名）、`2353d85`（Python GMPay SDK 示例）
+- 涉及檔案：`src/middleware/check_sign.go`、`src/util/sign/sign.go`、`src/model/service/epay_return.go`、`src/model/response/pay_response.go`、`src/config/rate.go`、`src/controller/admin/settings_controller.go`、`src/route/router.go`、`src/task/listen_evm_backfill.go`、`sdk/python/gmpay_create_order.py`
+
+
+## v1.0.10
+
+- 釋出標籤：`v1.0.10`
+- 釋出時間：`2026-07-10T13:24:42Z`
+- 官方釋出說明：`Allow admin to mark expired on-chain orders as paid and seed rates`
+- 完整變更：`https://github.com/GMWalletApp/epusdt/compare/v1.0.9...v1.0.10`
+
+### 使用者可見變更
+
+- 後臺手動標記已支付現在可在提交交易 hash 並驗證通過後修復**已過期的鏈上訂單**；公開收銀臺交易 hash 提交仍只接受待支付訂單，仍會拒絕過期訂單與 OkPay / 第三方支付訂單。
+- 內建 CNY 穩定幣強制匯率預設值：`cny.usdt` 與 `cny.usdc` 均為 `0.14705882352941177`。
+- `rate.forced_rate_list` 為空時，更新設定或刪除設定後會恢復內建 CNY 穩定幣預設值；任何非空自定義 JSON 都視為使用者主動配置，不會被合併或覆蓋。
+- `rate.api_url` 現在可留空；若有填寫，仍必須是公開 HTTP/HTTPS URL。
+
+### 部署與配置變更
+
+- `epctl upgrade` 現在要求既有 `/opt/epusdt/.env`，因此升級不再建立新配置；新機請先執行 `install`。
+- 直接執行 `epctl upgrade` 會替換 release 檔案並預設重啟 `epusdt`。可用 `--no-restart` 只更新檔案不重啟，或用 `--prompt-restart` 在互動終端詢問。
+- 升級部署會為目前 binary、`.env.example` 和 systemd unit 保留 rollback 備份；檔案部署或重啟失敗時，`epctl` 會嘗試還原上一版 release 檔案。
+
+### API 變更
+
+- 後臺 mark-paid 在鏈上交易驗證通過後接受待支付與已過期鏈上訂單。
+- `POST /pay/submit-tx-hash/{trade_id}` 仍更嚴格：只接受待支付鏈上訂單；過期訂單會在驗證前被拒絕。
+- 匯率設定文件現在將 `rate.api_url` 視為可選，並說明 `rate.forced_rate_list` 的預設恢復行為。
+
+### 依據來源
+
+- GitHub Release `v1.0.10`
+- PR `#97`（dev 合併）
+- Commits：`392240e`（過期鏈上訂單後臺 mark-paid）、`d18965d`（CNY 穩定幣強制匯率預設值）、`6589ad1`（epctl 升級重啟控制與 rollback-safe 部署）、`8f03599` / `5668a2a`（前端構建同步）
+- 涉及檔案：`src/controller/admin/order_controller.go`、`src/controller/comm/pay_controller.go`、`src/model/service/order_service.go`、`src/model/data/settings_data.go`、`src/model/mdb/settings.go`、`src/model/dao/mdb_table_init.go`、`src/controller/admin/settings_controller.go`、`epctl`、`wiki/EPCTL.md`、`wiki/EPCTL.en.md`
+
+
 ## v1.0.9
 
 - 釋出標籤：`v1.0.9`

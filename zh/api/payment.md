@@ -47,11 +47,13 @@
 
 ### GMPay 簽名
 
+> 自 `v2.0.0` 起，GMPay 改用 HMAC-SHA256，這是相對 v2 之前 MD5 規則的破壞性變更。部署 `v2.0.0` 或更新版本前，既有 GMPay 客戶端必須先升級請求與回撥簽名；EPay 相容介面仍使用 MD5，不受影響。
+
 1. 將所有非空引數按引數名 ASCII 字典序升序排序。
 2. 使用 `key=value` 形式以 `&` 拼接。
 3. 不參與簽名的欄位：`signature`。
-4. 在拼接字串末尾直接追加 `secret_key`。
-5. 對最終字串做 MD5，結果轉小寫，作為 `signature`。
+4. 使用商戶 `secret_key` 作為 HMAC key，以上述拼接字串作為 message，計算 HMAC-SHA256。
+5. 將結果編碼為 64 位小寫十六進位字串，作為 `signature`。
 
 注意：
 
@@ -77,16 +79,16 @@ name=VIP
 
 以下示例假設 `secret_key` 為 `epusdt_secret_key`，僅用於演示簽名計算。
 
-待簽名字串：
+規範化引數字串：
 
 ```text
-amount=100&currency=cny&name=VIP&network=tron&notify_url=https://merchant.example/notify&order_id=ORD202605230001&pid=1000&redirect_url=https://merchant.example/return&token=usdtepusdt_secret_key
+amount=100&currency=cny&name=VIP&network=tron&notify_url=https://merchant.example/notify&order_id=ORD202605230001&pid=1000&redirect_url=https://merchant.example/return&token=usdt
 ```
 
 得到：
 
 ```text
-signature=476412c422f4dd75c3d533f5c47a9cac
+signature=6f874b1919d95081835e2809b620e354a5866f5a6dbb2e432d1627f1eb10059d
 ```
 
 ### PHP 簽名示例
@@ -107,7 +109,7 @@ function gmpaySign(array $params, string $secretKey): string
         $pairs[] = $key . '=' . $value;
     }
 
-    return strtolower(md5(implode('&', $pairs) . $secretKey));
+    return hash_hmac('sha256', implode('&', $pairs), $secretKey);
 }
 ```
 
@@ -153,7 +155,7 @@ function epaySign(array $params, string $secretKey): string
   "notify_url": "https://merchant.example/notify",
   "redirect_url": "https://merchant.example/return",
   "name": "VIP",
-  "signature": "476412c422f4dd75c3d533f5c47a9cac"
+  "signature": "6f874b1919d95081835e2809b620e354a5866f5a6dbb2e432d1627f1eb10059d"
 }
 ```
 
@@ -306,13 +308,14 @@ function epaySign(array $params, string $secretKey): string
     "redirect_url": "https://merchant.example/return",
     "payment_url": "",
     "created_at": 1779530212000,
+    "server_time": 1779530312000,
     "is_selected": false
   },
   "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
 }
 ```
 
-注意：該介面的 `expiration_time` 和 `created_at` 是毫秒級時間戳。
+注意：該介面的 `expiration_time`、`created_at` 和 `server_time` 是毫秒級時間戳。`server_time` 是服務端目前時間，託管收銀臺可用它計算倒數，避免依賴客戶端時鐘。
 
 如果訂單是狀態 `4` 佔位訂單，返回的仍是同一個父訂單 `trade_id`，但鏈上支付欄位尚未生成。該狀態可能來自 GMPay 空 token/network 建立，也可能來自 EPay submit.php 在請求和資料庫預設值都沒有完整 token/network 時建立：
 
@@ -334,6 +337,7 @@ function epaySign(array $params, string $secretKey): string
     "redirect_url": "https://merchant.example/return",
     "payment_url": "",
     "created_at": 1779530212000,
+    "server_time": 1779530312000,
     "is_selected": false
   },
   "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
@@ -548,7 +552,7 @@ EPay 介面解析 `type/token/network/currency` 的優先順序：
 | `signature` | string | 回撥簽名。 |
 | `status` | integer | 當前僅支付成功時回撥，值為 `2`。 |
 
-GMPay 回撥驗籤方式與建立訂單一致，但排除 `signature` 欄位。
+GMPay 回撥驗籤方式與建立訂單相同，均使用 HMAC-SHA256，並排除 `signature` 欄位。
 
 ### EPay 相容回撥
 

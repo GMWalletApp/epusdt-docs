@@ -30,17 +30,19 @@ You need:
   "network": "tron",
   "amount": 100,
   "notify_url": "https://merchant.example.com/notify",
-  "signature": "md5(...)"
+  "signature": "hmac-sha256-hex(...)"
 }
 ```
 
 ## Signature rule
 
+> Since `v2.0.0`, GMPay uses HMAC-SHA256 instead of MD5. Upgrade clients before deploying v2 or they will receive `401 Unauthorized`. EPay-compatible requests are not affected.
+
 1. Keep all non-empty fields except `signature`
 2. Sort by ASCII key order
 3. Join as `key=value&...`
-4. Append merchant `secret_key`
-5. Calculate lowercase MD5
+4. Calculate HMAC-SHA256 with merchant `secret_key` as the HMAC key
+5. Send the lowercase 64-character hex digest as `signature`
 
 ## Useful companion routes
 
@@ -55,7 +57,7 @@ That same config response also exposes public cashier branding (`data.site`) plu
 
 GMPay callbacks are sent as JSON `POST` to `notify_url`.
 
-Verify the returned `signature` with the same merchant `secret_key` and reply with exact plain text `ok`.
+Verify the returned `signature` with the same HMAC-SHA256 rule and merchant `secret_key`, then reply with exact plain text `ok`.
 
 ## Success response note
 

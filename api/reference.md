@@ -21,7 +21,7 @@ Management APIs live under `/admin/api/v1/*` and are JWT-protected except login 
 Key groups visible in current source:
 
 - Admin manual mark-paid accepts waiting or expired on-chain orders after transaction verification; public cashier hash submission remains waiting-order only.
-- Rate settings: `rate.forced_rate_list` restores the built-in CNY USDT/USDC default when empty, and `rate.api_url` is optional but must be a public HTTP/HTTPS URL when set.
+- Rate settings: `rate.mode` can be `fixed` or `auto`. Fixed mode uses `rate.forced_rate_list`; auto mode fetches `rate.api_url`, caches successful base-currency responses, and keeps the last durable cache when refreshes fail. Empty `rate.forced_rate_list` restores the built-in CNY USDT/USDC default.
 - `/auth/*`
 - `/api-keys/*`
 - `/notification-channels/*`
@@ -36,7 +36,8 @@ Key groups visible in current source:
 
 - Required merchant identifier: `pid`
 - Signature field: `signature`
-- Signature key: the `secret_key` of the enabled `api_keys` row matching `pid`
+- Signature algorithm since `v2.0.0`: HMAC-SHA256 over the canonical non-empty parameter string, keyed by the enabled `api_keys.secret_key` matching `pid`
+- Pre-v2 GMPay MD5 clients must be upgraded before deploying `v2.0.0` or later
 
 ### EPay-compatible flow
 

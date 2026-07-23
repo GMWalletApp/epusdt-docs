@@ -9,6 +9,42 @@ This page summarizes published Epusdt releases using the repository's actual Git
 - This page avoids inventing features that are not visible in release or code history
 
 
+## v2.0.0
+
+- Release tag: `v2.0.0`
+- Published at: `2026-07-23T06:04:47Z`
+- Official release note: `Breaking change for GMPay integrations: GMPay signatures changed from MD5 to HMAC-SHA256`
+- Full changelog: `https://github.com/GMWalletApp/epusdt/compare/v1.0.10...v2.0.0`
+
+### User-visible changes
+
+- **Breaking GMPay signature change**: GMPay request and callback signatures now use HMAC-SHA256 with the merchant `secret_key` as the HMAC key. Existing MD5-based GMPay clients receive `401 Unauthorized` until upgraded.
+- EPay-compatible requests and callbacks are not affected and continue to use MD5 with `sign` / `sign_type`.
+- Hosted cashier initialization data now includes `server_time`, allowing clients to calculate countdowns against server time instead of trusting local browser clocks.
+- Added a standard-library-only Python GMPay order creation example at `sdk/python/gmpay_create_order.py`.
+- EVM payment backfill recovery was improved so interrupted scanner windows can be recovered more reliably.
+
+### Deployment and configuration changes
+
+- Upgrade GMPay clients before deploying v2.0.0: exclude `signature`, exclude empty values, sort parameters by ASCII key order, join as `key=value&key=value`, then calculate lowercase hex HMAC-SHA256 using `secret_key`.
+- Rate settings now support `rate.mode=fixed|auto` and `rate.cache_ttl_seconds` between `10` and `86400` seconds. Fixed mode uses `rate.forced_rate_list`; auto mode fetches `rate.api_url` and stores a durable cache.
+- Auto-rate refresh keeps previous successful coin rates when a provider response is partial, and continues serving the last durable cache when refreshes or persistence fail.
+
+### API changes
+
+- `POST /payments/gmpay/v1/order/create-transaction` now verifies GMPay `signature` with HMAC-SHA256 instead of MD5.
+- GMPay merchant callbacks must be verified with the same HMAC-SHA256 canonical-parameter rule.
+- `GET /pay/checkout-counter-resp/{trade_id}` response data now includes `server_time`.
+- Admin APIs add `GET /admin/api/v1/settings/rate/status` and `POST /admin/api/v1/settings/rate/refresh` for rate cache inspection and forced refresh.
+
+### Evidence used
+
+- GitHub release `v2.0.0`
+- PR `#104` (dev merge) and PR `#99` (EVM backfill recovery)
+- Commits: `44d90b6` (EVM backfill recovery), `f086d8b` (checkout `server_time`), `3dc8ab0` (auto rate mode with persistent fallback cache), `58141cd` (GMPay HMAC-SHA256 signatures), `2353d85` (Python GMPay SDK example)
+- Files: `src/middleware/check_sign.go`, `src/util/sign/sign.go`, `src/model/service/epay_return.go`, `src/model/response/pay_response.go`, `src/config/rate.go`, `src/controller/admin/settings_controller.go`, `src/route/router.go`, `src/task/listen_evm_backfill.go`, `sdk/python/gmpay_create_order.py`
+
+
 ## v1.0.10
 
 - Release tag: `v1.0.10`

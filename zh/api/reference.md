@@ -33,7 +33,8 @@
 
 - 商戶識別欄位：`pid`
 - 簽名欄位：`signature`
-- 簽名金鑰：對應 `pid` 的已啟用 `api_keys.secret_key`
+- 自 `v2.0.0` 起的簽名演算法：對規範化後的非空引數字串做 HMAC-SHA256，HMAC key 為對應 `pid` 的已啟用 `api_keys.secret_key`
+- v2 之前的 GMPay MD5 客戶端必須先升級後才能部署 `v2.0.0` 或更新版本
 
 ### EPay 相容流程
 

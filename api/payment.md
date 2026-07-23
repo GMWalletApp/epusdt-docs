@@ -47,11 +47,13 @@ The current version uses unified merchant credentials. Each request must include
 
 ### GMPay Signature
 
+> Since `v2.0.0`, GMPay uses HMAC-SHA256. This is a breaking change from the pre-v2 MD5 rule. Existing GMPay clients must update request and callback signing before deploying `v2.0.0` or later. The EPay-compatible API still uses MD5.
+
 1. Sort all non-empty parameters by ASCII key order in ascending order.
 2. Join them as `key=value` pairs with `&`.
 3. Exclude the `signature` field.
-4. Append `secret_key` directly to the end of the joined string.
-5. MD5 the final string and lowercase the result as `signature`.
+4. Calculate HMAC-SHA256 using the merchant `secret_key` as the HMAC key and the joined parameter string as the message.
+5. Encode the result as 64-character lowercase hexadecimal text and send it as `signature`.
 
 Notes:
 
@@ -77,16 +79,16 @@ name=VIP
 
 The following example assumes `secret_key` is `epusdt_secret_key`, only to demonstrate signature calculation.
 
-String to sign:
+Canonical parameter string:
 
 ```text
-amount=100&currency=cny&name=VIP&network=tron&notify_url=https://merchant.example/notify&order_id=ORD202605230001&pid=1000&redirect_url=https://merchant.example/return&token=usdtepusdt_secret_key
+amount=100&currency=cny&name=VIP&network=tron&notify_url=https://merchant.example/notify&order_id=ORD202605230001&pid=1000&redirect_url=https://merchant.example/return&token=usdt
 ```
 
 Result:
 
 ```text
-signature=476412c422f4dd75c3d533f5c47a9cac
+signature=6f874b1919d95081835e2809b620e354a5866f5a6dbb2e432d1627f1eb10059d
 ```
 
 ### PHP Signature Examples
@@ -107,7 +109,7 @@ function gmpaySign(array $params, string $secretKey): string
         $pairs[] = $key . '=' . $value;
     }
 
-    return strtolower(md5(implode('&', $pairs) . $secretKey));
+    return hash_hmac('sha256', implode('&', $pairs), $secretKey);
 }
 ```
 
@@ -153,7 +155,7 @@ Supported content types:
   "notify_url": "https://merchant.example/notify",
   "redirect_url": "https://merchant.example/return",
   "name": "VIP",
-  "signature": "476412c422f4dd75c3d533f5c47a9cac"
+  "signature": "6f874b1919d95081835e2809b620e354a5866f5a6dbb2e432d1627f1eb10059d"
 }
 ```
 
@@ -306,13 +308,14 @@ Used by the frontend cashier to read order display data. This endpoint only conf
     "redirect_url": "https://merchant.example/return",
     "payment_url": "",
     "created_at": 1779530212000,
+    "server_time": 1779530312000,
     "is_selected": false
   },
   "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
 }
 ```
 
-Note: `expiration_time` and `created_at` returned by this endpoint are millisecond timestamps.
+Note: `expiration_time`, `created_at`, and `server_time` returned by this endpoint are millisecond timestamps. `server_time` is the server timestamp used by the hosted cashier to calculate countdowns without relying on client clock accuracy.
 
 If the order is a status `4` placeholder order, the response still uses the same parent `trade_id`, but on-chain payment fields have not been generated yet. This status can come from GMPay creation with empty token/network, or from EPay `submit.php` when neither the request nor database defaults provide a complete token/network:
 
@@ -334,6 +337,7 @@ If the order is a status `4` placeholder order, the response still uses the same
     "redirect_url": "https://merchant.example/return",
     "payment_url": "",
     "created_at": 1779530212000,
+    "server_time": 1779530312000,
     "is_selected": false
   },
   "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
@@ -586,7 +590,7 @@ Normal GMPay orders use a POST JSON callback.
 | `signature` | string | Callback signature. |
 | `status` | integer | Currently callbacks are sent only for successful payments; the value is `2`. |
 
-GMPay callback signature verification is the same as order creation, excluding the `signature` field.
+GMPay callback signature verification is the same HMAC-SHA256 rule as order creation, excluding the `signature` field.
 
 ### EPay-Compatible Callback
 
