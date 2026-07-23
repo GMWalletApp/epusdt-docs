@@ -50,6 +50,7 @@ export default defineConfig({
           { text: "Home", link: "/" },
           { text: "Guide", link: "/guide/intro" },
           { text: "API", link: "/api/reference" },
+          { text: "GMPay Edge", link: "/gmpay-edge/" },
           { text: "Sponsor", link: "/guide/sponsor" },
         ],
         sidebar: {
@@ -58,7 +59,6 @@ export default defineConfig({
               text: "Guide",
               items: [
                 { text: "Introduction", link: "/guide/intro" },
-                { text: "GMPay Edge", link: "/guide/gmpay-edge" },
                 { text: "Release Notes", link: "/guide/changelog" },
                 { text: "FAQ", link: "/guide/faq" },
                 { text: "Sponsor", link: "/guide/sponsor" },
@@ -93,6 +93,14 @@ export default defineConfig({
               ],
             },
           ],
+          "/gmpay-edge/": [
+            {
+              text: "GMPay Edge",
+              items: [
+                { text: "Overview", link: "/gmpay-edge/" },
+              ],
+            },
+          ],
         },
       },
     },
@@ -113,6 +121,7 @@ export default defineConfig({
           { text: "首頁", link: "/zh/" },
           { text: "指南", link: "/zh/guide/intro" },
           { text: "API 文件", link: "/zh/api/reference" },
+          { text: "GMPay Edge", link: "/zh/gmpay-edge/" },
           { text: "贊助", link: "/zh/guide/sponsor" },
         ],
         sidebar: {
@@ -121,7 +130,6 @@ export default defineConfig({
               text: "指南",
               items: [
                 { text: "項目簡介", link: "/zh/guide/intro" },
-                { text: "GMPay Edge", link: "/zh/guide/gmpay-edge" },
                 { text: "版本日誌", link: "/zh/guide/changelog" },
                 { text: "常見問題", link: "/zh/guide/faq" },
                 { text: "贊助支持", link: "/zh/guide/sponsor" },
@@ -153,6 +161,14 @@ export default defineConfig({
                 { text: "概覽", link: "/zh/api/reference" },
                 { text: "支付介面", link: "/zh/api/payment" },
                 { text: "介面遷移說明", link: "/zh/api/legacy" },
+              ],
+            },
+          ],
+          "/zh/gmpay-edge/": [
+            {
+              text: "GMPay Edge",
+              items: [
+                { text: "概覽", link: "/zh/gmpay-edge/" },
               ],
             },
           ],

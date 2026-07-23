@@ -22,7 +22,7 @@ hero:
       link: /api/reference
     - theme: alt
       text: GMPay Edge
-      link: /guide/gmpay-edge
+      link: /gmpay-edge/
     - theme: alt
       text: 繁體中文
       link: /zh/
