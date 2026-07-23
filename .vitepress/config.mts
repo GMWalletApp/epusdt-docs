@@ -98,6 +98,10 @@ export default defineConfig({
               text: "GMPay Edge",
               items: [
                 { text: "Overview", link: "/gmpay-edge/" },
+                { text: "Architecture", link: "/gmpay-edge/architecture" },
+                { text: "Deployment", link: "/gmpay-edge/deployment" },
+                { text: "Merchant API", link: "/gmpay-edge/merchant-api" },
+                { text: "Payment Integrations", link: "/gmpay-edge/payment-integrations" },
               ],
             },
           ],
@@ -169,6 +173,10 @@ export default defineConfig({
               text: "GMPay Edge",
               items: [
                 { text: "概覽", link: "/zh/gmpay-edge/" },
+                { text: "架構", link: "/zh/gmpay-edge/architecture" },
+                { text: "部署", link: "/zh/gmpay-edge/deployment" },
+                { text: "商戶 API", link: "/zh/gmpay-edge/merchant-api" },
+                { text: "支付接入", link: "/zh/gmpay-edge/payment-integrations" },
               ],
             },
           ],
