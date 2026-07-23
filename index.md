@@ -24,9 +24,6 @@ hero:
       text: GMPay Edge
       link: /gmpay-edge/
     - theme: alt
-      text: 繁體中文
-      link: /zh/
-    - theme: alt
       text: FAQ
       link: /guide/faq
 
@@ -53,9 +50,3 @@ features:
     title: GMPay Edge Companion
     details: GMWalletApp/gmpay-edge is a separate Cloudflare Workers gateway with D1, KV, R2, Queues, Cron, GMPay HMAC-SHA256, and EPay compatibility.
 ---
-
-<div class="home-star-cta">
-  <a href="https://github.com/GMWalletApp/epusdt/stargazers" target="_blank" rel="noreferrer" aria-label="View Epusdt GitHub star count">
-    <img src="https://img.shields.io/github/stars/GMWalletApp/epusdt?style=social" alt="GitHub stars">
-  </a>
-</div>

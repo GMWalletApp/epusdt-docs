@@ -23,9 +23,6 @@ hero:
     - theme: alt
       text: GMPay Edge
       link: /zh/gmpay-edge/
-    - theme: alt
-      text: English
-      link: /
 
 features:
   - icon: 🐳
@@ -50,9 +47,3 @@ features:
     title: GMPay Edge 相關專案
     details: GMWalletApp/gmpay-edge 是獨立的 Cloudflare Workers 閘道，使用 D1、KV、R2、Queues、Cron，支援 GMPay HMAC-SHA256 與 EPay 相容流程。
 ---
-
-<div class="home-star-cta">
-  <a href="https://github.com/GMWalletApp/epusdt/stargazers" target="_blank" rel="noreferrer" aria-label="View Epusdt GitHub star count">
-    <img src="https://img.shields.io/github/stars/GMWalletApp/epusdt?style=social" alt="GitHub stars">
-  </a>
-</div>
