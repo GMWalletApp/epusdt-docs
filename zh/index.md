@@ -23,6 +23,9 @@ hero:
     - theme: alt
       text: GMPay Edge
       link: /zh/gmpay-edge/
+    - theme: alt
+      text: GMShop Edge
+      link: /zh/gmshop-edge/
 
 features:
   - icon: 🐳
@@ -46,4 +49,7 @@ features:
   - icon: ⚡
     title: GMPay Edge 相關專案
     details: GMWalletApp/gmpay-edge 是獨立的 Cloudflare Workers 閘道，使用 D1、KV、R2、Queues、Cron，支援 GMPay HMAC-SHA256 與 EPay 相容流程。
+  - icon: 🛒
+    title: GMShop Edge 商城
+    details: GMWalletApp/gmshop-edge 是獨立的 Cloudflare Workers 數位商品商城，提供商品、結帳、交付、管理後臺與外部 GMpay / EPay 適配器。
 ---

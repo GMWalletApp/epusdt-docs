@@ -24,6 +24,9 @@ hero:
       text: GMPay Edge
       link: /gmpay-edge/
     - theme: alt
+      text: GMShop Edge
+      link: /gmshop-edge/
+    - theme: alt
       text: FAQ
       link: /guide/faq
 
@@ -49,4 +52,7 @@ features:
   - icon: ⚡
     title: GMPay Edge Companion
     details: GMWalletApp/gmpay-edge is a separate Cloudflare Workers gateway with D1, KV, R2, Queues, Cron, GMPay HMAC-SHA256, and EPay compatibility.
+  - icon: 🛒
+    title: GMShop Edge Storefront
+    details: GMWalletApp/gmshop-edge is a separate Cloudflare Workers digital-goods store with catalog, checkout, fulfillment, admin, and outbound GMpay / EPay adapters.
 ---

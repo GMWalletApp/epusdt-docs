@@ -51,6 +51,7 @@ export default defineConfig({
           { text: "Guide", link: "/guide/intro" },
           { text: "API", link: "/api/reference" },
           { text: "GMPay Edge", link: "/gmpay-edge/" },
+          { text: "GMShop Edge", link: "/gmshop-edge/" },
           { text: "Sponsor", link: "/guide/sponsor" },
         ],
         sidebar: {
@@ -105,6 +106,18 @@ export default defineConfig({
               ],
             },
           ],
+          "/gmshop-edge/": [
+            {
+              text: "GMShop Edge",
+              items: [
+                { text: "Overview", link: "/gmshop-edge/" },
+                { text: "Architecture", link: "/gmshop-edge/architecture" },
+                { text: "Deployment", link: "/gmshop-edge/deployment" },
+                { text: "Commerce and Fulfillment", link: "/gmshop-edge/commerce-fulfillment" },
+                { text: "Payment and Providers", link: "/gmshop-edge/payment-providers" },
+              ],
+            },
+          ],
         },
       },
     },
@@ -126,6 +139,7 @@ export default defineConfig({
           { text: "指南", link: "/zh/guide/intro" },
           { text: "API 文件", link: "/zh/api/reference" },
           { text: "GMPay Edge", link: "/zh/gmpay-edge/" },
+          { text: "GMShop Edge", link: "/zh/gmshop-edge/" },
           { text: "贊助", link: "/zh/guide/sponsor" },
         ],
         sidebar: {
@@ -177,6 +191,18 @@ export default defineConfig({
                 { text: "部署", link: "/zh/gmpay-edge/deployment" },
                 { text: "商戶 API", link: "/zh/gmpay-edge/merchant-api" },
                 { text: "支付接入", link: "/zh/gmpay-edge/payment-integrations" },
+              ],
+            },
+          ],
+          "/zh/gmshop-edge/": [
+            {
+              text: "GMShop Edge",
+              items: [
+                { text: "概覽", link: "/zh/gmshop-edge/" },
+                { text: "架構", link: "/zh/gmshop-edge/architecture" },
+                { text: "部署", link: "/zh/gmshop-edge/deployment" },
+                { text: "交易與交付", link: "/zh/gmshop-edge/commerce-fulfillment" },
+                { text: "支付與 Provider", link: "/zh/gmshop-edge/payment-providers" },
               ],
             },
           ],
