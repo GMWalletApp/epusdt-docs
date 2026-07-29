@@ -11,7 +11,7 @@ Epusdt 已完成第三方安全審計。
 
 GMWalletApp 組織也維護 [GMPay Edge](/zh/gmpay-edge/)。它是面向 Cloudflare Workers 的獨立邊緣原生閘道，共用 GMPay / EPay 商戶協議語境，但不是 Epusdt 的同一套執行時或部署模型。
 
-如果需要數位商品商城，請看 [GMShop Edge](/zh/gmshop-edge/)。它是獨立的 Cloudflare Workers 商城，負責商品、結帳、交付與管理後臺。GMShop Edge 是商城，不是支付閘道；它的 GMpay 與 EPay 支援是本商城訂單的外部託管收銀。
+如果需要數位商品商城，請看 [GMShop Edge](/zh/gmshop-edge/)，它是獨立的 Cloudflare Workers 商城，負責商品、結帳、交付與管理後臺。
 
 當前原始碼對外提供兩條建立訂單主流程：
 

@@ -46,14 +46,14 @@ bun run dev
 
 Open `/install` on the first run. Installation creates the first root administrator, protected built-in roles, runtime secrets, and required settings.
 
-It does not create fake products, inventory, provider credentials, or payment configurations.
+It does not create fake products, inventory, provider credentials, or checkout-provider configurations.
 
 After installation:
 
 1. Confirm the detected application URL and configure exact Allowed Hosts.
 2. Configure public branding, registration, authentication, email, commerce, fulfillment, retention, and provider settings in `/admin`.
 3. Create a draft product, its sellable items, and stock, files, or automation configuration; review publish checks before making it public.
-4. Configure a payment adapter and complete a real-provider acceptance order before opening the store.
+4. Configure checkout providers and complete a real-provider acceptance order before opening the store.
 5. Back up D1, private R2 data, and runtime configuration.
 
 ## Useful development commands

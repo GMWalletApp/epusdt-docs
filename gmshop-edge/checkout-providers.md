@@ -1,17 +1,16 @@
-# Payment and Providers
+# Checkout and Providers
 
-GMShop Edge uses payment providers as outbound checkout adapters for the store's own orders. It is not a merchant gateway and does not expose a GMPay-compatible API for other merchants.
+GMShop Edge keeps checkout, order state, provider credentials, and notification delivery inside the store deployment.
 
-## Payment model
+## Checkout model
 
-The store maintains customer-selected fiat currencies through D1 exchange rates. During checkout it creates one immutable quote and passes that quote to the selected adapter, such as Stripe, GMpay, EPay, or another typed provider.
+The store maintains customer-selected fiat currencies through D1 exchange rates. During checkout it creates one immutable quote and passes that quote to the selected typed provider.
 
 This means:
 
-- GMpay and EPay are outbound hosted-checkout adapters for store orders.
-- The project does not scan blockchains or operate exchange/wallet receiving adapters.
-- It does not issue merchant PID / secret_key credentials to third parties.
-- Production acceptance must use deployer-owned provider accounts and real-provider test orders.
+- Store order amounts are tracked in integer minor units, not floating point.
+- Checkout provider credentials are runtime configuration owned by the deployer.
+- Production acceptance should use deployer-owned provider accounts and real-provider test orders.
 
 ## Provider secrets
 

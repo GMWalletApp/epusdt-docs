@@ -6,7 +6,7 @@
 
 The GMWalletApp organization also maintains [GMPay Edge](/gmpay-edge/), a separate edge-native gateway for Cloudflare Workers. It shares the GMPay/EPay merchant-protocol context, but it is not the same runtime or deployment model as Epusdt.
 
-For digital-goods stores, see [GMShop Edge](/gmshop-edge/). It is a separate Cloudflare Workers storefront for catalog, checkout, fulfillment, and administration. GMShop Edge is a store, not a payment gateway; its GMpay and EPay support is outbound hosted checkout for the store's own orders.
+For digital-goods stores, see [GMShop Edge](/gmshop-edge/), a separate Cloudflare Workers storefront for catalog, checkout, fulfillment, and administration.
 
 Current source exposes two public order-entry flows:
 
