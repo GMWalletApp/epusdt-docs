@@ -2,40 +2,6 @@
 
 GMShop Edge 以單個 Cloudflare Worker 承載公開商城、客戶中心、結帳、交付與管理後臺。
 
-```mermaid
-flowchart LR
-    Customer["客戶"]
-    Operator["營運人員"]
-
-    subgraph Worker["單個 GMShop Edge Worker"]
-        direction LR
-        Storefront["公開商城 · 客戶中心"]
-        Admin["權限驅動的管理後臺"]
-        Commerce["商品 · 訂單 · 權益"]
-        Suppliers["供應商<br/>目錄同步 · 帳號池 · 採購訂單"]
-        Delivery["庫存 · 下載 · 自動化"]
-
-        Storefront --> Commerce
-        Admin --> Commerce
-        Admin --> Suppliers
-        Commerce --> Delivery
-        Commerce --> Suppliers
-        Suppliers --> Delivery
-    end
-
-    Cloudflare["Cloudflare 服務<br/>D1 · KV · R2 · Queues · Cron"]
-    Providers["業務服務商<br/>收銀臺 · 郵件 · 自動化"]
-    Upstreams["上游供貨平台<br/>ACG · 獨角數卡 Next"]
-
-    Customer --> Storefront
-    Operator --> Admin
-    Commerce <--> Cloudflare
-    Suppliers <--> Cloudflare
-    Delivery <--> Cloudflare
-    Delivery --> Providers
-    Suppliers <--> Upstreams
-```
-
 ## Cloudflare bindings
 
 倉庫在 `wrangler.jsonc` 與 `package.json` metadata 中宣告這些生產 bindings：

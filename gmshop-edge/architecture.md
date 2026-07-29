@@ -2,40 +2,6 @@
 
 GMShop Edge runs as one Cloudflare Worker that owns the public shop, customer account area, checkout, fulfillment, and administration console.
 
-```mermaid
-flowchart LR
-    Customer["Customer"]
-    Operator["Operator"]
-
-    subgraph Worker["Single GMShop Edge Worker"]
-        direction LR
-        Storefront["Storefront · account"]
-        Admin["Permission-driven admin"]
-        Commerce["Catalog · orders · entitlements"]
-        Suppliers["Suppliers<br/>Catalog sync · account pools · purchase orders"]
-        Delivery["Stock · download · automation"]
-
-        Storefront --> Commerce
-        Admin --> Commerce
-        Admin --> Suppliers
-        Commerce --> Delivery
-        Commerce --> Suppliers
-        Suppliers --> Delivery
-    end
-
-    Cloudflare["Cloudflare services<br/>D1 · KV · R2 · Queues · Cron"]
-    Providers["Business providers<br/>Checkout · email · automation"]
-    Upstreams["Upstream suppliers<br/>ACG · Dujiao Next"]
-
-    Customer --> Storefront
-    Operator --> Admin
-    Commerce <--> Cloudflare
-    Suppliers <--> Cloudflare
-    Delivery <--> Cloudflare
-    Delivery --> Providers
-    Suppliers <--> Upstreams
-```
-
 ## Cloudflare bindings
 
 The repository declares these production bindings in `wrangler.jsonc` and `package.json` metadata:
