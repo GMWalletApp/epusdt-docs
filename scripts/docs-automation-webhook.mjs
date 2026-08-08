@@ -1,11 +1,11 @@
 import { createHmac } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 
-const webhookUrl = process.env.OPENCLAW_WEBHOOK_URL;
-const webhookSecret = process.env.OPENCLAW_WEBHOOK_SECRET;
+const webhookUrl = process.env.HERMES_WEBHOOK_URL;
+const webhookSecret = process.env.HERMES_WEBHOOK_SECRET;
 
 if (!webhookUrl || !webhookSecret) {
-  console.error("OPENCLAW_WEBHOOK_URL and OPENCLAW_WEBHOOK_SECRET are required");
+  console.error("HERMES_WEBHOOK_URL and HERMES_WEBHOOK_SECRET are required");
   process.exit(1);
 }
 
@@ -14,7 +14,7 @@ const trackedStatePath = ".automation/upstream-state.json";
 const trackedState = existsSync(trackedStatePath) ? JSON.parse(readFileSync(trackedStatePath, "utf8")) : null;
 
 const triggerKind = process.env.GITHUB_EVENT_NAME || "unknown";
-const eventType = triggerKind === "issues" ? "docs.fix" : "docs.update";
+const eventType = ["issues", "issue_comment"].includes(triggerKind) ? "docs.fix" : "docs.update";
 
 if (eventType === "docs.update" && triggerKind === "schedule") {
   const currentState = context.upstreamState;
@@ -51,7 +51,7 @@ const response = await fetch(webhookUrl, {
   method: "POST",
   headers: {
     "content-type": "application/json",
-    "x-openclaw-signature-256": signature,
+    "x-hermes-signature-256": signature,
   },
   body: rawBody,
 });

@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   automate:
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event.issue.state == 'open' && !github.event.issue.pull_request)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout docs repo
@@ -46,10 +47,10 @@ jobs:
       - name: Show collected context summary
         run: cat .automation/context.json
 
-      - name: Send webhook to OpenClaw bridge
+      - name: Send webhook to Hermes bridge
         env:
-          OPENCLAW_WEBHOOK_URL: ${{ secrets.OPENCLAW_WEBHOOK_URL }}
-          OPENCLAW_WEBHOOK_SECRET: ${{ secrets.OPENCLAW_WEBHOOK_SECRET }}
+          HERMES_WEBHOOK_URL: ${{ secrets.HERMES_WEBHOOK_URL }}
+          HERMES_WEBHOOK_SECRET: ${{ secrets.HERMES_WEBHOOK_SECRET }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_ACTION: ${{ github.event.action || '' }}
         run: node scripts/docs-automation-webhook.mjs
