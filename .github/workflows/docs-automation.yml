@@ -2,6 +2,11 @@ name: docs-automation
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Verify webhook delivery without dispatching automation
+        type: boolean
+        default: false
   schedule:
     - cron: "0 */6 * * *"
   issues:
@@ -47,10 +52,11 @@ jobs:
       - name: Show collected context summary
         run: cat .automation/context.json
 
-      - name: Send webhook to Hermes bridge
+      - name: Send automation webhook
         env:
-          HERMES_WEBHOOK_URL: ${{ secrets.HERMES_WEBHOOK_URL }}
-          HERMES_WEBHOOK_SECRET: ${{ secrets.HERMES_WEBHOOK_SECRET }}
+          AUTOMATION_WEBHOOK_URL: ${{ secrets.AUTOMATION_WEBHOOK_URL }}
+          AUTOMATION_WEBHOOK_SECRET: ${{ secrets.AUTOMATION_WEBHOOK_SECRET }}
+          AUTOMATION_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_EVENT_ACTION: ${{ github.event.action || '' }}
         run: node scripts/docs-automation-webhook.mjs

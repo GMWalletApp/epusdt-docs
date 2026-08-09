@@ -8,7 +8,7 @@ import test from "node:test";
 
 const scriptPath = new URL("./docs-automation-webhook.mjs", import.meta.url).pathname;
 
-async function runWebhook(eventName) {
+async function runWebhook(eventName, extraEnv = {}) {
   const cwd = await mkdtemp(path.join(os.tmpdir(), "epusdt-webhook-test-"));
   await mkdir(path.join(cwd, ".automation"));
   await writeFile(path.join(cwd, ".automation/context.json"), JSON.stringify({ test: true }));
@@ -32,10 +32,11 @@ async function runWebhook(eventName) {
     cwd,
     env: {
       ...process.env,
-      HERMES_WEBHOOK_URL: `http://127.0.0.1:${server.address().port}/webhook/hermes`,
-      HERMES_WEBHOOK_SECRET: "test-secret",
+      AUTOMATION_WEBHOOK_URL: `http://127.0.0.1:${server.address().port}/webhook`,
+      AUTOMATION_WEBHOOK_SECRET: "test-secret",
       GITHUB_EVENT_NAME: eventName,
       GITHUB_EVENT_ACTION: "created",
+      ...extraEnv,
     },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -49,10 +50,16 @@ async function runWebhook(eventName) {
   return request;
 }
 
-test("uses Hermes webhook variables and signature header", async () => {
+test("uses generic automation variables and signature header", async () => {
   const request = await runWebhook("issues");
-  assert.match(request.headers["x-hermes-signature-256"], /^sha256=[a-f0-9]{64}$/);
-  assert.equal(request.headers["x-openclaw-signature-256"], undefined);
+  assert.match(request.headers["x-webhook-signature-256"], /^sha256=[a-f0-9]{64}$/);
+});
+
+test("marks manual verification requests as dry runs", async () => {
+  const request = await runWebhook("workflow_dispatch", {
+    AUTOMATION_DRY_RUN: "true",
+  });
+  assert.equal(request.payload.dryRun, true);
 });
 
 test("treats issue comments as documentation fixes", async () => {

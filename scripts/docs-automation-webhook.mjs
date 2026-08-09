@@ -1,11 +1,13 @@
 import { createHmac } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 
-const webhookUrl = process.env.HERMES_WEBHOOK_URL;
-const webhookSecret = process.env.HERMES_WEBHOOK_SECRET;
+const webhookUrl = process.env.AUTOMATION_WEBHOOK_URL;
+const webhookSecret = process.env.AUTOMATION_WEBHOOK_SECRET;
 
 if (!webhookUrl || !webhookSecret) {
-  console.error("HERMES_WEBHOOK_URL and HERMES_WEBHOOK_SECRET are required");
+  console.error(
+    "AUTOMATION_WEBHOOK_URL and AUTOMATION_WEBHOOK_SECRET are required"
+  );
   process.exit(1);
 }
 
@@ -35,6 +37,7 @@ const payload = {
   routeId: "epusdt-docs-repair",
   eventType,
   repo: "GMWalletApp/epusdt-docs",
+  dryRun: process.env.AUTOMATION_DRY_RUN === "true",
   source: "github-actions",
   trigger: {
     kind: triggerKind,
@@ -51,7 +54,7 @@ const response = await fetch(webhookUrl, {
   method: "POST",
   headers: {
     "content-type": "application/json",
-    "x-hermes-signature-256": signature,
+    "x-webhook-signature-256": signature,
   },
   body: rawBody,
 });
