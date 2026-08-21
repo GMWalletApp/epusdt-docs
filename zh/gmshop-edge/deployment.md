@@ -1,34 +1,17 @@
 # 部署
 
-GMShop Edge 支持单个 Cloudflare Workers 部署或单个 Node/Nitro Docker 容器。无论选择哪种方式，接单前都必须完成 `/install` 初始化。
+GMShop Edge 支持两种生产运行时：
 
-> 当前版本为 `v1.0.0-alpha.1`。测试时使用滚动 `alpha` 镜像或完整预发布版本标签；`latest` 保留给稳定版本。
+- **Node/Nitro + Docker**：SQLite、私有本地对象、持久本地队列及数据卷。
+- **Cloudflare Workers**：D1、KV、R2、Queues、Cron Triggers 和可选 Send Email。
 
-## Cloudflare Workers
+两种运行时提供相同的商城、用户账户、结账、交付、管理后台、供应商 API、Telegram 集成和 `/install` 流程。
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/GMWalletApp/gmshop-edge)
+> GMShop Edge 当前位于 `alpha` 发布通道。测试时使用 `alpha` 或完整预发布版本标签；`latest` 保留给稳定版本。
 
-使用 CLI 部署：
+## Docker Compose
 
-```bash
-bun install
-bunx wrangler login
-bun run deploy
-```
-
-`predeploy` Hook 会创建或复用命名的 D1、KV、私有 R2、商业队列和死信队列，应用远程迁移并构建 Worker。解析后的 D1/KV ID 仅注入 `dist/server/wrangler.json`，不会把账户专属 ID 写入可移植的 `wrangler.jsonc`。
-
-部署后检查：
-
-- D1 `gmshop-edge` 绑定为 `DB`。
-- KV `gmshop-edge-cache` 绑定为 `CACHE`。
-- 私有 R2 `gmshop-edge-files` 绑定为 `FILES`。
-- 队列 `gmshop-edge-commerce` 绑定为 `COMMERCE_QUEUE`，死信队列为 `gmshop-edge-commerce-dlq`。
-- 每分钟 Cron，以及按需配置的 Cloudflare Send Email `EMAIL` 绑定。
-
-## Node 与 Docker
-
-公共镜像 `ghcr.io/gmwalletapp/gmshop-edge` 支持 `linux/amd64` 和 `linux/arm64`。当前预发布版本请将 `compose.yml` 中的镜像标签改为 `alpha` 或 `1.0.0-alpha.1`：
+公共 [GHCR Package](https://github.com/orgs/GMWalletApp/packages/container/package/gmshop-edge) 支持 `linux/amd64` 和 `linux/arm64`。将以下内容保存为 `compose.yml`：
 
 ```yaml
 services:
@@ -46,30 +29,59 @@ volumes:
   gmshop-data:
 ```
 
+启动并检查服务：
+
 ```bash
 docker compose pull
 docker compose up -d
 curl --fail http://127.0.0.1:3000/healthz
+docker compose ps
+docker compose logs --follow gmshop-edge
 ```
 
-容器以非 root 用户运行，并将全部状态持久化到 `/var/lib/gmshop`。`GMSHOP_DATA_DIR` 是唯一公开的 Node 环境变量；Origin、Allowed Hosts、邮件、支付、供应商、Telegram 和自动化设置均通过 `/install` 或 `/admin` 配置。重建容器时必须保留数据卷。
+容器以非 root 用户运行。`GMSHOP_DATA_DIR` 包含 `gmshop.sqlite`、私有对象、持久队列状态及全部运行时数据。更新或重建容器时必须保留并备份 `gmshop-data` 数据卷。
 
-源码构建需要 Bun 1.3+ 和 Node.js 24：运行 `bun run build:node`，再执行 `bun run start:node`。
+`GMSHOP_DATA_DIR` 是唯一公开的 Node 环境变量。Origin、Allowed Hosts、邮件、支付、供应商、Telegram 和自动化设置均通过 `/install` 或 `/admin` 配置。
 
-升级或迁移前请先阅读 [Node 数据操作](./node-data-operations.md)。
+Node 仅支持单实例，不支持多副本部署或共享网络存储。升级、恢复或迁移前请阅读 [Node 数据操作](./node-data-operations.md)。
 
-## 首次安装与生产验收
+源码构建需要 Bun 1.3+ 和 Node.js 24：
+
+```bash
+bun install
+bun run build:node
+bun run start:node
+```
+
+## Cloudflare Workers
+
+### Deploy Button
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/GMWalletApp/gmshop-edge)
+
+引导流程会准备 Worker 项目。部署后打开 `/install` 并检查：
+
+- D1 `gmshop-edge` 绑定为 `DB`。
+- KV `gmshop-edge-cache` 绑定为 `CACHE`。
+- 私有 R2 `gmshop-edge-files` 绑定为 `FILES`。
+- 队列 `gmshop-edge-commerce` 绑定为 `COMMERCE_QUEUE`，死信队列为 `gmshop-edge-commerce-dlq`。
+- 每分钟 Cron，以及按需配置的 Cloudflare Send Email `EMAIL` 绑定。
+
+### Wrangler CLI
+
+```bash
+bun install
+bunx wrangler login
+bun run deploy
+```
+
+`predeploy` Hook 会创建或复用命名资源、应用远程迁移并构建 Worker。解析后的 D1/KV ID 仅注入 `dist/server/wrangler.json`，不会将账户专属 ID 写入可移植的 `wrangler.jsonc`。
+
+## 首次安装
 
 打开 `/install` 创建第一个根管理员、受保护的内置角色、运行时密钥和必要设置。安装程序不会创建虚假商品、库存、服务商凭据或支付配置。
 
-上线前应完成：
-
-1. 确认检测到的 Origin，并配置精确的 Allowed Hosts。
-2. 配置品牌、注册、身份验证、邮件、商业、交付、保留、支付、供应商、Telegram 和自动化设置。
-3. 发布测试商品，验证库存、私有下载或自动化交付。
-4. 使用部署者自己的凭据完成真实支付和找回密码邮件测试。
-5. 验证重启恢复、队列重试/死信处理、退款、权益到期、备份与恢复。
-6. 验证两种应用语言、两种主题、移动端、键盘导航和管理员恢复。
+上线前应验证精确的 Host/Origin 规则、真实支付与找回密码邮件、库存/下载/自动化交付、队列重试与死信恢复、退款、权益到期、备份恢复、两种应用语言、主题、移动端、键盘导航和管理员恢复。
 
 ## 发布通道
 

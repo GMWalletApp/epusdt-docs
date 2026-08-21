@@ -6,14 +6,15 @@ GMShop Edge keeps checkout, wallet state, provider credentials, authentication c
 
 Store order amounts use integer minor units. Customer-selected fiat currencies are quoted from store-owned exchange rates, and one immutable quote is passed to the selected provider.
 
-Available external payment adapters are:
-
-- Stripe.
-- Cryptomus hosted invoices.
-- GMpay.
-- EPay.
-- Alipay Page and WAP.
-- WeChat Native and H5.
+| Provider | Checkout | Refund | Currency notes |
+| --- | --- | --- | --- |
+| Stripe | Redirect | Automatic | Channel configuration controls accepted currencies |
+| Cryptomus | Redirect | Manual | Uses the configured invoice currency |
+| GMpay | Redirect | Manual | Uses the configured Epusdt-compatible endpoint |
+| EPay | Redirect | Manual | Requires numeric `pid`; `paymentMethod` defaults to `alipay` |
+| Alipay Page / WAP | Redirect | Automatic | Requires `CNY` with two decimal places |
+| WeChat Native | QR or redirect | Automatic | Requires `CNY` with two decimal places |
+| WeChat H5 | Redirect | Automatic | Requires `CNY` with two decimal places and payer IP |
 
 Registered customers can also pay from the built-in store wallet. Refund and after-sales operations update payment and wallet ledgers through idempotent state transitions.
 

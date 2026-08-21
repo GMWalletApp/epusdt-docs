@@ -4,7 +4,9 @@
 
 One deployment provides a responsive public shop, customer accounts, checkout and fulfillment, Telegram integration, supplier operations, and a permission-driven administration console.
 
-> GMShop Edge is under active development. The current release is [`v1.0.0-alpha.1`](https://github.com/GMWalletApp/gmshop-edge/releases/tag/v1.0.0-alpha.1). Built-in adapters mean integration paths exist; production use still requires deployer-owned credentials, backups, monitoring, and real-provider acceptance tests.
+It is a separate companion project from Epusdt and GMPay Edge. Use GMShop Edge when the product you need to operate is a digital-goods storefront with catalog, checkout, delivery, and supplier workflows.
+
+> GMShop Edge is under active development. Built-in adapters mean integration paths exist; production use still requires deployer-owned credentials, backups, monitoring, and real-provider acceptance tests.
 
 ## What it provides
 
@@ -25,6 +27,7 @@ Every capability listed above is part of the open-source project; there is no se
 - [Architecture](./architecture.md): shared application stack, Workers bindings, Node adapters, data ownership, and runtime limits.
 - [Deployment](./deployment.md): Workers, Node/Docker, release channels, installation, and production acceptance.
 - [Node data operations](./node-data-operations.md): backup, restore, and Cloudflare D1/R2 import.
+- [Native supplier API](./supplier-api.md): signed catalog, order, payment-channel, and top-up operations between GMShop Edge instances.
 - [Commerce and fulfillment](./commerce-fulfillment.md): products, inventory, suppliers, delivery records, entitlements, and automation goods.
 - [Checkout and providers](./checkout-providers.md): wallet and external payments, fiat quotes, email, authentication, and Telegram support.
 

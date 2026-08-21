@@ -4,7 +4,9 @@
 
 一次部署即可提供响应式商城、用户账户、结账与交付、Telegram 集成、供应商运营以及基于权限的管理后台。
 
-> GMShop Edge 正在积极开发中，当前版本为 [`v1.0.0-alpha.1`](https://github.com/GMWalletApp/gmshop-edge/releases/tag/v1.0.0-alpha.1)。内置适配器表示项目已实现对应集成路径；生产使用仍需部署者提供凭据、备份、监控，并完成真实服务商验收测试。
+它是独立于 Epusdt 和 GMPay Edge 的配套项目。当你需要运营带商品目录、结账、交付和供应商流程的数字商品商城时，应选择 GMShop Edge。
+
+> GMShop Edge 正在积极开发中。内置适配器表示项目已实现对应集成路径；生产使用仍需部署者提供凭据、备份、监控，并完成真实服务商验收测试。
 
 ## 核心能力
 
@@ -25,6 +27,7 @@
 - [架构](./architecture.md)：共享应用栈、Workers 绑定、Node 适配器、数据归属和运行限制。
 - [部署](./deployment.md)：Workers、Node/Docker、发布通道、初始化和生产验收。
 - [Node 数据操作](./node-data-operations.md)：备份、恢复及 Cloudflare D1/R2 导入。
+- [原生供应商 API](./supplier-api.md)：GMShop Edge 实例间经过签名的商品目录、订单、支付通道和充值操作。
 - [商业与交付](./commerce-fulfillment.md)：商品、库存、供应商、交付记录、权益和自动化商品。
 - [结账与服务商](./checkout-providers.md)：余额与外部支付、法币报价、邮件、身份验证和 Telegram 客服。
 
