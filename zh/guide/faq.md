@@ -1,30 +1,30 @@
-# 常見問題
+# 常见问题
 
-## 三種路由該怎麼選？
+## 三种路由该怎么选？
 
-- **新接入一律優先 GMPay**。
-- **只有當上游系統要求 EPay 風格跳轉收銀臺時** 才使用 EPay 相容入口。
-- **不要** 再以 `/payments/epusdt/v1/order/create-transaction` 為新接入基礎，因為當前原始碼已不再註冊它。
+- **新接入一律优先 GMPay**。
+- **只有当上游系统要求 EPay 风格跳转收银台时** 才使用 EPay 兼容入口。
+- **不要** 再以 `/payments/epusdt/v1/order/create-transaction` 为新接入基础，因为当前源代码已不再注册它。
 
-## `pid` 和簽名金鑰從哪裡來？
+## `pid` 和签名密钥从哪里来？
 
-來自管理後臺建立的 API key。每個商戶都有自己的 `pid` 與對應 `secret_key`。
+来自管理后台建立的 API key。每个商户都有自己的 `pid` 与对应 `secret_key`。
 
-## 為什麼不同環境看到的 GMPay config 不一樣？
+## 为什么不同环境看到的 GMPay config 不一样？
 
-因為 `GET /payments/gmpay/v1/config` 是根據你自己後臺資料即時計算的。
+因为 `GET /payments/gmpay/v1/config` 是根据你自己后台数据实时计算的。
 
-其中 `data.supported_assets` 會受到已啟用的 chains、chain_tokens 與可用 wallet_address 影響。
+其中 `data.supported_assets` 会受到已启用的 chains、chain_tokens 与可用 wallet_address 影响。
 
-## 鏈設定
+## 链设置
 
-### Tron 是否需要額外的 API Key？
+### Tron 是否需要额外的 API Key？
 
-是的。必須在後臺配置 [TronGrid API Key](https://www.trongrid.io/)，否則節點請求將受到速率限制或被拒絕。
+是的。必须在后台配置 [TronGrid API Key](https://www.trongrid.io/)，否则节点请求将受到速率限制或被拒绝。
 
-### 各鏈的 RPC 位址應使用哪種協定？
+### 各链的 RPC 地址应使用哪种协定？
 
-- **Tron** 和 **Solana（SOL）**：使用 **HTTP/HTTPS** 端點。
-- **其他所有鏈**（如 ETH、BSC、Polygon 等）：使用 **WSS**（WebSocket）端點。
+- **Tron** 和 **Solana（SOL）**：使用 **HTTP/HTTPS** 端点。
+- **其他所有链**（如 ETH、BSC、Polygon 等）：使用 **WSS**（WebSocket）端点。
 
-協定填錯將導致交易監聽靜默失效。
+协定填错将导致交易监听静默失效。

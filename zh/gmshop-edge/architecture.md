@@ -1,27 +1,27 @@
-# 架構
+# 架构
 
-GMShop Edge 以單個 Cloudflare Worker 承載公開商城、客戶中心、結帳、交付與管理後臺。
+GMShop Edge 以单个 Cloudflare Worker 承载公开商城、客户中心、结账、交付与管理后台。
 
 ## Cloudflare bindings
 
-倉庫在 `wrangler.jsonc` 與 `package.json` metadata 中宣告這些生產 bindings：
+仓库在 `wrangler.jsonc` 与 `package.json` metadata 中宣告这些生产 bindings：
 
-- `DB`：D1 資料庫，保存認證、RBAC、商品、金額、訂單、庫存、權益、供應商、任務、重放保護、限流、outbox、審計與系統資料。
-- `FILES`：私有 R2 bucket，保存商品媒體、下載檔案、自動化制品與匯出。
-- `CACHE`：KV namespace，保存短生命週期 RBAC 與公開配置快取；安全關鍵限流仍以 D1 為權威來源。
-- `COMMERCE_QUEUE`：Cloudflare Queue，用於可靠交付、自動化、通知與退款工作。
-- `EMAIL`：可選 Cloudflare Send Email binding，用於免憑證郵件 Provider。
+- `DB`：D1 数据库，保存认证、RBAC、商品、金额、订单、库存、权益、供应商、任务、重放保护、限流、outbox、审计与系统数据。
+- `FILES`：私有 R2 bucket，保存商品媒体、下载文件、自动化制品与汇出。
+- `CACHE`：KV namespace，保存短生命周期 RBAC 与公开配置快取；安全关键限流仍以 D1 为权威来源。
+- `COMMERCE_QUEUE`：Cloudflare Queue，用于可靠交付、自动化、通知与退款工作。
+- `EMAIL`：可选 Cloudflare Send Email binding，用于免凭证邮件 Provider。
 
-Worker 也啟用 Cron Triggers；目前倉庫宣告 `* * * * *` 週期性執行交易工作。
+Worker 也启用 Cron Triggers；目前仓库宣告 `* * * * *` 周期性执行交易工作。
 
-## 資料權威來源
+## 数据权威来源
 
-D1 是核心交易狀態的權威資料源。KV 僅保存經校驗、帶版本且有界的上游目錄快照與讀取快取。R2 保存私有物件，但物件存取必須透過 D1 授權記錄解析；客戶端不能自行選擇 object key。
+D1 是核心交易状态的权威数据源。KV 仅保存经校验、带版本且有界的上游目录快照与读取快取。R2 保存私有物件，但物件访问必须通过 D1 授权记录解析；客户端不能自行选择 object key。
 
-## 模組邊界
+## 模组边界
 
-路由保持薄層。功能頁面、schema、Server Function 與領域行為位於 `src/features`；跨領域執行時編排位於 `src/server`；全新安裝的 Drizzle 基線是 `drizzle/0000_gmshop.sql`。
+路由保持薄层。功能页面、schema、Server Function 与领域行为位于 `src/features`；跨领域运行时编排位于 `src/server`；全新安装的 Drizzle 基线是 `drizzle/0000_gmshop.sql`。
 
-## 運維模型
+## 运维模型
 
-Queue 與 Cron 將目錄同步、供應商採購與核驗、交付、重試、保留清理與密鑰輪換移出同步請求，讓商城結帳保持響應，同時保留背景工作的重試與審計歷史。
+Queue 与 Cron 将目录同步、供应商采购与核验、交付、重试、保留清理与密钥轮换移出同步请求，让商城结账保持响应，同时保留背景工作的重试与审计历史。

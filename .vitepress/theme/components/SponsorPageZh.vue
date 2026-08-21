@@ -25,7 +25,7 @@ const copyAddress = async (address: string) => {
 <template>
   <div class="sponsor-page">
     <p class="sponsor-intro">
-      如果 Epusdt 對你的項目有幫助，歡迎透過加密貨幣贊助支持後續開發。
+      如果 Epusdt 对你的项目有帮助，欢迎通过加密货币赞助支持后续开发。
     </p>
 
     <div class="sponsor-grid">
@@ -33,16 +33,16 @@ const copyAddress = async (address: string) => {
         <h2>TRON (TRC-20)</h2>
 
         <div class="sponsor-qr-frame">
-          <img src="/sponsor/tron-trc20.png" alt="TRON TRC-20 贊助二維碼" />
+          <img src="/sponsor/tron-trc20.png" alt="TRON TRC-20 赞助二维码" />
         </div>
 
         <div class="sponsor-address-block">
-          <span class="sponsor-address-label">錢包地址</span>
+          <span class="sponsor-address-label">钱包地址</span>
           <button class="sponsor-address-copy" type="button" @click="copyAddress('TUsn5Nhi2P12dQ2ecrocUX6e6Jsi6EE8TY')">
             <code>TUsn5Nhi2P12dQ2ecrocUX6e6Jsi6EE8TY</code>
           </button>
           <span class="sponsor-address-feedback" :class="{ 'is-visible': copiedAddress === 'TUsn5Nhi2P12dQ2ecrocUX6e6Jsi6EE8TY' }">
-            已複製
+            已复制
           </span>
         </div>
       </section>
@@ -51,23 +51,23 @@ const copyAddress = async (address: string) => {
         <h2>EVM (BSC / ETH / Polygon)</h2>
 
         <div class="sponsor-qr-frame">
-          <img src="/sponsor/evm-multichain.png" alt="EVM 共用贊助二維碼" />
+          <img src="/sponsor/evm-multichain.png" alt="EVM 共用赞助二维码" />
         </div>
 
         <div class="sponsor-address-block">
-          <span class="sponsor-address-label">錢包地址</span>
+          <span class="sponsor-address-label">钱包地址</span>
           <button class="sponsor-address-copy" type="button" @click="copyAddress('0x6c63989c22e89e6f76105f399243ef6b417b205b')">
             <code>0x6c63989c22e89e6f76105f399243ef6b417b205b</code>
           </button>
           <span class="sponsor-address-feedback" :class="{ 'is-visible': copiedAddress === '0x6c63989c22e89e6f76105f399243ef6b417b205b' }">
-            已複製
+            已复制
           </span>
         </div>
       </section>
     </div>
 
     <section class="sponsor-devs">
-      <h2>開發者名單</h2>
+      <h2>开发者名单</h2>
 
       <div class="sponsor-devs__list">
         <a class="sponsor-person" href="https://github.com/line-6000" target="_blank" rel="noreferrer">

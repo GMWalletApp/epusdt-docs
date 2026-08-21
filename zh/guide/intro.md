@@ -1,83 +1,83 @@
-# 專案簡介
+# 项目简介
 
-## 安全審計
+## 安全审计
 
-Epusdt 已完成第三方安全審計。
-[查看安全審計報告](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
+Epusdt 已完成第三方安全审计。
+[查看安全审计报告](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
 
-## 目前原始碼實際提供什麼
+## 目前源代码实际提供什么
 
-`Epusdt` 是一個由 **Go** 編寫的私有化 **加密支付閘道**。
+`Epusdt` 是一个由 **Go** 编写的私有化 **加密支付网关**。
 
-GMWalletApp 組織也維護 [GMPay Edge](/zh/gmpay-edge/)。它是支援 Cloudflare Workers 或 Node/Nitro Docker 的獨立閘道，共用 GMPay / EPay 商戶協議語境，但不是 Epusdt 的同一套執行時或部署模型。
+GMWalletApp 组织也维护 [GMPay Edge](/zh/gmpay-edge/)。它是支持 Cloudflare Workers 或 Node/Nitro Docker 的独立网关，共用 GMPay / EPay 商户协议语境，但不是 Epusdt 的同一套运行时或部署模型。
 
-如果需要數位商品商城，請看 [GMShop Edge](/zh/gmshop-edge/)，它是獨立的 Cloudflare Workers 商城，負責商品、結帳、交付與管理後臺。
+如果需要数字商品商城，请看 [GMShop Edge](/zh/gmshop-edge/)，它是独立的 Cloudflare Workers 商城，负责商品、结账、交付与管理后台。
 
-當前原始碼對外提供兩條建立訂單主流程：
+当前源代码对外提供两条建立订单主流程：
 
 - **GMPay**：`POST /payments/gmpay/v1/order/create-transaction`
-- **EPay 相容**：`GET/POST /payments/epay/v1/order/create-transaction/submit.php`
+- **EPay 兼容**：`GET/POST /payments/epay/v1/order/create-transaction/submit.php`
 
-另外還提供：
+另外还提供：
 
-- `/pay/*` 之下的託管收銀臺頁面
-- 收銀臺切換網路：`POST /pay/switch-network`
-- 前端 / 收銀臺初始化用的公開支付配置：`GET /payments/gmpay/v1/config`
-- `/admin/api/v1/*` 管理 API，用於管理 API Keys、鏈、代幣、錢包地址、通知通道與設定
-- 後臺匯率設定支援二選一：配置匯率 API 位址，或直接填寫強制 USDT 匯率；如果只使用強制匯率，API 位址可以留空
+- `/pay/*` 之下的托管收银台页面
+- 收银台切换网络：`POST /pay/switch-network`
+- 前端 / 收银台初始化用的公开支付配置：`GET /payments/gmpay/v1/config`
+- `/admin/api/v1/*` 管理 API，用于管理 API Keys、链、代币、钱包地址、通知通道与设置
+- 后台汇率设置支持二选一：配置汇率 API 地址，或直接填写强制 USDT 汇率；如果只使用强制汇率，API 地址可以留空
 
-## 商戶憑證模型
+## 商户凭证模型
 
-目前支付 API 不再依賴單一全域金鑰。
+目前支付 API 不再依赖单一全域密钥。
 
-現在每個商戶都對應後臺建立的一條 **API key**：
+现在每个商户都对应后台建立的一条 **API key**：
 
 - `pid`
 - `secret_key`
-- 可選 `ip_whitelist`
-- 可選預設 `notify_url`
+- 可选 `ip_whitelist`
+- 可选默认 `notify_url`
 
-GMPay 與 EPay 入站請求都會先根據 `pid` 找到對應 API key，再使用該筆資料的 `secret_key` 驗籤。
+GMPay 与 EPay 入站请求都会先根据 `pid` 找到对应 API key，再使用该笔数据的 `secret_key` 验签。
 
-## 支援的鏈與代幣
+## 支持的链与代币
 
-目前原始碼不再把固定的公開鏈清單直接寫死在文件層。
+目前源代码不再把固定的公开链清单直接写死在文件层。
 
-`GET /payments/gmpay/v1/config` 的回應來自實際後臺資料。
+`GET /payments/gmpay/v1/config` 的响应来自实际后台数据。
 
-其中 `data.supported_assets` 會根據以下資料即時組裝：
+其中 `data.supported_assets` 会根据以下数据实时组装：
 
-- 已啟用的 `chains`
-- 已啟用的 `chain_tokens`
-- 該鏈上存在可用 `wallet_address`
+- 已启用的 `chains`
+- 已启用的 `chain_tokens`
+- 该链上存在可用 `wallet_address`
 
-同一個回應還會帶出公開站點 / 收銀臺品牌資訊，以及 EPay / OkPay 前端配置欄位。
+同一个响应还会带出公开站点 / 收银台品牌信息，以及 EPay / OkPay 前端配置字段。
 
-也就是說，真正可用的網路與代幣，取決於管理後臺目前啟用了什麼。
+也就是说，真正可用的网络与代币，取决于管理后台目前启用了什么。
 
-## 首次安裝
+## 首次安装
 
-若首次啟動時沒有配置檔，Epusdt 會直接進入內建 **安裝嚮導**。先在瀏覽器完成資料庫、域名與初始化設定，之後再透過管理後臺或管理 API 維護執行資料。
+若首次启动时没有配置文件，Epusdt 会直接进入内建 **安装向导**。先在浏览器完成数据库、域名与初始化设置，之后再通过管理后台或管理 API 维护执行数据。
 
-## 程式截圖
+## 程序截图
 
 <table>
   <tr>
     <td align="center" valign="top" width="25%">
-      <img src="/screenshots/web2.png" alt="管理面板首頁" height="200"><br>
-      <sub>管理面板首頁</sub>
+      <img src="/screenshots/web2.png" alt="管理面板首页" height="200"><br>
+      <sub>管理面板首页</sub>
     </td>
     <td align="center" valign="top" width="25%">
       <img src="/screenshots/web1.png" alt="管理面板" height="200"><br>
       <sub>管理面板</sub>
     </td>
     <td align="center" valign="top" width="25%">
-      <img src="/screenshots/pay1.jpeg" alt="收銀臺" height="200"><br>
-      <sub>收銀臺</sub>
+      <img src="/screenshots/pay1.jpeg" alt="收银台" height="200"><br>
+      <sub>收银台</sub>
     </td>
     <td align="center" valign="top" width="25%">
-      <img src="/screenshots/pay2.jpeg" alt="支付頁面" height="200"><br>
-      <sub>支付頁面</sub>
+      <img src="/screenshots/pay2.jpeg" alt="支付页面" height="200"><br>
+      <sub>支付页面</sub>
     </td>
   </tr>
 </table>

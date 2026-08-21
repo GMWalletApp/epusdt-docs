@@ -1,17 +1,17 @@
 # 部署
 
-GMPay Edge 支援兩種正式部署執行環境：
+GMPay Edge 支持两种正式部署运行环境：
 
-- **Node/Nitro + Docker**：使用 SQLite 與本地持久化資料卷，建議自建伺服器或 NAS 優先採用。
-- **Cloudflare Workers**：使用 D1、KV、R2、Queues 與 Cron Triggers。
+- **Node/Nitro + Docker**：使用 SQLite 与本地持久化数据卷，建议自建服务器或 NAS 优先采用。
+- **Cloudflare Workers**：使用 D1、KV、R2、Queues 与 Cron Triggers。
 
-兩種執行環境提供相同的商戶 API、收銀臺、管理後臺、背景任務與 `/install` 安裝流程。
+两种运行环境提供相同的商户 API、收银台、管理后台、背景任务与 `/install` 安装流程。
 
-## Docker Compose（推薦）
+## Docker Compose（推荐）
 
-公開的 [GHCR Package](https://github.com/orgs/GMWalletApp/packages/container/package/gmpay-edge) 支援 `linux/amd64` 與 `linux/arm64`，無需登入 Registry。
+公开的 [GHCR Package](https://github.com/orgs/GMWalletApp/packages/container/package/gmpay-edge) 支持 `linux/amd64` 与 `linux/arm64`，无需登录 Registry。
 
-將以下內容儲存為 `compose.yml`：
+将以下内容储存为 `compose.yml`：
 
 ```yaml
 services:
@@ -29,18 +29,18 @@ volumes:
   gmpay-data:
 ```
 
-啟動服務：
+启动服务：
 
 ```bash
 docker compose pull
 docker compose up -d
 ```
 
-`latest` 追蹤最新穩定版。只有測試預發布版本時才使用 `alpha`；需要可重現部署時，可固定完整版本，例如 `1.0.0`。
+`latest` 追踪最新稳定版。只有测试预发布版本时才使用 `alpha`；需要可重现部署时，可固定完整版本，例如 `1.0.0`。
 
-`GMPAY_DATA_DIR` 會保存 SQLite、上傳檔案、私有物件、佇列狀態及其他全部執行資料。更新或重建容器時，請保留並備份 `gmpay-data` 資料卷。
+`GMPAY_DATA_DIR` 会保存 SQLite、上传文件、私有物件、伫列状态及其他全部执行数据。更新或重建容器时，请保留并备份 `gmpay-data` 数据卷。
 
-檢查服務與查看日誌：
+检查服务与查看日志：
 
 ```bash
 curl --fail http://127.0.0.1:3000/healthz
@@ -48,7 +48,7 @@ docker compose ps
 docker compose logs --follow gmpay-edge
 ```
 
-保留資料卷並更新容器：
+保留数据卷并更新容器：
 
 ```bash
 docker compose pull
@@ -57,7 +57,7 @@ docker compose up -d
 
 ### Docker 命令
 
-無法使用 Compose 時，可以直接執行容器：
+无法使用 Compose 时，可以直接执行容器：
 
 ```bash
 docker volume create gmpay-data
@@ -70,16 +70,16 @@ docker run --detach --name gmpay-edge --restart unless-stopped \
 
 ## Cloudflare Workers
 
-### 一鍵部署
+### 一键部署
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/GMWalletApp/gmpay-edge)
 
-引導流程會配置 `wrangler.jsonc` 宣告的 bindings、執行 D1 migrations 並建置 Worker。使用：
+引导流程会配置 `wrangler.jsonc` 宣告的 bindings、执行 D1 migrations 并构建 Worker。使用：
 
 - Build command：`bun run build`
 - Deploy command：`wrangler deploy`
 
-部署完成後，開啟 Worker URL 的 `/install` 初始化實例。
+部署完成后，开启 Worker URL 的 `/install` 初始化实例。
 
 ### Wrangler CLI
 
@@ -89,39 +89,39 @@ bunx wrangler login
 bun run deploy
 ```
 
-如果需要手動準備 D1：
+如果需要手动准备 D1：
 
 ```bash
 bunx wrangler d1 create gmpay-edge
 bun run db:migrate:remote
 ```
 
-不要提交產生的 database ID。部署 hook 會建立或復用具名 D1、KV、R2 與 Queue 資源、套用 D1 baseline，並在發布前建置 Worker。
+不要提交产生的 database ID。部署 hook 会建立或复用具名 D1、KV、R2 与 Queue 资源、套用 D1 baseline，并在发布前构建 Worker。
 
-## 本地開發
+## 本地开发
 
-環境要求：
+环境要求：
 
 - Bun 1.3 或更新版本
-- Workers 本地開發環境需受 Wrangler 支援
+- Workers 本地开发环境需受 Wrangler 支持
 
 ```bash
 bun install
 bun run dev
 ```
 
-`bun run dev` 會將待執行 migration 套用到本地 `gmpay-edge` D1 資料庫，並在 `http://localhost:3000` 啟動應用。
+`bun run dev` 会将待执行 migration 套用到本地 `gmpay-edge` D1 数据库，并在 `http://localhost:3000` 启动应用。
 
-## 首次安裝
+## 首次安装
 
-Docker 啟動後請開啟 `http://your-host:3000/install`；Workers 部署完成後則開啟 Worker URL 的 `/install`。建立首位 root 使用者前，請先確認偵測到的公開地址與 Allowed Hosts。
+Docker 启动后请开启 `http://your-host:3000/install`；Workers 部署完成后则开启 Worker URL 的 `/install`。建立首位 root 用户前，请先确认侦测到的公开地址与 Allowed Hosts。
 
-安裝會建立：
+安装会建立：
 
-- 第一個使用者。
-- 受保護的 `root` 角色。
-- 執行時密鑰。
-- 支付預設值。
-- 公共 Telegram 指令與 Telegram 預設值。
+- 第一个用户。
+- 受保护的 `root` 角色。
+- 运行时密钥。
+- 支付默认值。
+- 公共 Telegram 指令与 Telegram 默认值。
 
-它不會建立 Telegram Bot，也不會呼叫 Telegram。應用、安全與郵件設定均在管理後臺維護，不要改用容器環境變數設定。
+它不会建立 Telegram Bot，也不会调用 Telegram。应用、安全与邮件设置均在管理后台维护，不要改用容器环境变数设置。

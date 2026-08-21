@@ -1,16 +1,16 @@
 # 部署
 
-GMShop Edge 以單個 Cloudflare Worker 部署，並使用 D1、KV、私有 R2、一個 commerce Queue、死信 Queue、可選 Cloudflare Send Email 與 Cron Triggers。
+GMShop Edge 以单个 Cloudflare Worker 部署，并使用 D1、KV、私有 R2、一个 commerce Queue、死信 Queue、可选 Cloudflare Send Email 与 Cron Triggers。
 
-## 一鍵部署
+## 一键部署
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/GMWalletApp/gmshop-edge)
 
-引導流程會基於倉庫建立 Worker 專案。完成後請開啟 `/install`，核對自動建立的資源 bindings，並在接收訂單前完成生產檢查清單。
+引导流程会基于仓库建立 Worker 项目。完成后请开启 `/install`，核对自动建立的资源 bindings，并在接收订单前完成生产检查清单。
 
 ## Wrangler CLI
 
-登入 Wrangler、安裝依賴並部署：
+登录 Wrangler、安装依赖并部署：
 
 ```bash
 bun install
@@ -18,45 +18,45 @@ bunx wrangler login
 bun run deploy
 ```
 
-`bun run deploy` 會使用倉庫的 `predeploy` hook：
+`bun run deploy` 会使用仓库的 `predeploy` hook：
 
 ```text
 bun run scripts/build.ts --remote
 ```
 
-該 hook 會建立或復用具名 D1、R2 與 Queue 資源，透過 `DB` 套用 D1 基線並構建 Worker；不會把帳號專屬 ID 寫入 `wrangler.jsonc`。
+该 hook 会建立或复用具名 D1、R2 与 Queue 资源，通过 `DB` 套用 D1 基线并构建 Worker；不会把账号专属 ID 写入 `wrangler.jsonc`。
 
-請在 Cloudflare 部署環境中配置 `CACHE` KV namespace，以及啟用時需要的 `EMAIL` binding。服務商秘密從管理後臺錄入，禁止提交到倉庫。
+请在 Cloudflare 部署环境中配置 `CACHE` KV namespace，以及启用时需要的 `EMAIL` binding。服务商秘密从管理后台录入，禁止提交到仓库。
 
-## 本地開發
+## 本地开发
 
-環境要求：
+环境要求：
 
 - Bun 1.3 或更高版本。
-- Wrangler 支援的本地執行環境。
+- Wrangler 支持的本地运行环境。
 
 ```bash
 bun install
 bun run dev
 ```
 
-`bun run dev` 會將待執行 migration 套用到本地 `gmshop-edge` D1 資料庫，並在 `http://localhost:3000` 啟動應用；它不會遷移遠端資料庫。
+`bun run dev` 会将待执行 migration 套用到本地 `gmshop-edge` D1 数据库，并在 `http://localhost:3000` 启动应用；它不会迁移远端数据库。
 
-## 首次安裝
+## 首次安装
 
-首次執行請開啟 `/install`。安裝會建立首位 root 管理員、受保護的內建角色、執行時秘密與必要設定。
+首次执行请开启 `/install`。安装会建立首位 root 管理员、受保护的内建角色、运行时秘密与必要设置。
 
-它不會建立假商品、庫存、服務商憑證或結帳 Provider 配置。
+它不会建立假商品、库存、服务商凭证或结账 Provider 配置。
 
-安裝完成後：
+安装完成后：
 
-1. 確認自動識別的應用地址，並配置精確 Allowed Hosts。
-2. 在 `/admin` 配置公開品牌、註冊、認證、郵件、交易、交付、保留與 Provider 設定。
-3. 建立商品草稿、可售項及庫存、檔案或自動化配置，檢查發布條件後再公開。
-4. 配置結帳 Provider，並在正式開店前完成一筆真實服務商驗收訂單。
-5. 備份 D1、私有 R2 資料與執行時配置。
+1. 确认自动识别的应用地址，并配置精确 Allowed Hosts。
+2. 在 `/admin` 配置公开品牌、注册、认证、邮件、交易、交付、保留与 Provider 设置。
+3. 建立商品草稿、可售项及库存、文件或自动化配置，检查发布条件后再公开。
+4. 配置结账 Provider，并在正式开店前完成一笔真实服务商验收订单。
+5. 备份 D1、私有 R2 数据与运行时配置。
 
-## 常用開發命令
+## 常用开发命令
 
 ```bash
 bun run db:migrate:local
@@ -67,4 +67,4 @@ bun run check
 bun run build
 ```
 
-只有在有意修改 Drizzle schema 時才執行 `bun run db:generate`，並檢查產生的 migration。日常開發只套用 migration，不重新產生全新安裝基線。
+只有在有意修改 Drizzle schema 时才执行 `bun run db:generate`，并检查产生的 migration。日常开发只套用 migration，不重新产生全新安装基线。

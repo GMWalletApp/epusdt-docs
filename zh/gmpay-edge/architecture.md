@@ -1,49 +1,49 @@
-# 架構
+# 架构
 
-GMPay Edge 可作為單個 Worker 或單個 Node/Nitro 容器執行。兩種執行環境承載相同的產品入口與共享訂單 / 支付核心，差異僅在基礎設施適配器。
+GMPay Edge 可作为单个 Worker 或单个 Node/Nitro 容器执行。两种运行环境承载相同的产品入口与共享订单 / 支付核心，差异仅在基础设施适配器。
 
-## 產品入口
+## 产品入口
 
-- 商戶客戶端呼叫 GMPay 或 EPay 相容邊界。
-- 付款人使用託管收銀臺。
-- 營運者使用 `/admin`。
-- Telegram 使用者透過已配置的 Bot 互動。
+- 商户客户端调用 GMPay 或 EPay 兼容边界。
+- 付款人使用托管收银台。
+- 运营者使用 `/admin`。
+- Telegram 用户通过已配置的 Bot 交互。
 
-## 執行環境服務
+## 运行环境服务
 
 | 能力 | Cloudflare Workers | Node/Nitro Docker |
 | --- | --- | --- |
-| 資料庫 | D1 | `GMPAY_DATA_DIR` 中的 SQLite |
-| 快取 | KV | 本地執行時快取 |
-| 私有物件 | R2 | 持久化本地物件儲存 |
-| 背景任務 | Cloudflare Queues | 本地可靠佇列 |
+| 数据库 | D1 | `GMPAY_DATA_DIR` 中的 SQLite |
+| 快取 | KV | 本地运行时快取 |
+| 私有物件 | R2 | 持久化本地物件储存 |
+| 背景任务 | Cloudflare Queues | 本地可靠伫列 |
 | 排程 | Cron Triggers | Node 排程器 |
 
-Node 資料目錄也包含上傳檔案與可靠佇列狀態，必須掛載持久化資料卷並納入備份。
+Node 数据目录也包含上传文件与可靠伫列状态，必须挂载持久化数据卷并纳入备份。
 
 ## Cloudflare bindings
 
-| Binding | Cloudflare 產品 | 用途 |
+| Binding | Cloudflare 产品 | 用途 |
 | --- | --- | --- |
-| `DB` | D1 | 權威的應用、支付、授權與投遞資料 |
-| `CACHE` | KV | 短期已校驗快取與輔助遙測資料 |
-| `FILES` | R2 | 私有付款複核憑證與產生的匯出檔案 |
-| `PAYMENT_QUEUE` | Queues | 非同步支付掃描 |
-| `WEBHOOK_QUEUE` | Queues | 非同步商戶 Webhook 投遞 |
+| `DB` | D1 | 权威的应用、支付、授权与投递数据 |
+| `CACHE` | KV | 短期已校验快取与辅助遥测数据 |
+| `FILES` | R2 | 私有付款复核凭证与产生的汇出文件 |
+| `PAYMENT_QUEUE` | Queues | 异步支付扫描 |
+| `WEBHOOK_QUEUE` | Queues | 异步商户 Webhook 投递 |
 
-## 背景任務
+## 背景任务
 
-各執行環境對應的可靠佇列與排程器會將支付掃描和 Webhook 重試移出同步請求，也負責支付過期處理、清理、連線健康檢查與匯率同步。
+各运行环境对应的可靠伫列与排程器会将支付扫描和 Webhook 重试移出同步请求，也负责支付过期处理、清理、连接健康检查与汇率同步。
 
-兩種執行環境的 Webhook 投遞都使用可靠 outbox，保留重試歷史、人工重試與審計記錄。
+两种运行环境的 Webhook 投递都使用可靠 outbox，保留重试历史、人工重试与审计记录。
 
-## 資料與安全模型
+## 数据与安全模型
 
-- 選定執行環境後，以 D1 或 SQLite 作為權威資料庫。
-- 快取與私有物件儲存使用對應執行環境的適配器。
-- 支付適配器保持唯讀。
-- 管理後臺使用 Better Auth、TOTP 與動態多角色 RBAC。
+- 选定运行环境后，以 D1 或 SQLite 作为权威数据库。
+- 快取与私有物件储存使用对应运行环境的适配器。
+- 支付适配器保持只读。
+- 管理后台使用 Better Auth、TOTP 与动态多角色 RBAC。
 
-## 協議邊界
+## 协议边界
 
-GMPay 使用 **HMAC-SHA256** 簽名。EPay 相容邊界仍保留舊版 **MD5** 規則。出站回撥會保留訂單來源協議的簽名格式。
+GMPay 使用 **HMAC-SHA256** 签名。EPay 兼容边界仍保留旧版 **MD5** 规则。出站回调会保留订单来源协议的签名格式。

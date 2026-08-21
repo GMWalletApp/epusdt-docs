@@ -1,45 +1,45 @@
-# 商戶 API
+# 商户 API
 
-GMPay 是主商戶協議。EPay 是同一套憑證、訂單服務、冪等規則、狀態機、收銀臺、查詢行為與回撥流水線之上的相容適配器。
+GMPay 是主商户协议。EPay 是同一套凭证、订单服务、幂等规则、状态机、收银台、查询行为与回调流水线之上的兼容适配器。
 
-權威欄位與狀態值以已部署實例的 `/docs` 頁面或倉庫中的 OpenAPI 合約為準：[`public/openapi.yaml`](https://github.com/GMWalletApp/gmpay-edge/blob/main/public/openapi.yaml)。
+权威字段与状态值以已部署实例的 `/docs` 页面或仓库中的 OpenAPI 合约为准：[`public/openapi.yaml`](https://github.com/GMWalletApp/gmpay-edge/blob/main/public/openapi.yaml)。
 
-## GMPay 簽名
+## GMPay 签名
 
-GMPay 請求包含數字 `pid`，以及小寫 HMAC-SHA256 `signature`。
+GMPay 请求包含数字 `pid`，以及小写 HMAC-SHA256 `signature`。
 
-簽名流程：
+签名流程：
 
-1. 排除 `signature` 與空值。
-2. 按欄位名 ASCII 順序排序。
-3. 以 `key=value` 形式用 `&` 連接。
-4. 使用憑證 Secret 作為 HMAC key。
-5. 計算小寫 HMAC-SHA256。
+1. 排除 `signature` 与空值。
+2. 按字段名 ASCII 顺序排序。
+3. 以 `key=value` 形式用 `&` 连接。
+4. 使用凭证 Secret 作为 HMAC key。
+5. 计算小写 HMAC-SHA256。
 
-## 建立訂單
+## 建立订单
 
 ```text
 POST /payments/gmpay/v1/order/create-transaction
 ```
 
-重複提交既有 `order_id` 不會建立第二筆訂單。同時省略 `token` 與 `network` 時會建立可選擇支付方式的訂單；GMPay Edge 不會靜默預設為 TRON。
+重复提交既有 `order_id` 不会建立第二笔订单。同时省略 `token` 与 `network` 时会建立可选择支付方式的订单；GMPay Edge 不会静默默认为 TRON。
 
-## 查詢訂單
+## 查询订单
 
 ```text
 GET /payments/gmpay/v1/order/query
 ```
 
-請提供 `trade_id` 或 `order_id` 其中之一，並使用同一憑證簽名。憑證只能查詢自己建立的訂單。
+请提供 `trade_id` 或 `order_id` 其中之一，并使用同一凭证签名。凭证只能查询自己建立的订单。
 
-## 接收回撥
+## 接收回调
 
-商戶在建立訂單時提供 `notify_url`。回撥目標必須通過實例的 SSRF 與安全策略。
+商户在建立订单时提供 `notify_url`。回调目标必须通过实例的 SSRF 与安全策略。
 
-已投遞事件帶有確定性簽名、保留投遞嘗試、執行有界重試，並提供經審計的人工重試。接收端應驗證簽名、冪等處理重複事件，並在本地狀態提交後再確認。
+已投递事件带有确定性签名、保留投递尝试、执行有界重试，并提供经审计的人工重试。接收端应验证签名、幂等处理重复事件，并在本地状态提交后再确认。
 
-GMPay 回撥成功處理後，請回傳 plain text `ok` 和 HTTP 200。
+GMPay 回调成功处理后，请回传 plain text `ok` 和 HTTP 200。
 
-## EPay 相容
+## EPay 兼容
 
-EPay 相容使用同一套憑證與訂單流水線，但入站請求和相容回撥仍保持舊版 EPay MD5 邊界。
+EPay 兼容使用同一套凭证与订单流水线，但入站请求和兼容回调仍保持旧版 EPay MD5 边界。

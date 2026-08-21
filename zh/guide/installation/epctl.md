@@ -1,18 +1,18 @@
-# epctl 安裝與驗證指令碼
+# epctl 安装与验证脚本
 
-`epctl` 是倉庫頂層的 Linux 二進位制安裝管理指令碼，面向已經發布到 GitHub Releases 的 `epusdt` 二進位制包。
-`epctl-docker-test.sh` 是配套的真實驗收指令碼，用本機 Docker 啟動 Ubuntu + systemd 容器，完整驗證下載、安裝、啟動、升級和初始化密碼流程。
+`epctl` 是仓库顶层的 Linux 二进制安装管理脚本，面向已经发布到 GitHub Releases 的 `epusdt` 二进制包。
+`epctl-docker-test.sh` 是配套的真实验收脚本，用本地 Docker 启动 Ubuntu + systemd 容器，完整验证下载、安装、启动、升级和初始化密码流程。
 
-## 適用範圍
+## 适用范围
 
-- 僅支援 Linux
-- 僅支援二進位制安裝
-- 安裝源固定為 `https://github.com/GMWalletApp/epusdt/releases`
-- 預設透過 systemd 管理服務
+- 仅支持 Linux
+- 仅支持二进制安装
+- 安装源固定为 `https://github.com/GMWalletApp/epusdt/releases`
+- 默认通过 systemd 管理服务
 
-## 依賴與許可權
+## 依赖与权限
 
-`epctl` 依賴這些基礎命令：
+`epctl` 依赖这些基础命令：
 
 - `curl`
 - `tar`
@@ -23,26 +23,26 @@
 
 其中：
 
-- `install`、`upgrade`、`self-install` 需要寫入 `/opt`、`/etc/systemd`、`/usr/local/bin`
-- `status`、`logs` 會在需要時自動透過 `sudo` 重新執行
-- 所以日常使用建議當前使用者具備 `sudo` 許可權
+- `install`、`upgrade`、`self-install` 需要写入 `/opt`、`/etc/systemd`、`/usr/local/bin`
+- `status`、`logs` 会在需要时自动通过 `sudo` 重新执行
+- 所以日常使用建议当前用户具备 `sudo` 权限
 
-## 固定路徑
+## 固定路径
 
-| 專案 | 路徑 |
+| 项目 | 路径 |
 |------|------|
-| 安裝目錄 | `/opt/epusdt` |
-| 主程式 | `/opt/epusdt/epusdt` |
-| 配置檔案 | `/opt/epusdt/.env` |
+| 安装目录 | `/opt/epusdt` |
+| 主程序 | `/opt/epusdt/epusdt` |
+| 配置文件 | `/opt/epusdt/.env` |
 | 示例配置 | `/opt/epusdt/.env.example` |
-| 前端釋放目錄 | `/opt/epusdt/www` |
-| 下載快取 | `/tmp/epusdt/<tag>/` |
+| 前端释放目录 | `/opt/epusdt/www` |
+| 下载快取 | `/tmp/epusdt/<tag>/` |
 | systemd unit | `/etc/systemd/system/epusdt.service` |
-| epctl 全域性安裝位置 | `/usr/local/bin/epctl` |
+| epctl 全域性安装位置 | `/usr/local/bin/epctl` |
 
-## 快速開始
+## 快速开始
 
-Linux 伺服器上一鍵部署時，直接從上游 `master` 分支下載最新 `epctl`，賦予執行權限後進入互動選單：
+Linux 服务器上一键部署时，直接从上游 `master` 分支下载最新 `epctl`，赋予执行权限后进入交互选单：
 
 ```bash
 curl -fsSLO https://raw.githubusercontent.com/GMWalletApp/epusdt/refs/heads/master/epctl
@@ -50,13 +50,13 @@ chmod +x epctl
 ./epctl
 ```
 
-如果你已經 clone 了倉庫，也可以在倉庫根目錄直接執行：
+如果你已经 clone 了仓库，也可以在仓库根目录直接执行：
 
 ```bash
 ./epctl
 ```
 
-預設優先進入中文介面。你也可以顯式指定語言：
+默认优先进入中文界面。你也可以显式指定语言：
 
 ```bash
 ./epctl zh
@@ -65,7 +65,7 @@ chmod +x epctl
 ./epctl --lang en help
 ```
 
-如果想把指令碼裝進 PATH：
+如果想把脚本装进 PATH：
 
 ```bash
 ./epctl self-install
@@ -74,13 +74,13 @@ epctl
 
 ## 常用命令
 
-下載指定版本：
+下载指定版本：
 
 ```bash
 ./epctl download --tag v1.0.8
 ```
 
-安裝服務：
+安装服务：
 
 ```bash
 ./epctl install --tag v1.0.8 \
@@ -88,17 +88,17 @@ epctl
   --listen 127.0.0.1:18000
 ```
 
-升級到新版本：
+升级到新版本：
 
 ```bash
 ./epctl upgrade --tag v1.0.9
 ```
 
-直接執行 `./epctl upgrade --tag ...` 時，指令碼會在檔案替換完成後預設立即執行 `systemctl restart epusdt`。
-如果你只想替換檔案而不重啟，請顯式傳入 `--no-restart`。
-如果你希望人工確認，再傳 `--prompt-restart`；互動終端下提示為 `[Y/n]`，直接回車預設重啟。
+直接执行 `./epctl upgrade --tag ...` 时，脚本会在文件替换完成后默认立即执行 `systemctl restart epusdt`。
+如果你只想替换文件而不重启，请显式传入 `--no-restart`。
+如果你希望人工确认，再传 `--prompt-restart`；交互终端下提示为 `[Y/n]`，直接回车默认重启。
 
-檢視配置、狀態、日誌：
+检视配置、状态、日志：
 
 ```bash
 ./epctl show-config
@@ -106,19 +106,19 @@ epctl
 ./epctl logs --lines 200
 ```
 
-請求初始化管理員密碼（僅當部署版本仍暴露舊版明文路由時可用）：
+请求初始化管理员密码（仅当部署版本仍暴露旧版明文路由时可用）：
 
 ```bash
 ./epctl init-password
 ```
 
-::: warning v1.0.9 路由說明
-`v1.0.9` 服務端註冊的是 `/admin/api/v1/auth/init-password-hash`，沒有註冊 `epctl init-password` 會請求的舊版明文 `/admin/api/v1/auth/init-password` 路由。v1.0.9 首次安裝時，請從安裝 API 回應中的 `init_password` 讀取初始密碼。
+::: warning v1.0.9 路由说明
+`v1.0.9` 服务端注册的是 `/admin/api/v1/auth/init-password-hash`，没有注册 `epctl init-password` 会请求的旧版明文 `/admin/api/v1/auth/init-password` 路由。v1.0.9 首次安装时，请从安装 API 响应中的 `init_password` 读取初始密码。
 :::
 
-## 不傳 `--tag` 時的行為
+## 不传 `--tag` 时的行为
 
-`download`、`install`、`upgrade` 在未傳 `--tag` 時，會先呼叫 GitHub API 解析當前 latest release tag，再向使用者顯示實際 tag 並確認。
+`download`、`install`、`upgrade` 在未传 `--tag` 时，会先调用 GitHub API 解析当前 latest release tag，再向用户显示实际 tag 并确认。
 
 例如：
 
@@ -126,57 +126,57 @@ epctl
 ./epctl install --app-uri https://pay.example.com
 ```
 
-互動模式下會先提示檢測到的最新 tag。
-非互動指令碼執行時，建議顯式傳入 `--tag`。如果你明確要跳過確認，可以設定：
+交互模式下会先提示检测到的最新 tag。
+非交互脚本运行时，建议显式传入 `--tag`。如果你明确要跳过确认，可以设置：
 
 ```bash
 EPCTL_ASSUME_YES=1 ./epctl download
 ```
 
-## 首次安裝時會發生什麼
+## 首次安装时会发生什么
 
-執行 `install` 時，指令碼會：
+执行 `install` 时，脚本会：
 
-1. 按當前機器架構下載 GitHub Release 壓縮包
-2. 解壓到 `/tmp/epusdt/<tag>/extract/`
-3. 安裝二進位制到 `/opt/epusdt/epusdt`
-4. 安裝 `.env.example` 到 `/opt/epusdt/.env.example`
-5. 建立系統使用者和組 `epusdt`
-6. 若 `/opt/epusdt/.env` 不存在，則從 `.env.example` 自動生成
-7. 寫入並啟用 `epusdt.service`
+1. 按当前机器架构下载 GitHub Release 压缩包
+2. 解压到 `/tmp/epusdt/<tag>/extract/`
+3. 安装二进制到 `/opt/epusdt/epusdt`
+4. 安装 `.env.example` 到 `/opt/epusdt/.env.example`
+5. 建立系统用户和组 `epusdt`
+6. 若 `/opt/epusdt/.env` 不存在，则从 `.env.example` 自动生成
+7. 写入并启用 `epusdt.service`
 
-自動生成 `.env` 時，指令碼只會補預設上線所需的最小改動：
+自动生成 `.env` 时，脚本只会补默认上线所需的最小改动：
 
 - `install=false`
-- `app_uri=<--app-uri，預設 http://127.0.0.1:8000>`
-- `http_listen=<--listen，預設 127.0.0.1:8000>`
+- `app_uri=<--app-uri，默认 http://127.0.0.1:8000>`
+- `http_listen=<--listen，默认 127.0.0.1:8000>`
 
-如果 `/opt/epusdt/.env` 已存在，則安裝和升級都會保留它，不會覆蓋。
-`/opt/epusdt/.env.example` 則會在每次 install / upgrade 時按當前 release 重新刷新。
+如果 `/opt/epusdt/.env` 已存在，则安装和升级都会保留它，不会覆盖。
+`/opt/epusdt/.env.example` 则会在每次 install / upgrade 时按当前 release 重新刷新。
 
-## 升級時會發生什麼
+## 升级时会发生什么
 
-執行 `upgrade` 時，指令碼會：
+执行 `upgrade` 时，脚本会：
 
-1. 按當前機器架構下載目標 GitHub Release 壓縮包
-2. 解壓到 `/tmp/epusdt/<tag>/extract/`
-3. 要求現有 `/opt/epusdt/.env` 已存在；若不存在會直接失敗，並提示先執行 `install`
-4. 覆蓋 `/opt/epusdt/epusdt`
-5. 覆蓋 `/opt/epusdt/.env.example`
-6. 保留現有 `/opt/epusdt/.env`
-7. 刷新 `epusdt.service` 並執行 `systemctl daemon-reload`
-8. 預設立即執行 `systemctl restart epusdt`
+1. 按当前机器架构下载目标 GitHub Release 压缩包
+2. 解压到 `/tmp/epusdt/<tag>/extract/`
+3. 要求现有 `/opt/epusdt/.env` 已存在；若不存在会直接失败，并提示先执行 `install`
+4. 覆盖 `/opt/epusdt/epusdt`
+5. 覆盖 `/opt/epusdt/.env.example`
+6. 保留现有 `/opt/epusdt/.env`
+7. 刷新 `epusdt.service` 并执行 `systemctl daemon-reload`
+8. 默认立即执行 `systemctl restart epusdt`
 
-補充行為：
+补充行为：
 
-- `upgrade` 不會再補寫 `.env`，也不會再執行 `systemctl enable`
-- `upgrade --no-restart` 只替換檔案，不重啟服務，並輸出手動 restart 提示
-- `upgrade --prompt-restart` 會在互動終端下詢問是否重啟
-- 如果重啟前的檔案部署失敗，或升級後的重啟失敗，指令碼會嘗試回滾舊的二進位制、`.env.example` 和 unit 檔案
+- `upgrade` 不会再补写 `.env`，也不会再执行 `systemctl enable`
+- `upgrade --no-restart` 只替换文件，不重启服务，并输出手动 restart 提示
+- `upgrade --prompt-restart` 会在交互终端下询问是否重启
+- 如果重启前的文件部署失败，或升级后的重启失败，脚本会尝试回滚旧的二进制、`.env.example` 和 unit 文件
 
-## systemd 服務說明
+## systemd 服务说明
 
-指令碼註冊的服務名固定為 `epusdt.service`，核心引數如下：
+脚本注册的服务名固定为 `epusdt.service`，核心引数如下：
 
 ```ini
 WorkingDirectory=/opt/epusdt
@@ -187,33 +187,33 @@ Restart=always
 RestartSec=3
 ```
 
-`WorkingDirectory` 固定為 `/opt/epusdt`，因為程式會在二進位制同級目錄釋放 `www/` 靜態檔案。
+`WorkingDirectory` 固定为 `/opt/epusdt`，因为程序会在二进制同级目录释放 `www/` 静态文件。
 
-## `init-password` 的含義
+## `init-password` 的含义
 
-`epctl init-password` 只會請求本地 HTTP 路由。這是舊版明文路由，實際部署版本不一定註冊：
+`epctl init-password` 只会请求本地 HTTP 路由。这是旧版明文路由，实际部署版本不一定注册：
 
 ```text
 GET /admin/api/v1/auth/init-password
 ```
 
-它不會直接讀資料庫。
+它不会直接读数据库。
 
-指令碼會從 `/opt/epusdt/.env` 解析 `http_listen`，然後自動把這些監聽寫法轉成本地可請求地址：
+脚本会从 `/opt/epusdt/.env` 解析 `http_listen`，然后自动把这些监听写法转成本地可请求地址：
 
 - `:8000` -> `127.0.0.1:8000`
 - `0.0.0.0:8000` -> `127.0.0.1:8000`
 
-如果介面返回 `10040`，含義是初始化明文密碼已經不可用。常見原因是：
+如果接口返回 `10040`，含义是初始化明文密码已经不可用。常见原因是：
 
-- 管理員已經登入並修改過密碼
-- 初始化密碼已經被消費，當前不再允許再次取回
+- 管理员已经登录并修改过密码
+- 初始化密码已经被消费，当前不再允许再次取回
 
-如果介面返回 `404`，表示部署版本沒有暴露這個舊版明文端點；請改用安裝流程回應或初始化密碼雜湊狀態端點判斷。上述情況下，指令碼會直接把介面原始錯誤輸出出來，方便排查。
+如果接口返回 `404`，表示部署版本没有暴露这个旧版明文端点；请改用安装流程响应或初始化密码哈希状态端点判断。上述情况下，脚本会直接把接口原始错误输出出来，方便排查。
 
-## Docker 驗收指令碼
+## Docker 验收脚本
 
-倉庫頂層提供：
+仓库顶层提供：
 
 ```bash
 ./epctl-docker-test.sh <install-tag> [upgrade-tag]
@@ -226,26 +226,26 @@ GET /admin/api/v1/auth/init-password
 ./epctl-docker-test.sh --lang zh v1.0.6 v1.0.8
 ```
 
-它會在本機：
+它会在本地：
 
-- 直接從 `ubuntu:24.04` 啟動容器，並在容器啟動階段安裝 systemd 與測試依賴
-- 啟動一個特權容器
-- 在容器內執行 `epctl self-install`
-- 下載真實 GitHub Release
-- 安裝 `epusdt`
-- 若傳入 `upgrade-tag`，驗證 `upgrade --no-restart`、預設非互動 `upgrade`，以及 `upgrade --prompt-restart` 的 `n` / 回車分支
-- 檢查 `systemd` 服務、`www/index.html`、配置檔案、日誌、狀態輸出
-- 以真實 release artifact 驗證 init-password 行為；如果部署版本缺少舊版明文路由，檢查會輸出原始 HTTP 失敗內容以方便排查
+- 直接从 `ubuntu:24.04` 启动容器，并在容器启动阶段安装 systemd 与测试依赖
+- 启动一个特权容器
+- 在容器内执行 `epctl self-install`
+- 下载真实 GitHub Release
+- 安装 `epusdt`
+- 若传入 `upgrade-tag`，验证 `upgrade --no-restart`、默认非交互 `upgrade`，以及 `upgrade --prompt-restart` 的 `n` / 回车分支
+- 检查 `systemd` 服务、`www/index.html`、配置文件、日志、状态输出
+- 以真实 release artifact 验证 init-password 行为；如果部署版本缺少旧版明文路由，检查会输出原始 HTTP 失败内容以方便排查
 
-執行前提：
+执行前提：
 
-- 本機已安裝 Docker
-- 當前使用者有許可權執行 Docker
-- 宿主機能夠訪問 GitHub Releases
+- 本地已安装 Docker
+- 当前用户有权限执行 Docker
+- 宿主机能够访问 GitHub Releases
 
-## 建議
+## 建议
 
-- 自動化部署場景優先顯式傳 `--tag`
-- 生產環境建議安裝完成後先執行一次 `./epctl show-config`
-- 首次拿到初始化密碼後，建議立即登入後臺修改管理員密碼
-- 如果只是驗證指令碼是否可用，優先跑 `./epctl-docker-test.sh`
+- 自动化部署场景优先显式传 `--tag`
+- 生产环境建议安装完成后先执行一次 `./epctl show-config`
+- 首次拿到初始化密码后，建议立即登录后台修改管理员密码
+- 如果只是验证脚本是否可用，优先跑 `./epctl-docker-test.sh`

@@ -5,6 +5,7 @@ const ignoredGeneratedPaths = [
   ".git",
   ".github",
   ".automation",
+  ".local",
   "node_modules",
   "dist",
   "scripts",
@@ -122,9 +123,97 @@ export default defineConfig({
       },
     },
     zh: {
+      label: "简体中文",
+      lang: "zh-CN",
+      link: "/zh/",
+      title: "Epusdt",
+      description: "Epusdt（简易 USDT 收款）— 基于 Go 的私有化多链加密收款网关，支持 GMPay API、EPay 兼容跳转流程与托管收银台，并提供 Telegram 通知。",
+      themeConfig: {
+        darkModeSwitchLabel: "外观",
+        sidebarMenuLabel: "目录",
+        returnToTopLabel: "回到顶部",
+        outlineTitle: "本页目录",
+        lastUpdatedText: "最后更新",
+        langMenuLabel: "切换语言",
+        nav: [
+          { text: "首页", link: "/zh/" },
+          { text: "指南", link: "/zh/guide/intro" },
+          { text: "API 文档", link: "/zh/api/reference" },
+          { text: "GMPay Edge", link: "/zh/gmpay-edge/" },
+          { text: "GMShop Edge", link: "/zh/gmshop-edge/" },
+          { text: "赞助", link: "/zh/guide/sponsor" },
+        ],
+        sidebar: {
+          "/zh/guide/": [
+            {
+              text: "指南",
+              items: [
+                { text: "项目简介", link: "/zh/guide/intro" },
+                { text: "版本日志", link: "/zh/guide/changelog" },
+                { text: "常见问题", link: "/zh/guide/faq" },
+                { text: "赞助支持", link: "/zh/guide/sponsor" },
+              ],
+            },
+            {
+              text: "安装部署",
+              items: [
+                { text: "教程合集", link: "/zh/guide/installation/tutorial" },
+                { text: "epctl 二进制安装", link: "/zh/guide/installation/epctl" },
+                { text: "Docker 部署（推荐）", link: "/zh/guide/installation/docker" },
+                { text: "aaPanel 部署", link: "/zh/guide/installation/aapanel" },
+                { text: "手动部署", link: "/zh/guide/installation/manual" },
+              ],
+            },
+            {
+              text: "接入教程",
+              items: [
+                { text: "GMPay 接入（推荐）", link: "/zh/guide/integration/gmpay" },
+                { text: "EPay 接入（跳转式）", link: "/zh/guide/integration/epay" },
+                { text: "旧版迁移说明", link: "/zh/guide/integration/epusdt" },
+              ],
+            },
+          ],
+          "/zh/api/": [
+            {
+              text: "API 文档",
+              items: [
+                { text: "概览", link: "/zh/api/reference" },
+                { text: "支付接口", link: "/zh/api/payment" },
+                { text: "接口迁移说明", link: "/zh/api/legacy" },
+              ],
+            },
+          ],
+          "/zh/gmpay-edge/": [
+            {
+              text: "GMPay Edge",
+              items: [
+                { text: "概览", link: "/zh/gmpay-edge/" },
+                { text: "架构", link: "/zh/gmpay-edge/architecture" },
+                { text: "部署", link: "/zh/gmpay-edge/deployment" },
+                { text: "商户 API", link: "/zh/gmpay-edge/merchant-api" },
+                { text: "支付接入", link: "/zh/gmpay-edge/payment-integrations" },
+              ],
+            },
+          ],
+          "/zh/gmshop-edge/": [
+            {
+              text: "GMShop Edge",
+              items: [
+                { text: "概览", link: "/zh/gmshop-edge/" },
+                { text: "架构", link: "/zh/gmshop-edge/architecture" },
+                { text: "部署", link: "/zh/gmshop-edge/deployment" },
+                { text: "交易与交付", link: "/zh/gmshop-edge/commerce-fulfillment" },
+                { text: "结账与 Provider", link: "/zh/gmshop-edge/checkout-providers" },
+              ],
+            },
+          ],
+        },
+      },
+    },
+    "zh-tw": {
       label: "繁體中文",
       lang: "zh-TW",
-      link: "/zh/",
+      link: "/zh-tw/",
       title: "Epusdt",
       description: "Epusdt（簡易 USDT 收款）— 基於 Go 的私有化多鏈加密收款閘道，支援 GMPay API、EPay 相容跳轉流程與託管收銀臺，並提供 Telegram 通知。",
       themeConfig: {
@@ -135,74 +224,74 @@ export default defineConfig({
         lastUpdatedText: "最後更新",
         langMenuLabel: "切換語言",
         nav: [
-          { text: "首頁", link: "/zh/" },
-          { text: "指南", link: "/zh/guide/intro" },
-          { text: "API 文件", link: "/zh/api/reference" },
-          { text: "GMPay Edge", link: "/zh/gmpay-edge/" },
-          { text: "GMShop Edge", link: "/zh/gmshop-edge/" },
-          { text: "贊助", link: "/zh/guide/sponsor" },
+          { text: "首頁", link: "/zh-tw/" },
+          { text: "指南", link: "/zh-tw/guide/intro" },
+          { text: "API 文件", link: "/zh-tw/api/reference" },
+          { text: "GMPay Edge", link: "/zh-tw/gmpay-edge/" },
+          { text: "GMShop Edge", link: "/zh-tw/gmshop-edge/" },
+          { text: "贊助", link: "/zh-tw/guide/sponsor" },
         ],
         sidebar: {
-          "/zh/guide/": [
+          "/zh-tw/guide/": [
             {
               text: "指南",
               items: [
-                { text: "項目簡介", link: "/zh/guide/intro" },
-                { text: "版本日誌", link: "/zh/guide/changelog" },
-                { text: "常見問題", link: "/zh/guide/faq" },
-                { text: "贊助支持", link: "/zh/guide/sponsor" },
+                { text: "項目簡介", link: "/zh-tw/guide/intro" },
+                { text: "版本日誌", link: "/zh-tw/guide/changelog" },
+                { text: "常見問題", link: "/zh-tw/guide/faq" },
+                { text: "贊助支持", link: "/zh-tw/guide/sponsor" },
               ],
             },
             {
               text: "安裝部署",
               items: [
-                { text: "教程合集", link: "/zh/guide/installation/tutorial" },
-                { text: "epctl 二進位安裝", link: "/zh/guide/installation/epctl" },
-                { text: "Docker 部署（推薦）", link: "/zh/guide/installation/docker" },
-                { text: "aaPanel 部署", link: "/zh/guide/installation/aapanel" },
-                { text: "手動部署", link: "/zh/guide/installation/manual" },
+                { text: "教程合集", link: "/zh-tw/guide/installation/tutorial" },
+                { text: "epctl 二進位安裝", link: "/zh-tw/guide/installation/epctl" },
+                { text: "Docker 部署（推薦）", link: "/zh-tw/guide/installation/docker" },
+                { text: "aaPanel 部署", link: "/zh-tw/guide/installation/aapanel" },
+                { text: "手動部署", link: "/zh-tw/guide/installation/manual" },
               ],
             },
             {
               text: "接入教學",
               items: [
-                { text: "GMPay 接入（推薦）", link: "/zh/guide/integration/gmpay" },
-                { text: "EPay 接入（跳轉式）", link: "/zh/guide/integration/epay" },
-                { text: "舊版遷移說明", link: "/zh/guide/integration/epusdt" },
+                { text: "GMPay 接入（推薦）", link: "/zh-tw/guide/integration/gmpay" },
+                { text: "EPay 接入（跳轉式）", link: "/zh-tw/guide/integration/epay" },
+                { text: "舊版遷移說明", link: "/zh-tw/guide/integration/epusdt" },
               ],
             },
           ],
-          "/zh/api/": [
+          "/zh-tw/api/": [
             {
               text: "API 文件",
               items: [
-                { text: "概覽", link: "/zh/api/reference" },
-                { text: "支付介面", link: "/zh/api/payment" },
-                { text: "介面遷移說明", link: "/zh/api/legacy" },
+                { text: "概覽", link: "/zh-tw/api/reference" },
+                { text: "支付介面", link: "/zh-tw/api/payment" },
+                { text: "介面遷移說明", link: "/zh-tw/api/legacy" },
               ],
             },
           ],
-          "/zh/gmpay-edge/": [
+          "/zh-tw/gmpay-edge/": [
             {
               text: "GMPay Edge",
               items: [
-                { text: "概覽", link: "/zh/gmpay-edge/" },
-                { text: "架構", link: "/zh/gmpay-edge/architecture" },
-                { text: "部署", link: "/zh/gmpay-edge/deployment" },
-                { text: "商戶 API", link: "/zh/gmpay-edge/merchant-api" },
-                { text: "支付接入", link: "/zh/gmpay-edge/payment-integrations" },
+                { text: "概覽", link: "/zh-tw/gmpay-edge/" },
+                { text: "架構", link: "/zh-tw/gmpay-edge/architecture" },
+                { text: "部署", link: "/zh-tw/gmpay-edge/deployment" },
+                { text: "商戶 API", link: "/zh-tw/gmpay-edge/merchant-api" },
+                { text: "支付接入", link: "/zh-tw/gmpay-edge/payment-integrations" },
               ],
             },
           ],
-          "/zh/gmshop-edge/": [
+          "/zh-tw/gmshop-edge/": [
             {
               text: "GMShop Edge",
               items: [
-                { text: "概覽", link: "/zh/gmshop-edge/" },
-                { text: "架構", link: "/zh/gmshop-edge/architecture" },
-                { text: "部署", link: "/zh/gmshop-edge/deployment" },
-                { text: "交易與交付", link: "/zh/gmshop-edge/commerce-fulfillment" },
-                { text: "結帳與 Provider", link: "/zh/gmshop-edge/checkout-providers" },
+                { text: "概覽", link: "/zh-tw/gmshop-edge/" },
+                { text: "架構", link: "/zh-tw/gmshop-edge/architecture" },
+                { text: "部署", link: "/zh-tw/gmshop-edge/deployment" },
+                { text: "交易與交付", link: "/zh-tw/gmshop-edge/commerce-fulfillment" },
+                { text: "結帳與 Provider", link: "/zh-tw/gmshop-edge/checkout-providers" },
               ],
             },
           ],

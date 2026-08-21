@@ -1,16 +1,16 @@
-# Docker 部署（推薦）
+# Docker 部署（推荐）
 
-本教程基於官方 Docker 映象部署 Epusdt，支援 Docker Compose 或 `docker run` 方式。
+本教程基于官方 Docker 镜像部署 Epusdt，支持 Docker Compose 或 `docker run` 方式。
 
-**首次啟動通常不需要手動建立 `.env` 檔案。** 推薦做法是掛載一個獨立的宿主機目錄，並把 `EPUSDT_CONFIG` 指向這個目錄裡的設定檔。這樣可以同時持久化設定、預設 SQLite 主資料庫與執行時資料，且**不會**把映象內的 `/app` 檔案整個覆蓋掉。
+**首次启动通常不需要手动建立 `.env` 文件。** 推荐做法是挂载一个独立的宿主机目录，并把 `EPUSDT_CONFIG` 指向这个目录里的配置文件。这样可以同时持久化设置、默认 SQLite 主数据库与运行时数据，且**不会**把镜像内的 `/app` 文件整个覆盖掉。
 
-## 前置條件
+## 前置条件
 
-- 已安裝 Docker 和 Docker Compose
+- 已安装 Docker 和 Docker Compose
 
-## 步驟
+## 步骤
 
-### 1. 建立目錄
+### 1. 建立目录
 
 ```bash
 mkdir epusdt && cd epusdt
@@ -33,22 +33,22 @@ services:
 EOF
 ```
 
-這種掛載方式的好處是：
+这种挂载方式的好处是：
 
-- `/data/.env` 會保存安裝嚮導產生的設定檔
-- `/data/epusdt.db` 會成為預設主 SQLite 資料庫
-- `/data/runtime/` 會保存執行時 SQLite 資料與日誌
-- 映象內 `/app` 保持乾淨，升級時不會被舊卷內容遮蔽
+- `/data/.env` 会保存安装向导产生的配置文件
+- `/data/epusdt.db` 会成为默认主 SQLite 数据库
+- `/data/runtime/` 会保存运行时 SQLite 数据与日志
+- 镜像内 `/app` 保持干净，升级时不会被旧卷内容遮蔽
 
-### 3. 啟動服務
+### 3. 启动服务
 
 ```bash
 docker compose up -d
 ```
 
-### 4. 完成安裝嚮導
+### 4. 完成安装向导
 
-瀏覽器開啟 `http://你的伺服器IP:8000`，按頁面提示完成安裝。當前安裝嚮導主要涵蓋以下欄位：
+浏览器开启 `http://你的服务器IP:8000`，按页面提示完成安装。当前安装向导主要涵盖以下字段：
 
 - `app_name`
 - `app_uri`
@@ -59,13 +59,13 @@ docker compose up -d
 - `order_expiration_time`
 - `order_notice_max_retry`
 
-::: warning Docker 綁定位址要求
-Docker 部署時，`http_bind_addr` 必須填 `0.0.0.0`。
+::: warning Docker 绑定地址要求
+Docker 部署时，`http_bind_addr` 必须填 `0.0.0.0`。
 
-**不要**填 `127.0.0.1`。目前安裝頁的預設值仍可能顯示 `127.0.0.1`，但如果在 Docker 場景直接保存這個值，Epusdt 重啟後只會在容器內監聽 `127.0.0.1:8000`，導致 Docker 映射端口或反向代理無法正常存取。
+**不要**填 `127.0.0.1`。目前安装页的默认值仍可能显示 `127.0.0.1`，但如果在 Docker 场景直接保存这个值，Epusdt 重启后只会在容器内监听 `127.0.0.1:8000`，导致 Docker 映射端口或反向代理无法正常访问。
 :::
 
-如果你已經用錯預設值完成安裝，請直接在宿主機編輯 `./data/.env`，把：
+如果你已经用错默认值完成安装，请直接在宿主机编辑 `./data/.env`，把：
 
 ```ini
 http_listen=127.0.0.1:8000
@@ -77,17 +77,17 @@ http_listen=127.0.0.1:8000
 http_listen=0.0.0.0:8000
 ```
 
-然後重啟容器：
+然后重启容器：
 
 ```bash
 docker restart epusdt
 ```
 
-提交後服務自動重啟，即可正常使用。
+提交后服务自动重启，即可正常使用。
 
 ---
 
-## 備選：`docker run` 快速啟動
+## 备选：`docker run` 快速启动
 
 ```bash
 docker run -d \
@@ -99,19 +99,19 @@ docker run -d \
   gmwallet/epusdt:latest
 ```
 
-啟動後同樣訪問 `http://你的伺服器IP:8000` 完成安裝嚮導。
+启动后同样访问 `http://你的服务器IP:8000` 完成安装向导。
 
 ---
 
-## 以檔案方式管理設定（可選）
+## 以文件方式管理设置（可选）
 
-如果你希望後續直接在宿主機檢視或修改設定，安裝完成後可直接編輯：
+如果你希望后续直接在宿主机检视或修改设置，安装完成后可直接编辑：
 
 ```text
 ./data/.env
 ```
 
-修改完成後重啟容器：
+修改完成后重启容器：
 
 ```bash
 docker restart epusdt
@@ -119,9 +119,9 @@ docker restart epusdt
 
 ---
 
-## 注意事項
+## 注意事项
 
-- 安裝完成後，商戶憑證與執行設定都可在管理後臺調整
-- 新接入請使用管理後臺建立的商戶 `pid` + `secret_key`
-- 不要把整個 `/app` 直接掛成持久卷，否則升級時舊資料可能遮蔽新映象中的新二進位與新檔案
-- 升級映象：`docker pull gmwallet/epusdt:latest && docker compose up -d`
+- 安装完成后，商户凭证与执行设置都可在管理后台调整
+- 新接入请使用管理后台建立的商户 `pid` + `secret_key`
+- 不要把整个 `/app` 直接挂成持久卷，否则升级时旧数据可能遮蔽新镜像中的新二进制与新文件
+- 升级镜像：`docker pull gmwallet/epusdt:latest && docker compose up -d`

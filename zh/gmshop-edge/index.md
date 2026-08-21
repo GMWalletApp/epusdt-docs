@@ -1,34 +1,34 @@
 # GMShop Edge
 
-[GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) 是面向 **Cloudflare Workers** 的自託管、單部署、單租戶數位商品商城。
+[GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) 是面向 **Cloudflare Workers** 的自托管、单部署、单租户数字商品商城。
 
-一個部署即可提供響應式公開商城、客戶中心、結帳與交付，以及用於營運數位商品的權限驅動管理後臺。
+一个部署即可提供响应式公开商城、客户中心、结账与交付，以及用于运营数字商品的权限驱动管理后台。
 
-> GMShop Edge 仍在持續開發。內建適配器表示專案已實作相關接入路徑；生產使用仍需要部署者自己的服務商憑證、備份、監控與真實服務商驗收測試。
+> GMShop Edge 仍在持续开发。内建适配器表示项目已实作相关接入路径；生产使用仍需要部署者自己的服务商凭证、备份、监控与真实服务商验收测试。
 
-## 它提供什麼
+## 它提供什么
 
-- 響應式公開商城、客戶中心、結帳流程，以及權限驅動的管理後臺。
-- 銷售預置庫存商品，原子分配加密保存的卡密、帳號、啟用碼或憑證。
-- 從 ACG `3.5.5` V4 Open API 或獨角數卡 Next `v1.3.1` 同步上游商品，並按 API 來源使用等優先級帳號池履約。
-- R2 私有下載交付、自動化商品、優惠券、退款、售後、保留策略與審計記錄。
-- 遊客與註冊客戶結帳，使用 Better Auth 使用者與已驗證結帳信箱形成統一商業身份模型。
-- 透過 SMTP、Resend、Postmark、SendGrid、Mailgun 或 Cloudflare Send Email 發送交易郵件。
-- 在 D1 維護商城自有法幣匯率，將不可變報價交給類型化結帳 Provider。
-- 執行時配置信箱密碼、社交、OIDC 與 Telegram 登入 Provider。
-- 以動態多角色 RBAC 保護 `/admin`，包含不可移除的 root 約束與服務端權限校驗。
-- 英文（`en-US`）與簡體中文（`zh-CN`）兩種介面語言。
+- 响应式公开商城、客户中心、结账流程，以及权限驱动的管理后台。
+- 销售预置库存商品，原子分配加密保存的卡密、账号、启用码或凭证。
+- 从 ACG `3.5.5` V4 Open API 或独角数卡 Next `v1.3.1` 同步上游商品，并按 API 来源使用等优先级账号池履约。
+- R2 私有下载交付、自动化商品、优惠券、退款、售后、保留策略与审计记录。
+- 游客与注册客户结账，使用 Better Auth 用户与已验证结账信箱形成统一商业身份模型。
+- 通过 SMTP、Resend、Postmark、SendGrid、Mailgun 或 Cloudflare Send Email 发送交易邮件。
+- 在 D1 维护商城自有法币汇率，将不可变报价交给类型化结账 Provider。
+- 运行时配置信箱密码、社交、OIDC 与 Telegram 登录 Provider。
+- 以动态多角色 RBAC 保护 `/admin`，包含不可移除的 root 约束与服务端权限校验。
+- 英文（`en-US`）与简体中文（`zh-CN`）两种接口语言。
 
-## 文件章節
+## 文件章节
 
-- [架構](./architecture.md)：Worker 入口、Cloudflare bindings、資料權威來源、佇列與模組邊界。
-- [部署](./deployment.md)：一鍵部署、Wrangler CLI、bindings、本地開發與首次安裝。
-- [交易與交付](./commerce-fulfillment.md)：商品、庫存、上游供貨、交付記錄、客戶歸屬與自動化商品。
-- [結帳與 Provider](./checkout-providers.md)：商城結帳模型、法幣報價、郵件與登入 Provider。
+- [架构](./architecture.md)：Worker 入口、Cloudflare bindings、数据权威来源、伫列与模组边界。
+- [部署](./deployment.md)：一键部署、Wrangler CLI、bindings、本地开发与首次安装。
+- [交易与交付](./commerce-fulfillment.md)：商品、库存、上游供货、交付记录、客户归属与自动化商品。
+- [结账与 Provider](./checkout-providers.md)：商城结账模型、法币报价、邮件与登录 Provider。
 
-## 相關連結
+## 相关连结
 
-- 倉庫：[GMWalletApp/gmshop-edge](https://github.com/GMWalletApp/gmshop-edge)
+- 仓库：[GMWalletApp/gmshop-edge](https://github.com/GMWalletApp/gmshop-edge)
 - English README：[README.md](https://github.com/GMWalletApp/gmshop-edge/blob/main/README.md)
 - 中文 README：[README.zh-CN.md](https://github.com/GMWalletApp/gmshop-edge/blob/main/README.zh-CN.md)
 - OpenAPI YAML：[`public/openapi.yaml`](https://github.com/GMWalletApp/gmshop-edge/blob/main/public/openapi.yaml)

@@ -1,26 +1,26 @@
-# 手動部署
+# 手动部署
 
-本文說明如何在普通 Linux 伺服器上直接部署 Epusdt。
+本文说明如何在普通 Linux 服务器上直接部署 Epusdt。
 
-**首次啟動通常不需要手動建立 `.env`。** 若配置檔不存在，Epusdt 會直接啟動內建安裝嚮導。
+**首次启动通常不需要手动建立 `.env`。** 若配置文件不存在，Epusdt 会直接启动内建安装向导。
 
-## 1. 準備目錄
+## 1. 准备目录
 
 ```bash
 mkdir -p /opt/epusdt
 cd /opt/epusdt
 ```
 
-## 2. 取得執行檔
+## 2. 取得执行档
 
-### 方式 A：下載釋出包
+### 方式 A：下载发布包
 
-請先到目前的 release 頁面依伺服器架構選擇對應檔案，例如：
+请先到目前的 release 页面依服务器架构选择对应文件，例如：
 
 - `epusdt-1.0.9-linux-amd64.tar.gz`
 - `epusdt-1.0.9-linux-arm64.tar.gz`
 
-以下示例適用於 Linux x86_64 / amd64：
+以下示例适用于 Linux x86_64 / amd64：
 
 ```bash
 wget https://github.com/GMWalletApp/epusdt/releases/download/v1.0.9/epusdt-1.0.9-linux-amd64.tar.gz -O epusdt.tar.gz
@@ -28,15 +28,15 @@ tar -xzf epusdt.tar.gz
 rm epusdt.tar.gz
 ```
 
-如果你的主機不是 amd64，請直接到 release 頁面下載對應架構的壓縮包：
+如果你的主机不是 amd64，请直接到 release 页面下载对应架构的压缩包：
 
 ```text
 https://github.com/GMWalletApp/epusdt/releases/latest
 ```
 
-### 方式 B：從原始碼編譯
+### 方式 B：从源代码编译
 
-前置條件至少需要先安裝：
+前置条件至少需要先安装：
 
 - `git`
 - `Go`
@@ -47,7 +47,7 @@ cd epusdt/src
 go build -o /opt/epusdt/epusdt .
 ```
 
-## 3. 啟動服務
+## 3. 启动服务
 
 ```bash
 chmod +x /opt/epusdt/epusdt
@@ -55,28 +55,28 @@ cd /opt/epusdt
 ./epusdt http start
 ```
 
-之後在瀏覽器打開 `http://你的伺服器IP:8000`，完成安裝嚮導。
+之后在浏览器打开 `http://你的服务器IP:8000`，完成安装向导。
 
 ## 4. 反向代理
 
 把你的域名（例如 `pay.example.com`）反代到 `http://127.0.0.1:8000`。
 
-## 5. 驗證實際接入地址
+## 5. 验证实际接入地址
 
-基礎地址示例：
+基础地址示例：
 
 ```text
 https://pay.example.com
 ```
 
-推薦下單路由：
+推荐下单路由：
 
 ```text
 POST /payments/gmpay/v1/order/create-transaction
 ```
 
-## 注意事項
+## 注意事项
 
-- 目前原始碼模板以 `src/.env.example` 為準
-- 初始商戶憑證請以安裝流程 / 管理後臺為準，不要照抄舊文件裡的過時示例
-- 不要再依賴已移除的 `/payments/epusdt/v1/order/create-transaction`
+- 目前源代码模板以 `src/.env.example` 为准
+- 初始商户凭证请以安装流程 / 管理后台为准，不要照抄旧文件里的过时示例
+- 不要再依赖已移除的 `/payments/epusdt/v1/order/create-transaction`
