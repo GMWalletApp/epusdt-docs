@@ -1,6 +1,6 @@
 # Architecture
 
-GMPay Edge runs as one Cloudflare Worker that owns the product surface and the shared order/payment core.
+GMPay Edge runs as one Worker or one Node/Nitro container. Both runtimes own the same product surfaces and shared order/payment core; only the infrastructure adapters differ.
 
 ## Product surfaces
 
@@ -9,7 +9,19 @@ GMPay Edge runs as one Cloudflare Worker that owns the product surface and the s
 - Operators use `/admin`.
 - Telegram users interact through the configured bot.
 
-## Cloudflare runtime
+## Runtime services
+
+| Capability | Cloudflare Workers | Node/Nitro Docker |
+| --- | --- | --- |
+| Database | D1 | SQLite in `GMPAY_DATA_DIR` |
+| Cache | KV | Local runtime cache |
+| Private objects | R2 | Persistent local object storage |
+| Background work | Cloudflare Queues | Durable local queues |
+| Scheduling | Cron Triggers | Node scheduler |
+
+The Node data directory also contains uploaded files and durable queue state. It must be mounted to a persistent volume and included in backups.
+
+## Cloudflare bindings
 
 | Binding | Cloudflare product | Purpose |
 | --- | --- | --- |
@@ -21,15 +33,14 @@ GMPay Edge runs as one Cloudflare Worker that owns the product surface and the s
 
 ## Background work
 
-Queues and Cron Triggers move payment scans and Webhook retries outside synchronous requests. They also handle payment expiry, cleanup, connection health checks, and rate sync.
+Runtime-specific durable queues and schedulers move payment scans and Webhook retries outside synchronous requests. They also handle payment expiry, cleanup, connection health checks, and rate sync.
 
-Webhook delivery uses a Queue-backed outbox with retry history, manual retry, and audit records.
+Webhook delivery uses a durable outbox with retry history, manual retry, and audit records on either runtime.
 
 ## Data and security model
 
-- D1 is the authoritative application and payment database.
-- KV stores short-lived validated caches.
-- R2 stores private payment-review evidence and generated exports.
+- D1 or SQLite is authoritative for the selected runtime.
+- Cache and private-object storage use the selected runtime's adapters.
 - Payment adapters are read-only.
 - Administration uses Better Auth, TOTP, and dynamic multi-role RBAC.
 

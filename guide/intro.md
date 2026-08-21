@@ -4,7 +4,7 @@
 
 `Epusdt` is a self-hosted **crypto payment gateway** written in **Go**.
 
-The GMWalletApp organization also maintains [GMPay Edge](/gmpay-edge/), a separate edge-native gateway for Cloudflare Workers. It shares the GMPay/EPay merchant-protocol context, but it is not the same runtime or deployment model as Epusdt.
+The GMWalletApp organization also maintains [GMPay Edge](/gmpay-edge/), a separate gateway for Cloudflare Workers or Node/Nitro Docker. It shares the GMPay/EPay merchant-protocol context, but it is not the same runtime or deployment model as Epusdt.
 
 For digital-goods stores, see [GMShop Edge](/gmshop-edge/), a separate Cloudflare Workers storefront for catalog, checkout, fulfillment, and administration.
 
