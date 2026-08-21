@@ -1,16 +1,14 @@
 # 部署
 
-GMShop Edge 以單個 Cloudflare Worker 部署，並使用 D1、KV、私有 R2、一個 commerce Queue、死信 Queue、可選 Cloudflare Send Email 與 Cron Triggers。
+GMShop Edge 支援單個 Cloudflare Workers 部署或單個 Node/Nitro Docker 容器。無論選擇哪種方式，接單前都必須完成 `/install` 初始化。
 
-## 一鍵部署
+> 目前版本為 `v1.0.0-alpha.1`。測試時使用滾動 `alpha` 映像或完整預釋出版本標籤；`latest` 保留給穩定版本。
+
+## Cloudflare Workers
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/GMWalletApp/gmshop-edge)
 
-引導流程會基於倉庫建立 Worker 專案。完成後請開啟 `/install`，核對自動建立的資源 bindings，並在接收訂單前完成生產檢查清單。
-
-## Wrangler CLI
-
-登入 Wrangler、安裝依賴並部署：
+使用 CLI 部署：
 
 ```bash
 bun install
@@ -18,53 +16,61 @@ bunx wrangler login
 bun run deploy
 ```
 
-`bun run deploy` 會使用倉庫的 `predeploy` hook：
+`predeploy` Hook 會建立或複用命名的 D1、KV、私有 R2、商務佇列和死信佇列，應用遠端遷移並建置 Worker。解析後的 D1/KV ID 僅注入 `dist/server/wrangler.json`，不會把帳戶專屬 ID 寫入可移植的 `wrangler.jsonc`。
 
-```text
-bun run scripts/build.ts --remote
+部署後檢查：
+
+- D1 `gmshop-edge` 繫結為 `DB`。
+- KV `gmshop-edge-cache` 繫結為 `CACHE`。
+- 私有 R2 `gmshop-edge-files` 繫結為 `FILES`。
+- 佇列 `gmshop-edge-commerce` 繫結為 `COMMERCE_QUEUE`，死信佇列為 `gmshop-edge-commerce-dlq`。
+- 每分鐘 Cron，以及按需設定的 Cloudflare Send Email `EMAIL` 繫結。
+
+## Node 與 Docker
+
+公共映像 `ghcr.io/gmwalletapp/gmshop-edge` 支援 `linux/amd64` 和 `linux/arm64`。目前預釋出版本請將 `compose.yml` 中的映像標籤改為 `alpha` 或 `1.0.0-alpha.1`：
+
+```yaml
+services:
+  gmshop-edge:
+    image: ghcr.io/gmwalletapp/gmshop-edge:alpha
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GMSHOP_DATA_DIR: /var/lib/gmshop
+    volumes:
+      - gmshop-data:/var/lib/gmshop
+
+volumes:
+  gmshop-data:
 ```
-
-該 hook 會建立或復用具名 D1、R2 與 Queue 資源，透過 `DB` 套用 D1 基線並構建 Worker；不會把帳號專屬 ID 寫入 `wrangler.jsonc`。
-
-請在 Cloudflare 部署環境中配置 `CACHE` KV namespace，以及啟用時需要的 `EMAIL` binding。服務商秘密從管理後臺錄入，禁止提交到倉庫。
-
-## 本地開發
-
-環境要求：
-
-- Bun 1.3 或更高版本。
-- Wrangler 支援的本地執行環境。
 
 ```bash
-bun install
-bun run dev
+docker compose pull
+docker compose up -d
+curl --fail http://127.0.0.1:3000/healthz
 ```
 
-`bun run dev` 會將待執行 migration 套用到本地 `gmshop-edge` D1 資料庫，並在 `http://localhost:3000` 啟動應用；它不會遷移遠端資料庫。
+容器以非 root 使用者執行，並將全部狀態持久化到 `/var/lib/gmshop`。`GMSHOP_DATA_DIR` 是唯一公開的 Node 環境變數；Origin、Allowed Hosts、郵件、支付、供應商、Telegram 和自動化設定均透過 `/install` 或 `/admin` 設定。重建容器時必須保留資料卷。
 
-## 首次安裝
+原始碼建置需要 Bun 1.3+ 和 Node.js 24：執行 `bun run build:node`，再執行 `bun run start:node`。
 
-首次執行請開啟 `/install`。安裝會建立首位 root 管理員、受保護的內建角色、執行時秘密與必要設定。
+升級或遷移前請先閱讀 [Node 資料操作](./node-data-operations.md)。
 
-它不會建立假商品、庫存、服務商憑證或結帳 Provider 配置。
+## 首次安裝與生產驗收
 
-安裝完成後：
+開啟 `/install` 建立第一個根管理員、受保護的內建角色、執行時金鑰和必要設定。安裝程式不會建立虛假商品、庫存、服務商憑證或支付設定。
 
-1. 確認自動識別的應用地址，並配置精確 Allowed Hosts。
-2. 在 `/admin` 配置公開品牌、註冊、認證、郵件、交易、交付、保留與 Provider 設定。
-3. 建立商品草稿、可售項及庫存、檔案或自動化配置，檢查發布條件後再公開。
-4. 配置結帳 Provider，並在正式開店前完成一筆真實服務商驗收訂單。
-5. 備份 D1、私有 R2 資料與執行時配置。
+上線前應完成：
 
-## 常用開發命令
+1. 確認檢測到的 Origin，並設定精確的 Allowed Hosts。
+2. 設定品牌、註冊、身分驗證、郵件、商務、交付、保留、支付、供應商、Telegram 和自動化設定。
+3. 釋出測試商品，驗證庫存、私有下載或自動化交付。
+4. 使用部署者自己的憑證完成真實支付和找回密碼郵件測試。
+5. 驗證重啟恢復、佇列重試/死信處理、退款、權益到期、備份與恢復。
+6. 驗證兩種應用語言、兩種主題、移動端、鍵盤導航和管理員恢復。
 
-```bash
-bun run db:migrate:local
-bun run generate-routes
-bun run typecheck
-bun run test
-bun run check
-bun run build
-```
+## 釋出通道
 
-只有在有意修改 Drizzle schema 時才執行 `bun run db:generate`，並檢查產生的 migration。日常開發只套用 migration，不重新產生全新安裝基線。
+Semantic Release 從 `alpha` 通道釋出預覽版本，從 `main` 釋出穩定版本。原生 amd64 和 arm64 任務會先完成映像冒煙測試，再發布帶 SBOM 與 provenance 的多架構 GHCR Manifest。

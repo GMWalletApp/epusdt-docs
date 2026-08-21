@@ -1,38 +1,38 @@
 # Checkout and Providers
 
-GMShop Edge keeps checkout, order state, provider credentials, and notification delivery inside the store deployment.
+GMShop Edge keeps checkout, wallet state, provider credentials, authentication configuration, and notification delivery inside the store deployment.
 
-## Checkout model
+## Payments
 
-The store maintains customer-selected fiat currencies through D1 exchange rates. During checkout it creates one immutable quote and passes that quote to the selected typed provider.
+Store order amounts use integer minor units. Customer-selected fiat currencies are quoted from store-owned exchange rates, and one immutable quote is passed to the selected provider.
 
-This means:
+Available external payment adapters are:
 
-- Store order amounts are tracked in integer minor units, not floating point.
-- Checkout provider credentials are runtime configuration owned by the deployer.
-- Production acceptance should use deployer-owned provider accounts and real-provider test orders.
+- Stripe.
+- Cryptomus hosted invoices.
+- GMpay.
+- EPay.
+- Alipay Page and WAP.
+- WeChat Native and H5.
 
-## Provider secrets
+Registered customers can also pay from the built-in store wallet. Refund and after-sales operations update payment and wallet ledgers through idempotent state transitions.
 
-Provider secrets are runtime configuration. Enter them in the administration console; do not commit `.dev.vars`, provider credentials, runtime secrets, private keys, or Cloudflare credentials.
+A built-in adapter is not proof that a provider is production-ready for a particular deployment. Configure deployer-owned credentials and complete real create-order, callback/webhook, payment, refund, and reconciliation tests before opening the store.
 
-## Email providers
+## Email
 
-Transactional email is template-based and can be delivered through:
+Template-based transactional email supports SMTP, Resend, Postmark, SendGrid, Mailgun, and the optional Cloudflare Send Email `EMAIL` binding. Delivery records retain state while Queue and scheduled work provide bounded retries.
 
-- SMTP.
-- Resend.
-- Postmark.
-- SendGrid.
-- Mailgun.
-- Cloudflare Send Email through the `EMAIL` binding.
+## Authentication
 
-Email records retain delivery state while Queue and Cron provide bounded retries.
+Better Auth supports runtime-configured email/password, social providers, generic OIDC, Telegram OIDC, and the verified Telegram Login Widget fallback. Telegram Mini Apps verify `initData` for automatic sign-up/sign-in and can import a missing Telegram avatar. Telegram users can bind a verified email independently from setting a password.
 
-## Authentication providers
+## Telegram bot and support
 
-Better Auth powers account identity. The application can configure email/password, social, OIDC, and Telegram authentication providers at runtime without rebuilding the Worker.
+The grammY webhook bot synchronizes localized shop commands and fixed Mini App buttons. Optional support maps a Telegram user to a Forum Topic and relays messages in both directions without storing message content. The support bridge trusts only a fresh Telegram administrator mirror and closes idle conversations according to configured maintenance policy.
+
+Configure the Bot Token, OIDC secret, support group, synchronization, and web-support settings separately in `/admin`; do not commit them.
 
 ## Security checklist
 
-Before production, configure exact Allowed Hosts, HTTPS, Origin and CSRF checks, rate limits, Queue/DLQ monitoring, administrator recovery, and backups. Test D1 and R2 recovery instead of treating untested backups as complete.
+Use exact Allowed Hosts and Origin validation, HTTPS, CSRF protection, bounded request bodies, rate limits, Queue/DLQ monitoring, fresh-password reauthentication for sensitive exports, administrator recovery, and tested backups. Provider and authentication secrets use encrypted runtime configuration and must never be committed.

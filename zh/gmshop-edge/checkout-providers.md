@@ -1,38 +1,38 @@
-# 结账与 Provider
+# 结账与服务商
 
-GMShop Edge 在商城部署内持有结账、订单状态、Provider 凭证与通知投递。
+GMShop Edge 将结账、余额状态、服务商凭据、身份验证配置和通知交付保存在商城部署内部。
 
-## 结账模型
+## 支付
 
-商城通过 D1 汇率维护客户可选的法币。结账时系统建立一份不可变报价，并把报价交给选定的类型化 Provider。
+商城订单金额使用最小货币单位的整数。用户选择的法币通过商城自有汇率报价，并将一份不可变报价传给所选支付服务商。
 
-这表示：
+外部支付适配器包括：
 
-- 商城订单金额以最小货币单位整数追踪，不使用浮点数。
-- 结账 Provider 凭证属于部署者拥有的运行时配置。
-- 生产验收应使用部署者自己的 Provider 账号与真实服务商测试订单。
+- Stripe。
+- Cryptomus 托管账单。
+- GMpay。
+- EPay。
+- 支付宝网页与 WAP。
+- 微信 Native 与 H5。
 
-## Provider 秘密
+注册用户还可以使用内置商城余额支付。退款与售后操作通过幂等状态转换更新支付和余额账本。
 
-Provider 秘密属于运行时配置。请在管理后台录入；不要提交 `.dev.vars`、服务商凭证、运行时秘密、私钥或 Cloudflare 凭证。
+内置适配器并不代表某服务商在特定部署中已经达到生产可用。开店前必须使用部署者自己的凭据，完成真实下单、回调/Webhook、支付、退款和对账测试。
 
-## 邮件 Provider
+## 邮件
 
-交易邮件使用模板产生，可通过以下 Provider 投递：
+模板化交易邮件支持 SMTP、Resend、Postmark、SendGrid、Mailgun，以及可选的 Cloudflare Send Email `EMAIL` 绑定。发送记录保留交付状态，队列和定时任务负责有限次数重试。
 
-- SMTP。
-- Resend。
-- Postmark。
-- SendGrid。
-- Mailgun。
-- 通过 `EMAIL` binding 使用 Cloudflare Send Email。
+## 身份验证
 
-邮件记录保留投递状态，Queue 与 Cron 提供有界重试。
+Better Auth 支持在运行时配置邮箱密码、社交登录、通用 OIDC、Telegram OIDC 和经过验证的 Telegram 登录组件回退。Telegram Mini App 会验证 `initData` 以自动注册/登录，并可补充缺失的 Telegram 头像。Telegram 用户可独立绑定已验证邮箱，不强制同时设置密码。
 
-## 认证 Provider
+## Telegram 机器人与客服
 
-Better Auth 提供账号身份能力。应用可在运行时配置信箱密码、社交、OIDC 与 Telegram 登录 Provider，无需重新构建 Worker。
+基于 grammY Webhook 的机器人会同步本地化商城命令和固定 Mini App 按钮。可选客服功能将 Telegram 用户映射到 Forum Topic，并在不保存消息内容的情况下双向转发消息。客服桥接只信任最新同步的 Telegram 管理员列表，并按维护策略关闭闲置会话。
 
-## 安全检查
+Bot Token、OIDC 密钥、客服群组、同步和网页客服设置应分别在 `/admin` 中配置，不能提交到仓库。
 
-生产前请配置精确 Allowed Hosts、HTTPS、Origin 与 CSRF 校验、限流、Queue/DLQ 监控、管理员恢复与备份。请实际测试 D1 与 R2 恢复，不要把未经恢复验证的备份视为完成。
+## 安全清单
+
+生产环境应配置精确的 Allowed Hosts 和 Origin 校验、HTTPS、CSRF 防护、请求体大小限制、限流、队列/死信监控、敏感导出的近期密码重新验证、管理员恢复和经过验证的备份。支付及身份验证密钥使用加密运行时配置，绝不能提交到仓库。

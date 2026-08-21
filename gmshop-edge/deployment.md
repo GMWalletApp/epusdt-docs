@@ -1,16 +1,14 @@
 # Deployment
 
-GMShop Edge deploys as one Cloudflare Worker with D1, KV, private R2, one commerce Queue, a dead-letter Queue, optional Cloudflare Send Email, and Cron Triggers.
+GMShop Edge supports one Cloudflare Workers deployment or one Node/Nitro Docker container. Complete `/install` after either deployment before accepting orders.
 
-## Deploy button
+> The current release is `v1.0.0-alpha.1`. Use the moving `alpha` image or the full prerelease tag for testing. `latest` is reserved for stable releases.
+
+## Cloudflare Workers
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/GMWalletApp/gmshop-edge)
 
-The guided flow creates the Worker project from the repository. After it finishes, open `/install`, verify the generated resource bindings, and complete the production checklist before accepting orders.
-
-## Wrangler CLI
-
-Authenticate Wrangler, install dependencies, and deploy:
+For a CLI deployment:
 
 ```bash
 bun install
@@ -18,53 +16,61 @@ bunx wrangler login
 bun run deploy
 ```
 
-`bun run deploy` uses the repository `predeploy` hook:
+The `predeploy` hook creates or reuses the named D1, KV, private R2, Commerce Queue, and dead-letter Queue resources, applies remote migrations, and builds the Worker. Resolved D1/KV IDs are injected only into `dist/server/wrangler.json`; account-specific IDs are not written to the portable `wrangler.jsonc`.
 
-```text
-bun run scripts/build.ts --remote
+Verify these bindings after deployment:
+
+- D1 `gmshop-edge` as `DB`.
+- KV `gmshop-edge-cache` as `CACHE`.
+- Private R2 `gmshop-edge-files` as `FILES`.
+- Queue `gmshop-edge-commerce` as `COMMERCE_QUEUE`, with `gmshop-edge-commerce-dlq` as its dead-letter Queue.
+- One-minute Cron and, when selected, Cloudflare Send Email as `EMAIL`.
+
+## Node and Docker
+
+The public image `ghcr.io/gmwalletapp/gmshop-edge` supports `linux/amd64` and `linux/arm64`. For the current prerelease, replace the image tag in `compose.yml` with `alpha` or `1.0.0-alpha.1`:
+
+```yaml
+services:
+  gmshop-edge:
+    image: ghcr.io/gmwalletapp/gmshop-edge:alpha
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GMSHOP_DATA_DIR: /var/lib/gmshop
+    volumes:
+      - gmshop-data:/var/lib/gmshop
+
+volumes:
+  gmshop-data:
 ```
-
-The hook creates or reuses the named D1, R2, and Queue resources, applies the D1 baseline through `DB`, and builds the Worker. It does not write account-specific IDs to `wrangler.jsonc`.
-
-Configure the `CACHE` KV namespace and, when used, the `EMAIL` binding in the Cloudflare deployment environment. Provider secrets are entered through the administration console and must never be committed.
-
-## Local development
-
-Requirements:
-
-- Bun 1.3 or later.
-- A local environment supported by Wrangler.
 
 ```bash
-bun install
-bun run dev
+docker compose pull
+docker compose up -d
+curl --fail http://127.0.0.1:3000/healthz
 ```
 
-`bun run dev` applies pending migrations to the local `gmshop-edge` D1 database and starts the application at `http://localhost:3000`. It does not migrate a remote database.
+The container runs as a non-root user and persists all state in `/var/lib/gmshop`. `GMSHOP_DATA_DIR` is the only public Node environment variable. Configure Origin, Allowed Hosts, email, payment, supplier, Telegram, and automation settings through `/install` or `/admin`; preserve the data volume whenever the container is recreated.
+
+To build from source, install Bun 1.3+ and Node.js 24, run `bun run build:node`, then start it with `bun run start:node`.
+
+See [Node data operations](./node-data-operations.md) before upgrading or migrating data.
 
 ## First install
 
-Open `/install` on the first run. Installation creates the first root administrator, protected built-in roles, runtime secrets, and required settings.
+Open `/install` to create the first root administrator, protected built-in roles, runtime secrets, and required settings. Installation does not create fake products, inventory, provider credentials, or payment configurations.
 
-It does not create fake products, inventory, provider credentials, or checkout-provider configurations.
+Before production:
 
-After installation:
+1. Confirm the detected Origin and configure exact Allowed Hosts.
+2. Configure branding, registration, authentication, email, commerce, fulfillment, retention, payment, supplier, Telegram, and automation settings.
+3. Publish a tested product and verify stock, private-download, or automation fulfillment.
+4. Complete a real-provider payment and email recovery test using deployer-owned credentials.
+5. Test restart recovery, Queue retry/DLQ handling, refunds, expired entitlements, backups, and restoration.
+6. Verify both application locales, themes, mobile and keyboard navigation, and administrator recovery.
 
-1. Confirm the detected application URL and configure exact Allowed Hosts.
-2. Configure public branding, registration, authentication, email, commerce, fulfillment, retention, and provider settings in `/admin`.
-3. Create a draft product, its sellable items, and stock, files, or automation configuration; review publish checks before making it public.
-4. Configure checkout providers and complete a real-provider acceptance order before opening the store.
-5. Back up D1, private R2 data, and runtime configuration.
+## Releases
 
-## Useful development commands
-
-```bash
-bun run db:migrate:local
-bun run generate-routes
-bun run typecheck
-bun run test
-bun run check
-bun run build
-```
-
-When intentionally changing the Drizzle schema, run `bun run db:generate` and review the generated migration. Normal development applies migrations; it does not regenerate the clean-install baseline.
+Semantic-release publishes `alpha` prereleases from the `alpha` channel and stable releases from `main`. Native amd64 and arm64 jobs smoke-test the image before publishing a multi-platform GHCR manifest with SBOM and provenance.

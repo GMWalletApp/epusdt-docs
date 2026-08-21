@@ -1,34 +1,36 @@
 # GMShop Edge
 
-[GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) 是面向 **Cloudflare Workers** 的自托管、单部署、单租户数字商品商城。
+[GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) 是一个可自托管、单部署、单租户的数字商品商城，可运行在 **Cloudflare Workers** 或 **Node/Nitro Docker 容器**中。
 
-一个部署即可提供响应式公开商城、客户中心、结账与交付，以及用于运营数字商品的权限驱动管理后台。
+一次部署即可提供响应式商城、用户账户、结账与交付、Telegram 集成、供应商运营以及基于权限的管理后台。
 
-> GMShop Edge 仍在持续开发。内建适配器表示项目已实作相关接入路径；生产使用仍需要部署者自己的服务商凭证、备份、监控与真实服务商验收测试。
+> GMShop Edge 正在积极开发中，当前版本为 [`v1.0.0-alpha.1`](https://github.com/GMWalletApp/gmshop-edge/releases/tag/v1.0.0-alpha.1)。内置适配器表示项目已实现对应集成路径；生产使用仍需部署者提供凭据、备份、监控，并完成真实服务商验收测试。
 
-## 它提供什么
+## 核心能力
 
-- 响应式公开商城、客户中心、结账流程，以及权限驱动的管理后台。
-- 销售预置库存商品，原子分配加密保存的卡密、账号、启用码或凭证。
-- 从 ACG `3.5.5` V4 Open API 或独角数卡 Next `v1.3.1` 同步上游商品，并按 API 来源使用等优先级账号池履约。
-- R2 私有下载交付、自动化商品、优惠券、退款、售后、保留策略与审计记录。
-- 游客与注册客户结账，使用 Better Auth 用户与已验证结账信箱形成统一商业身份模型。
-- 通过 SMTP、Resend、Postmark、SendGrid、Mailgun 或 Cloudflare Send Email 发送交易邮件。
-- 在 D1 维护商城自有法币汇率，将不可变报价交给类型化结账 Provider。
-- 运行时配置信箱密码、社交、OIDC 与 Telegram 登录 Provider。
-- 以动态多角色 RBAC 保护 `/admin`，包含不可移除的 root 约束与服务端权限校验。
-- 英文（`en-US`）与简体中文（`zh-CN`）两种接口语言。
+- 原子分配加密预置文本的库存商品、私有下载商品，以及带明确产物策略的自动化商品。
+- 永久、固定期限、限次、无限、免费、一次性及用户续期等权益策略。
+- 游客与注册用户结账、优惠券、退款、售后、私有订单查询及基于账户的交付访问。
+- 商城余额支付，以及 Stripe、Cryptomus、GMpay、EPay、支付宝网页/WAP、微信 Native/H5 适配器。
+- 通过 ACG `3.5.5`、Dujiao Next `v1.3.1` 或原生 GMShop Edge 供应商 API 同步商品并完成交付。
+- 运行时配置邮箱密码、社交登录、OIDC、Telegram OIDC、Telegram 登录组件和 Telegram Mini App 身份验证。
+- 基于 grammY Webhook 的机器人，支持本地化命令、Mini App 按钮，以及不保存消息内容的 Forum Topic 客服。
+- `/admin` 动态多角色 RBAC，包括根账户保护、服务端权限校验、重新验证和审计记录。
+- 英文（`en-US`）和简体中文（`zh-CN`）应用界面。
 
-## 文件章节
+以上能力均属于开源项目，不另设 Pro 或 Enterprise 版本。
 
-- [架构](./architecture.md)：Worker 入口、Cloudflare bindings、数据权威来源、伫列与模组边界。
-- [部署](./deployment.md)：一键部署、Wrangler CLI、bindings、本地开发与首次安装。
-- [交易与交付](./commerce-fulfillment.md)：商品、库存、上游供货、交付记录、客户归属与自动化商品。
-- [结账与 Provider](./checkout-providers.md)：商城结账模型、法币报价、邮件与登录 Provider。
+## 文档目录
 
-## 相关连结
+- [架构](./architecture.md)：共享应用栈、Workers 绑定、Node 适配器、数据归属和运行限制。
+- [部署](./deployment.md)：Workers、Node/Docker、发布通道、初始化和生产验收。
+- [Node 数据操作](./node-data-operations.md)：备份、恢复及 Cloudflare D1/R2 导入。
+- [商业与交付](./commerce-fulfillment.md)：商品、库存、供应商、交付记录、权益和自动化商品。
+- [结账与服务商](./checkout-providers.md)：余额与外部支付、法币报价、邮件、身份验证和 Telegram 客服。
+
+## 链接
 
 - 仓库：[GMWalletApp/gmshop-edge](https://github.com/GMWalletApp/gmshop-edge)
-- English README：[README.md](https://github.com/GMWalletApp/gmshop-edge/blob/main/README.md)
-- 中文 README：[README.zh-CN.md](https://github.com/GMWalletApp/gmshop-edge/blob/main/README.zh-CN.md)
-- OpenAPI YAML：[`public/openapi.yaml`](https://github.com/GMWalletApp/gmshop-edge/blob/main/public/openapi.yaml)
+- 部署清单：[`docs/DEPLOYMENT.zh-CN.md`](https://github.com/GMWalletApp/gmshop-edge/blob/main/docs/DEPLOYMENT.zh-CN.md)
+- Node 数据操作：[`docs/NODE_DATA_OPERATIONS.zh-CN.md`](https://github.com/GMWalletApp/gmshop-edge/blob/main/docs/NODE_DATA_OPERATIONS.zh-CN.md)
+- OpenAPI：[`public/openapi.yaml`](https://github.com/GMWalletApp/gmshop-edge/blob/main/public/openapi.yaml)

@@ -1,27 +1,38 @@
 # 架構
 
-GMShop Edge 以單個 Cloudflare Worker 承載公開商城、客戶中心、結帳、交付與管理後臺。
+GMShop Edge 在 Cloudflare Workers 與 Node/Nitro 上運行同一套 React/TanStack 全棧應用。一個部署同時負責公開商城、使用者帳戶、結帳、交付、供應商整合、Telegram 整合和管理後台。
 
-## Cloudflare bindings
+## 共享應用邊界
 
-倉庫在 `wrangler.jsonc` 與 `package.json` metadata 中宣告這些生產 bindings：
+路由保持輕量；功能頁面、Schema、伺服器端函式和領域行為位於 `src/features`，跨領域執行時實現位於 `src/server`，Drizzle Schema 位於 `src/db/schema`。
 
-- `DB`：D1 資料庫，保存認證、RBAC、商品、金額、訂單、庫存、權益、供應商、任務、重放保護、限流、outbox、審計與系統資料。
-- `FILES`：私有 R2 bucket，保存商品媒體、下載檔案、自動化制品與匯出。
-- `CACHE`：KV namespace，保存短生命週期 RBAC 與公開配置快取；安全關鍵限流仍以 D1 為權威來源。
-- `COMMERCE_QUEUE`：Cloudflare Queue，用於可靠交付、自動化、通知與退款工作。
-- `EMAIL`：可選 Cloudflare Send Email binding，用於免憑證郵件 Provider。
+身分、RBAC、商品、訂單、庫存、權益、供應商狀態、餘額帳本、通知、重放保護、限流、Outbox 和審計資料均儲存在權威資料庫中。金額使用最小貨幣單位的十進位整數字串儲存，不使用浮點數計算。
 
-Worker 也啟用 Cron Triggers；目前倉庫宣告 `* * * * *` 週期性執行交易工作。
+## Cloudflare Workers 介面卡
 
-## 資料權威來源
+Workers 部署使用：
 
-D1 是核心交易狀態的權威資料源。KV 僅保存經校驗、帶版本且有界的上游目錄快照與讀取快取。R2 保存私有物件，但物件存取必須透過 D1 授權記錄解析；客戶端不能自行選擇 object key。
+- `DB`：D1，儲存權威應用與商務資料。
+- `FILES`：私有 R2，儲存商品媒體、下載檔案、自動化產物和匯出檔案。
+- `CACHE`：KV，僅儲存經過驗證、帶版本且有容量限制的讀取快取；安全限流仍以資料庫為準。
+- `COMMERCE_QUEUE`：處理交付、自動化、通知、供應商和退款任務，並設定死信佇列。
+- `EMAIL`：可選的 Cloudflare Send Email 繫結。
+- 每分鐘 Cron Trigger：執行定時處理和維護。
 
-## 模組邊界
+## Node/Nitro 介面卡
 
-路由保持薄層。功能頁面、schema、Server Function 與領域行為位於 `src/features`；跨領域執行時編排位於 `src/server`；全新安裝的 Drizzle 基線是 `drizzle/0000_gmshop.sql`。
+Node 執行時在一個資料目錄內提供等價介面卡：
 
-## 運維模型
+- SQLite 權威資料庫。
+- 程序內有界快取。
+- 私有本地物件儲存。
+- 基於 SQLite 的持久佇列。
+- 每分鐘執行的程序內排程器。
 
-Queue 與 Cron 將目錄同步、供應商採購與核驗、交付、重試、保留清理與密鑰輪換移出同步請求，讓商城結帳保持響應，同時保留背景工作的重試與審計歷史。
+`GMSHOP_DATA_DIR` 包含資料庫、物件、佇列狀態和全部執行時資料。Node 明確僅支援**單一執行個體**，不支援多副本部署或共享網路儲存。
+
+## 資料與後台任務
+
+私有物件必須透過已授權的資料庫記錄解析，客戶端不能選擇物件鍵。佇列和定時任務在同步商城請求之外處理供應商同步與採購、交付、通知、退款、重試、保留策略、Telegram 維護和金鑰輪換。
+
+全新安裝的遷移基線是 `drizzle/0000_gmshop.sql`；後續遷移按順序應用，Node 資料操作會驗證其驗證碼。

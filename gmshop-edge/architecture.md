@@ -1,27 +1,38 @@
 # Architecture
 
-GMShop Edge runs as one Cloudflare Worker that owns the public shop, customer account area, checkout, fulfillment, and administration console.
+GMShop Edge runs the same React/TanStack full stack on Cloudflare Workers or Node/Nitro. One deployment owns the public shop, customer account area, checkout, fulfillment, supplier integration, Telegram integration, and administration console.
 
-## Cloudflare bindings
+## Shared application boundaries
 
-The repository declares these production bindings in `wrangler.jsonc` and `package.json` metadata:
+Routes remain thin. Feature pages, schemas, server functions, and domain behavior live under `src/features`; cross-domain runtime plumbing lives under `src/server`; Drizzle schemas live under `src/db/schema`.
 
-- `DB`: D1 database for authentication, RBAC, catalog, money, orders, inventory, entitlements, suppliers, jobs, replay protection, rate limits, outbox, audit, and system data.
-- `FILES`: private R2 bucket for product media, downloads, automation artifacts, and exports.
-- `CACHE`: KV namespace for short-lived RBAC and public-configuration caches. Security-critical limits remain D1-authoritative.
-- `COMMERCE_QUEUE`: Cloudflare Queue for durable delivery, automation, notification, and refund work.
-- `EMAIL`: optional Cloudflare Send Email binding for the credential-free email provider.
+The application keeps identity, RBAC, catalog, orders, inventory, entitlements, supplier state, wallet ledger, notifications, replay protection, rate limits, outbox, and audit data in the authoritative database. Money is stored as decimal integer strings in minor units and is never computed with floating point.
 
-The Worker also enables Cron Triggers; the repository currently declares `* * * * *` for periodic commerce work.
+## Cloudflare Workers adapters
 
-## Data ownership
+The Workers deployment uses:
 
-D1 is authoritative for core commerce state. KV is intentionally limited to validated, versioned, bounded upstream catalog snapshots and read caches. R2 stores private objects, but object access is resolved through authorized D1 records; clients do not choose object keys.
+- `DB`: D1 for authoritative application and commerce state.
+- `FILES`: private R2 for product media, downloads, automation artifacts, and exports.
+- `CACHE`: KV for validated, versioned, bounded read caches; security limits remain database-authoritative.
+- `COMMERCE_QUEUE`: Queue for delivery, automation, notification, supplier, and refund work, with a dead-letter Queue.
+- `EMAIL`: optional Cloudflare Send Email binding.
+- One-minute Cron Triggers for scheduled processing and maintenance.
 
-## Module boundaries
+## Node/Nitro adapters
 
-Routes stay thin. Feature pages, schemas, server functions, and domain behavior live under `src/features`; cross-domain runtime plumbing lives under `src/server`; the clean-install Drizzle baseline is `drizzle/0000_gmshop.sql`.
+The Node runtime provides equivalent adapters inside one data directory:
 
-## Operational model
+- SQLite as the authoritative database.
+- An in-process bounded cache.
+- Private local object storage.
+- A durable SQLite-backed Queue.
+- A one-minute in-process scheduler.
 
-Queue and Cron move catalog synchronization, supplier purchasing and reconciliation, fulfillment, retries, retention, and key rotation outside synchronous requests. This keeps storefront checkout responsive while preserving retry and audit history for background work.
+`GMSHOP_DATA_DIR` contains the database, objects, Queue state, and runtime data. Node is deliberately **single-instance only**: multi-replica deployment and shared-network storage are unsupported.
+
+## Data and background work
+
+Private objects are resolved through authorized database records; clients never select object keys. Queue and scheduled work handle supplier synchronization and purchasing, fulfillment, notifications, refunds, retries, retention, Telegram maintenance, and key rotation outside synchronous storefront requests.
+
+The clean-install migration baseline is `drizzle/0000_gmshop.sql`; later migrations are applied in order and their checksums are validated by Node data operations.
