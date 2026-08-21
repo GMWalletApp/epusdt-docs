@@ -7,8 +7,6 @@ GMShop Edge 支持两种生产运行时：
 
 两种运行时提供相同的商城、用户账户、结账、交付、管理后台、供应商 API、Telegram 集成和 `/install` 流程。
 
-> GMShop Edge 当前位于 `alpha` 发布通道。测试时使用 `alpha` 或完整预发布版本标签；`latest` 保留给稳定版本。
-
 ## Docker Compose
 
 公共 [GHCR Package](https://github.com/orgs/GMWalletApp/packages/container/package/gmshop-edge) 支持 `linux/amd64` 和 `linux/arm64`。将以下内容保存为 `compose.yml`：
@@ -16,7 +14,7 @@ GMShop Edge 支持两种生产运行时：
 ```yaml
 services:
   gmshop-edge:
-    image: ghcr.io/gmwalletapp/gmshop-edge:alpha
+    image: ghcr.io/gmwalletapp/gmshop-edge:latest
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -79,10 +77,15 @@ bun run deploy
 
 ## 首次安装
 
-打开 `/install` 创建第一个根管理员、受保护的内置角色、运行时密钥和必要设置。安装程序不会创建虚假商品、库存、服务商凭据或支付配置。
+Docker 启动后，打开 `http://your-host:3000/install`。Workers 部署完成后，在 Worker URL 打开 `/install`。创建第一个根管理员前，先确认检测到的公开地址和 Allowed Hosts。
+
+安装程序会创建第一个根管理员、受保护的内置商城角色、运行时密钥，以及必要的商业、汇率、身份验证和通知默认设置。它不会创建虚假商品、库存、服务商凭据或支付配置。
+
+安装完成后：
+
+1. 在 `/admin` 检查生成的系统设置，并备份运行时配置。
+2. 配置品牌、注册、身份验证、邮件、商业、交付、保留策略和服务商设置。
+3. 创建草稿商品，为其添加可售项目及库存、文件或自动化配置；通过发布检查后再公开商品。
+4. 配置支付适配器，并在商城开放前完成真实服务商验收订单。
 
 上线前应验证精确的 Host/Origin 规则、真实支付与找回密码邮件、库存/下载/自动化交付、队列重试与死信恢复、退款、权益到期、备份恢复、两种应用语言、主题、移动端、键盘导航和管理员恢复。
-
-## 发布通道
-
-Semantic Release 从 `alpha` 通道发布预览版本，从 `main` 发布稳定版本。原生 amd64 和 arm64 任务会先完成镜像冒烟测试，再发布带 SBOM 与 provenance 的多架构 GHCR Manifest。

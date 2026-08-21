@@ -7,8 +7,6 @@ GMShop Edge supports two production runtimes:
 
 Both runtimes expose the same storefront, customer accounts, checkout, fulfillment, administration console, supplier API, Telegram integration, and `/install` flow.
 
-> GMShop Edge is currently on the `alpha` release channel. Use `alpha` or a full prerelease tag for testing; `latest` is reserved for stable releases.
-
 ## Docker Compose
 
 The public [GHCR package](https://github.com/orgs/GMWalletApp/packages/container/package/gmshop-edge) supports `linux/amd64` and `linux/arm64`. Save the following as `compose.yml`:
@@ -16,7 +14,7 @@ The public [GHCR package](https://github.com/orgs/GMWalletApp/packages/container
 ```yaml
 services:
   gmshop-edge:
-    image: ghcr.io/gmwalletapp/gmshop-edge:alpha
+    image: ghcr.io/gmwalletapp/gmshop-edge:latest
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -79,10 +77,15 @@ The `predeploy` hook creates or reuses the named resources, applies remote migra
 
 ## First install
 
-Open `/install` to create the first root administrator, protected built-in roles, runtime secrets, and required settings. Installation does not create fake products, inventory, provider credentials, or payment configurations.
+After Docker starts, open `http://your-host:3000/install`. After a Workers deployment, open `/install` on the Worker URL. Confirm the detected public address and Allowed Hosts before creating the first root administrator.
+
+Installation creates the first root administrator, protected built-in storefront roles, runtime secrets, and required commerce, exchange-rate, authentication, and notification defaults. It does not create fake products, inventory, provider credentials, or payment configurations.
+
+After installation:
+
+1. Review the generated system settings in `/admin` and back up the runtime configuration.
+2. Configure branding, registration, authentication, email, commerce, fulfillment, retention, and provider settings.
+3. Create a draft product with sellable items and stock, files, or automation configuration; pass its publish checks before making it public.
+4. Configure a payment adapter and complete a real-provider acceptance order before opening the store.
 
 Before production, verify exact Host/Origin rules, a real payment and recovery email, stock/download/automation fulfillment, Queue retry and dead-letter recovery, refunds, expired entitlements, backup restoration, both application locales, themes, mobile behavior, keyboard navigation, and administrator recovery.
-
-## Releases
-
-Semantic-release publishes prereleases from the `alpha` channel and stable releases from `main`. Native amd64 and arm64 jobs smoke-test the image before publishing a multi-platform GHCR manifest with SBOM and provenance.

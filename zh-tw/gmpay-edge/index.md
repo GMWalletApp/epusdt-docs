@@ -19,9 +19,10 @@
 
 ## 文件章節
 
-- [架構](./architecture.md)：Workers 與 Node 執行環境服務、佇列、回撥與協議邊界。
-- [部署](./deployment.md)：Docker Compose、GHCR 映像、一鍵部署、Wrangler CLI、本地開發與首次安裝。
-- [商戶 API](./merchant-api.md)：GMPay 建單、查詢、簽名、回撥與 EPay 相容。
+- [架構](./architecture.md)：Workers 與 Node 執行時服務、佇列、回呼和協議邊界。
+- [部署](./deployment.md)：Docker Compose、GHCR 映像、Deploy Button、Wrangler CLI、本機開發和首次安裝。
+- [Node 資料操作](./node-data-operations.md)：備份、還原及 Cloudflare D1/R2 匯入。
+- [商戶 API](./merchant-api.md)：GMPay 訂單建立、查詢、簽署、回呼和 EPay 相容。
 - [支付接入](./payment-integrations.md)：內建鏈上、交易所與錢包適配器目錄。
 
 ## 相關連結

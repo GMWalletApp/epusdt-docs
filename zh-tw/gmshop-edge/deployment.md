@@ -7,8 +7,6 @@ GMShop Edge 支援兩種生產執行時：
 
 兩種執行時提供相同的商城、使用者帳戶、結帳、交付、管理後台、供應商 API、Telegram 整合和 `/install` 流程。
 
-> GMShop Edge 目前位於 `alpha` 釋出通道。測試時使用 `alpha` 或完整預釋出版本標籤；`latest` 保留給穩定版本。
-
 ## Docker Compose
 
 公共 [GHCR Package](https://github.com/orgs/GMWalletApp/packages/container/package/gmshop-edge) 支援 `linux/amd64` 和 `linux/arm64`。將以下內容儲存為 `compose.yml`：
@@ -16,7 +14,7 @@ GMShop Edge 支援兩種生產執行時：
 ```yaml
 services:
   gmshop-edge:
-    image: ghcr.io/gmwalletapp/gmshop-edge:alpha
+    image: ghcr.io/gmwalletapp/gmshop-edge:latest
     restart: unless-stopped
     ports:
       - "3000:3000"
@@ -43,7 +41,7 @@ docker compose logs --follow gmshop-edge
 
 `GMSHOP_DATA_DIR` 是唯一公開的 Node 環境變數。Origin、Allowed Hosts、郵件、支付、供應商、Telegram 和自動化設定均透過 `/install` 或 `/admin` 設定。
 
-Node 僅支援單一執行個體，不支援多副本部署或共享網路儲存。升級、恢復或遷移前請閱讀 [Node 資料操作](./node-data-operations.md)。
+Node 僅支援單一執行個體，不支援多副本部署或共享網路儲存。升級、還原或遷移前請閱讀 [Node 資料操作](./node-data-operations.md)。
 
 原始碼建置需要 Bun 1.3+ 和 Node.js 24：
 
@@ -79,10 +77,15 @@ bun run deploy
 
 ## 首次安裝
 
-開啟 `/install` 建立第一個根管理員、受保護的內建角色、執行時金鑰和必要設定。安裝程式不會建立虛假商品、庫存、服務商憑證或支付設定。
+Docker 啟動後，開啟 `http://your-host:3000/install`。Workers 部署完成後，在 Worker URL 開啟 `/install`。建立第一個根管理員前，先確認檢測到的公開地址和 Allowed Hosts。
 
-上線前應驗證精確的 Host/Origin 規則、真實支付與找回密碼郵件、庫存/下載/自動化交付、佇列重試與死信恢復、退款、權益到期、備份恢復、兩種應用語言、主題、移動端、鍵盤導航和管理員恢復。
+安裝程式會建立第一個根管理員、受保護的內建商城角色、執行時金鑰，以及必要的商務、匯率、身分驗證和通知預設設定。它不會建立虛假商品、庫存、服務商憑證或支付設定。
 
-## 釋出通道
+安裝完成後：
 
-Semantic Release 從 `alpha` 通道釋出預覽版本，從 `main` 釋出穩定版本。原生 amd64 和 arm64 任務會先完成映像冒煙測試，再發布帶 SBOM 與 provenance 的多架構 GHCR Manifest。
+1. 在 `/admin` 檢查生成的系統設定，並備份執行時設定。
+2. 設定品牌、註冊、身分驗證、郵件、商務、交付、保留策略和服務商設定。
+3. 建立草稿商品，為其新增可售專案及庫存、檔案或自動化設定；透過釋出檢查後再公開商品。
+4. 設定支付介面卡，並在商城開放前完成真實服務商驗收訂單。
+
+上線前應驗證精確的 Host/Origin 規則、真實支付與找回密碼郵件、庫存/下載/自動化交付、佇列重試與死信恢復、退款、權益到期、備份還原、兩種應用語言、主題、移動端、鍵盤導航和管理員恢復。

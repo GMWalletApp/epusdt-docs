@@ -36,9 +36,11 @@ docker compose pull
 docker compose up -d
 ```
 
-`latest` 追蹤最新穩定版。只有測試預發布版本時才使用 `alpha`；需要可重現部署時，可固定完整版本，例如 `1.0.0`。
+`latest` 追蹤最新穩定版。需要可重現部署時，可固定完整版本，例如 `1.0.0`。
 
 `GMPAY_DATA_DIR` 會保存 SQLite、上傳檔案、私有物件、佇列狀態及其他全部執行資料。更新或重建容器時，請保留並備份 `gmpay-data` 資料卷。
+
+備份、還原或遷移部署前，請閱讀 [Node 資料操作](./node-data-operations.md)。
 
 檢查服務與查看日誌：
 

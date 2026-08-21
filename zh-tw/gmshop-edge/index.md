@@ -25,7 +25,7 @@
 ## 文件目錄
 
 - [架構](./architecture.md)：共享應用棧、Workers 繫結、Node 介面卡、資料歸屬和執行限制。
-- [部署](./deployment.md)：Workers、Node/Docker、釋出通道、初始化和生產驗收。
+- [部署](./deployment.md)：Workers、Node/Docker、初始化和生產驗收。
 - [Node 資料操作](./node-data-operations.md)：備份、恢復及 Cloudflare D1/R2 匯入。
 - [原生供應商 API](./supplier-api.md)：GMShop Edge 執行個體間經過簽署的商品目錄、訂單、支付通道和儲值操作。
 - [商務與交付](./commerce-fulfillment.md)：商品、庫存、供應商、交付記錄、權益和自動化商品。

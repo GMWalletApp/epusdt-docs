@@ -21,6 +21,7 @@ It is a separate project from Epusdt. Use Epusdt when you want the Go gateway do
 
 - [Architecture](./architecture.md): Workers and Node runtime services, queues, callbacks, and protocol boundaries.
 - [Deployment](./deployment.md): Docker Compose, GHCR images, Deploy Button, Wrangler CLI, local development, and first install.
+- [Node data operations](./node-data-operations.md): backup, restore, and Cloudflare D1/R2 import.
 - [Merchant API](./merchant-api.md): GMPay order creation, query, signatures, callbacks, and EPay compatibility.
 - [Payment integrations](./payment-integrations.md): Built-in on-chain, exchange, and wallet adapter catalog.
 

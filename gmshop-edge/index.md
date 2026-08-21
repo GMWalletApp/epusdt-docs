@@ -25,7 +25,7 @@ Every capability listed above is part of the open-source project; there is no se
 ## Documentation sections
 
 - [Architecture](./architecture.md): shared application stack, Workers bindings, Node adapters, data ownership, and runtime limits.
-- [Deployment](./deployment.md): Workers, Node/Docker, release channels, installation, and production acceptance.
+- [Deployment](./deployment.md): Workers, Node/Docker, installation, and production acceptance.
 - [Node data operations](./node-data-operations.md): backup, restore, and Cloudflare D1/R2 import.
 - [Native supplier API](./supplier-api.md): signed catalog, order, payment-channel, and top-up operations between GMShop Edge instances.
 - [Commerce and fulfillment](./commerce-fulfillment.md): products, inventory, suppliers, delivery records, entitlements, and automation goods.

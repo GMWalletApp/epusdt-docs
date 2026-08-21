@@ -25,7 +25,7 @@
 ## 文档目录
 
 - [架构](./architecture.md)：共享应用栈、Workers 绑定、Node 适配器、数据归属和运行限制。
-- [部署](./deployment.md)：Workers、Node/Docker、发布通道、初始化和生产验收。
+- [部署](./deployment.md)：Workers、Node/Docker、初始化和生产验收。
 - [Node 数据操作](./node-data-operations.md)：备份、恢复及 Cloudflare D1/R2 导入。
 - [原生供应商 API](./supplier-api.md)：GMShop Edge 实例间经过签名的商品目录、订单、支付通道和充值操作。
 - [商业与交付](./commerce-fulfillment.md)：商品、库存、供应商、交付记录、权益和自动化商品。

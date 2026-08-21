@@ -36,9 +36,11 @@ docker compose pull
 docker compose up -d
 ```
 
-The `latest` tag tracks the latest stable release. Use `alpha` only when testing a prerelease, or pin a full version such as `1.0.0` for reproducible deployment.
+The `latest` tag tracks the latest stable release. Pin a full version such as `1.0.0` for reproducible deployment.
 
 `GMPAY_DATA_DIR` contains SQLite, uploaded files, private objects, queue state, and all other runtime data. Preserve and back up the `gmpay-data` volume when updating or recreating the container.
+
+Read [Node data operations](./node-data-operations.md) before backing up, restoring, or migrating a deployment.
 
 Verify the service and inspect logs with:
 
