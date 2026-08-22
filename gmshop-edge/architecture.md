@@ -1,6 +1,6 @@
 # Architecture
 
-GMShop Edge runs the same React/TanStack full stack on Cloudflare Workers or Node/Nitro. One deployment owns the public shop, customer account area, checkout, fulfillment, supplier integration, Telegram integration, and administration console.
+GMShop Edge runs the same React/TanStack full stack on Cloudflare Workers or Bun/Nitro. One deployment owns the public shop, customer account area, checkout, fulfillment, supplier integration, Telegram integration, and administration console.
 
 ## Shared application boundaries
 
@@ -19,9 +19,9 @@ The Workers deployment uses:
 - `EMAIL`: optional Cloudflare Send Email binding.
 - One-minute Cron Triggers for scheduled processing and maintenance.
 
-## Node/Nitro adapters
+## Bun/Nitro adapters
 
-The Node runtime provides equivalent adapters inside one data directory:
+The Bun runtime provides equivalent adapters inside one data directory:
 
 - SQLite as the authoritative database.
 - An in-process bounded cache.
@@ -29,10 +29,10 @@ The Node runtime provides equivalent adapters inside one data directory:
 - A durable SQLite-backed Queue.
 - A one-minute in-process scheduler.
 
-`GMSHOP_DATA_DIR` contains the database, objects, Queue state, and runtime data. Node is deliberately **single-instance only**: multi-replica deployment and shared-network storage are unsupported.
+`GMSHOP_DATA_DIR` contains the database, objects, Queue state, and runtime data. Bun is deliberately **single-instance only**: multi-replica deployment and shared-network storage are unsupported.
 
 ## Data and background work
 
 Private objects are resolved through authorized database records; clients never select object keys. Queue and scheduled work handle supplier synchronization and purchasing, fulfillment, notifications, refunds, retries, retention, Telegram maintenance, and key rotation outside synchronous storefront requests.
 
-The clean-install migration baseline is `drizzle/0000_gmshop.sql`; later migrations are applied in order and their checksums are validated by Node data operations.
+The clean-install migration baseline is `drizzle/0000_gmshop.sql`; later migrations are applied in order and their checksums are validated by Bun data operations.

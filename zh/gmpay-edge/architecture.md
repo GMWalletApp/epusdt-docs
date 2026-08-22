@@ -1,6 +1,6 @@
 # 架构
 
-GMPay Edge 可作为单个 Worker 或单个 Node/Nitro 容器执行。两种运行环境承载相同的产品入口与共享订单 / 支付核心，差异仅在基础设施适配器。
+GMPay Edge 可作为单个 Worker 或单个 Bun/Nitro 容器执行。两种运行环境承载相同的产品入口与共享订单 / 支付核心，差异仅在基础设施适配器。
 
 ## 产品入口
 
@@ -11,15 +11,15 @@ GMPay Edge 可作为单个 Worker 或单个 Node/Nitro 容器执行。两种运�
 
 ## 运行环境服务
 
-| 能力 | Cloudflare Workers | Node/Nitro Docker |
+| 能力 | Cloudflare Workers | Bun/Nitro Docker |
 | --- | --- | --- |
 | 数据库 | D1 | `GMPAY_DATA_DIR` 中的 SQLite |
 | 快取 | KV | 本地运行时快取 |
 | 私有物件 | R2 | 持久化本地物件储存 |
 | 背景任务 | Cloudflare Queues | 本地可靠伫列 |
-| 排程 | Cron Triggers | Node 排程器 |
+| 排程 | Cron Triggers | Bun 排程器 |
 
-Node 数据目录也包含上传文件与可靠伫列状态，必须挂载持久化数据卷并纳入备份。
+Bun 数据目录也包含上传文件与可靠队列状态，必须挂载持久化数据卷并纳入备份。
 
 ## Cloudflare bindings
 

@@ -1,6 +1,6 @@
 # GMShop Edge
 
-[GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) is a self-hosted, single-deployment, single-tenant digital-goods storefront for **Cloudflare Workers** or a **Node/Nitro Docker container**.
+[GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) is a self-hosted, single-deployment, single-tenant digital-goods storefront for **Cloudflare Workers** or a **Bun/Nitro Docker container**.
 
 One deployment provides a responsive public shop, customer accounts, checkout and fulfillment, Telegram integration, supplier operations, and a permission-driven administration console.
 
@@ -24,9 +24,9 @@ Every capability listed above is part of the open-source project; there is no se
 
 ## Documentation sections
 
-- [Architecture](./architecture.md): shared application stack, Workers bindings, Node adapters, data ownership, and runtime limits.
-- [Deployment](./deployment.md): Workers, Node/Docker, installation, and production acceptance.
-- [Node data operations](./node-data-operations.md): backup, restore, and Cloudflare D1/R2 import.
+- [Architecture](./architecture.md): shared application stack, Workers bindings, Bun adapters, data ownership, and runtime limits.
+- [Deployment](./deployment.md): Workers, Bun/Docker, installation, and production acceptance.
+- [Bun data operations](./node-data-operations.md): backup, restore, and Cloudflare D1/R2 import.
 - [Native supplier API](./supplier-api.md): signed catalog, order, payment-channel, and top-up operations between GMShop Edge instances.
 - [Commerce and fulfillment](./commerce-fulfillment.md): products, inventory, suppliers, delivery records, entitlements, and automation goods.
 - [Checkout and providers](./checkout-providers.md): wallet and external payments, fiat quotes, email, authentication, and Telegram support.
@@ -35,5 +35,5 @@ Every capability listed above is part of the open-source project; there is no se
 
 - Repository: [GMWalletApp/gmshop-edge](https://github.com/GMWalletApp/gmshop-edge)
 - Deployment checklist: [`docs/DEPLOYMENT.md`](https://github.com/GMWalletApp/gmshop-edge/blob/main/docs/DEPLOYMENT.md)
-- Node data operations: [`docs/NODE_DATA_OPERATIONS.md`](https://github.com/GMWalletApp/gmshop-edge/blob/main/docs/NODE_DATA_OPERATIONS.md)
+- Bun data operations: [`docs/NODE_DATA_OPERATIONS.md`](https://github.com/GMWalletApp/gmshop-edge/blob/main/docs/NODE_DATA_OPERATIONS.md)
 - OpenAPI YAML: [`public/openapi.yaml`](https://github.com/GMWalletApp/gmshop-edge/blob/main/public/openapi.yaml)

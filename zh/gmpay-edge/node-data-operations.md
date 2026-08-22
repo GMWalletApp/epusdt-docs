@@ -1,6 +1,6 @@
-# Node 数据操作
+# Bun 数据操作
 
-Node 部署将 SQLite 数据库保存在 `$GMPAY_DATA_DIR/gmpay.sqlite`，私有对象保存在 `$GMPAY_DATA_DIR/objects`。维护中的 CLI 使用 Bun 及其 SQLite 驱动运行，应用服务本身仍由 Node.js 运行。
+Bun 部署将 SQLite 数据库保存在 `$GMPAY_DATA_DIR/gmpay.sqlite`，私有对象保存在 `$GMPAY_DATA_DIR/objects`。维护中的 CLI 和应用服务均使用 Bun 及其 SQLite 驱动运行。
 
 ## 备份与恢复
 
@@ -26,7 +26,7 @@ docker compose run --rm --no-deps \
 
 ## 导入 Cloudflare 数据
 
-先将 D1 导出为 SQL，并将 R2 对象导出到本地目录；对象在该目录中的相对路径必须保持原始 Object Key。然后将数据导入全新或空的 Node 数据目录：
+先将 D1 导出为 SQL，并将 R2 对象导出到本地目录；对象在该目录中的相对路径必须保持原始 Object Key。然后将数据导入全新或空的 Bun 数据目录：
 
 ```bash
 wrangler d1 export DB --remote --output ./d1-export.sql
@@ -52,4 +52,4 @@ GMPAY_DATA_DIR=/srv/gmpay bun run data -- import-cloudflare \
 
 支持的 HTTP 字段为 `contentType`、`contentLanguage`、`contentDisposition`、`contentEncoding`、`cacheControl`，以及 ISO 8601 格式的 `cacheExpiry`。未知字段、非字符串自定义元数据，以及找不到对应导出对象的清单 Key 都会被拒绝。不提供这个 Sidecar 时仍会导入对象内容和 Key，但无法还原 R2 元数据。
 
-导入会确认 D1 导出包含仓库中的全部迁移，为 Node 迁移器记录校验和，校验外键，并将 R2 Key 路径转换成私有对象的哈希布局。非空目标会被拒绝，因此失败或重复执行导入不会覆盖现有实例。
+导入会确认 D1 导出包含仓库中的全部迁移，为 Bun 迁移器记录校验和，校验外键，并将 R2 Key 路径转换成私有对象的哈希布局。非空目标会被拒绝，因此失败或重复执行导入不会覆盖现有实例。

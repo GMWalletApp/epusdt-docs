@@ -1,6 +1,6 @@
 # GMPay Edge
 
-[GMPay Edge](https://github.com/GMWalletApp/gmpay-edge) is a self-hosted, single-tenant cryptocurrency payment gateway for **Cloudflare Workers or Node/Nitro Docker**.
+[GMPay Edge](https://github.com/GMWalletApp/gmpay-edge) is a self-hosted, single-tenant cryptocurrency payment gateway for **Cloudflare Workers or Bun/Nitro Docker**.
 
 It is a separate project from Epusdt. Use Epusdt when you want the Go gateway documented by this site; evaluate GMPay Edge when you want a TypeScript gateway deployable either to Cloudflare Workers or as a Docker container with SQLite-backed local persistence.
 
@@ -19,9 +19,9 @@ It is a separate project from Epusdt. Use Epusdt when you want the Go gateway do
 
 ## Documentation sections
 
-- [Architecture](./architecture.md): Workers and Node runtime services, queues, callbacks, and protocol boundaries.
+- [Architecture](./architecture.md): Workers and Bun runtime services, queues, callbacks, and protocol boundaries.
 - [Deployment](./deployment.md): Docker Compose, GHCR images, Deploy Button, Wrangler CLI, local development, and first install.
-- [Node data operations](./node-data-operations.md): backup, restore, and Cloudflare D1/R2 import.
+- [Bun data operations](./node-data-operations.md): backup, restore, and Cloudflare D1/R2 import.
 - [Merchant API](./merchant-api.md): GMPay order creation, query, signatures, callbacks, and EPay compatibility.
 - [Payment integrations](./payment-integrations.md): Built-in on-chain, exchange, and wallet adapter catalog.
 

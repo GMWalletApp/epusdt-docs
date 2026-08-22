@@ -1,6 +1,6 @@
-# Node Data Operations
+# Bun data operations
 
-The Node deployment keeps its SQLite database at `$GMPAY_DATA_DIR/gmpay.sqlite` and private objects under `$GMPAY_DATA_DIR/objects`. The maintained CLI runs with Bun and its SQLite driver, while the application server continues to run on Node.js.
+The Bun deployment keeps its SQLite database at `$GMPAY_DATA_DIR/gmpay.sqlite` and private objects under `$GMPAY_DATA_DIR/objects`. The maintained CLI and application server both run with Bun and its SQLite driver.
 
 ## Backup and restore
 
@@ -26,7 +26,7 @@ Backups contain credentials, user data, payment records, and private uploads. En
 
 ## Import a Cloudflare export
 
-Export D1 as SQL and export R2 objects into a local directory whose relative paths are the original object keys. Then import into a new or empty Node data directory:
+Export D1 as SQL and export R2 objects into a local directory whose relative paths are the original object keys. Then import into a new or empty Bun data directory:
 
 ```bash
 wrangler d1 export DB --remote --output ./d1-export.sql
@@ -52,4 +52,4 @@ GMPAY_DATA_DIR=/srv/gmpay bun run data -- import-cloudflare \
 
 Supported HTTP fields are `contentType`, `contentLanguage`, `contentDisposition`, `contentEncoding`, `cacheControl`, and an ISO 8601 `cacheExpiry`. Unknown fields, non-string custom metadata, and manifest keys without a matching exported object are rejected. Without this sidecar, object bytes and keys are imported but R2 metadata cannot be reconstructed.
 
-The import verifies that all repository migrations exist in the D1 export, records their checksums for the Node migration runner, validates foreign keys, and converts R2 key paths into the hashed private-object layout. It refuses a non-empty target, so a failed or repeated import cannot overwrite an existing instance.
+The import verifies that all repository migrations exist in the D1 export, records their checksums for the Bun migration runner, validates foreign keys, and converts R2 key paths into the hashed private-object layout. It refuses a non-empty target, so a failed or repeated import cannot overwrite an existing instance.

@@ -2,7 +2,7 @@
 
 GMShop Edge 支援兩種生產執行時：
 
-- **Node/Nitro + Docker**：SQLite、私有本地物件、持久本地佇列及資料卷。
+- **Bun/Nitro 自託管**：SQLite、私有本地物件、持久本地佇列及資料目錄，可選擇 Docker，或原始碼部署並交由服務管理器守護。
 - **Cloudflare Workers**：D1、KV、R2、Queues、Cron Triggers 和可選 Send Email。
 
 兩種執行時提供相同的商城、使用者帳戶、結帳、交付、管理後台、供應商 API、Telegram 整合和 `/install` 流程。
@@ -39,16 +39,51 @@ docker compose logs --follow gmshop-edge
 
 容器以非 root 使用者執行。`GMSHOP_DATA_DIR` 包含 `gmshop.sqlite`、私有物件、持久佇列狀態及全部執行時資料。更新或重建容器時必須保留並備份 `gmshop-data` 資料卷。
 
-`GMSHOP_DATA_DIR` 是唯一公開的 Node 環境變數。Origin、Allowed Hosts、郵件、支付、供應商、Telegram 和自動化設定均透過 `/install` 或 `/admin` 設定。
+`GMSHOP_DATA_DIR` 是唯一公開的 Bun 環境變數。Origin、Allowed Hosts、郵件、支付、供應商、Telegram 和自動化設定均透過 `/install` 或 `/admin` 設定。
 
-Node 僅支援單一執行個體，不支援多副本部署或共享網路儲存。升級、還原或遷移前請閱讀 [Node 資料操作](./node-data-operations.md)。
+Bun 僅支援單一執行個體，不支援多副本部署或共享網路儲存。升級、還原或遷移前請閱讀 [Bun 資料操作](./node-data-operations.md)。
 
-原始碼建置需要 Bun 1.3+ 和 Node.js 24：
+## Bun 原始碼部署
+
+不使用 Docker 時，也可以直接從原始碼建置並執行正式服務。請安裝 Git 和 Bun 1.3 或更新版本；只有選擇 PM2 作為程序管理器時才需要 Node.js。
 
 ```bash
-bun install
-bun run build:node
-bun run start:node
+git clone https://github.com/GMWalletApp/gmshop-edge.git
+cd gmshop-edge
+bun install --frozen-lockfile
+bun run build:bun
+sudo install -d -m 0700 -o "$USER" -g "$USER" /var/lib/gmshop
+NODE_ENV=production HOST=0.0.0.0 PORT=3000 \
+  GMSHOP_DATA_DIR=/var/lib/gmshop \
+  bun run start:bun
+```
+
+最後一條命令會在前景執行。正式環境應交由 systemd、Supervisor、PM2 或其他服務管理器守護。`GMSHOP_DATA_DIR` 與 Docker 資料卷一樣需要持久保留並定期備份。Bun 執行時仍僅支援單一執行個體，不支援多副本部署或共享網路儲存。
+
+### PM2
+
+PM2 本身需要 Node.js 和 npm，但 GMShop Edge 應用程式仍由 Bun 執行。必須保留 `--interpreter bun`，否則 PM2 可能嘗試使用 Node.js 啟動產生的服務。
+
+```bash
+npm install --global pm2
+NODE_ENV=production HOST=0.0.0.0 PORT=3000 \
+  GMSHOP_DATA_DIR=/var/lib/gmshop \
+  pm2 start .output/server/index.mjs \
+    --name gmshop-edge --interpreter bun
+pm2 save
+pm2 startup
+```
+
+依照 `pm2 startup` 輸出的提示執行啟動項目命令，然後再次執行 `pm2 save`。使用 `pm2 logs gmshop-edge` 和 `curl --fail http://127.0.0.1:3000/healthz` 檢查服務。
+
+更新原始碼部署：
+
+```bash
+pm2 stop gmshop-edge
+git pull --ff-only
+bun install --frozen-lockfile
+bun run build:bun
+pm2 restart gmshop-edge --update-env
 ```
 
 ## Cloudflare Workers
@@ -77,7 +112,7 @@ bun run deploy
 
 ## 首次安裝
 
-Docker 啟動後，開啟 `http://your-host:3000/install`。Workers 部署完成後，在 Worker URL 開啟 `/install`。建立第一個根管理員前，先確認檢測到的公開地址和 Allowed Hosts。
+Docker 或 Bun 啟動後，開啟 `http://your-host:3000/install`。Workers 部署完成後，在 Worker URL 開啟 `/install`。建立第一個根管理員前，先確認檢測到的公開地址和 Allowed Hosts。
 
 安裝程式會建立第一個根管理員、受保護的內建商城角色、執行時金鑰，以及必要的商務、匯率、身分驗證和通知預設設定。它不會建立虛假商品、庫存、服務商憑證或支付設定。
 

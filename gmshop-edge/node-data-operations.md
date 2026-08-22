@@ -1,6 +1,6 @@
-# Node Data Operations
+# Bun data operations
 
-The Node runtime keeps its authoritative SQLite database at `$GMSHOP_DATA_DIR/gmshop.sqlite` and private objects under the same data directory. Use the maintained `bun run data -- …` CLI instead of copying a live SQLite file.
+The Bun runtime keeps its authoritative SQLite database at `$GMSHOP_DATA_DIR/gmshop.sqlite` and private objects under the same data directory. Use the maintained `bun run data -- …` CLI instead of copying a live SQLite file.
 
 ## Backup and restore
 
@@ -31,7 +31,7 @@ The CLI uses `$GMSHOP_DATA_DIR/.maintenance.lock`. If a crash leaves the lock be
 
 ## Import a Cloudflare export
 
-Export D1 as SQL and R2 objects into a local directory whose relative paths match the original keys. Import only into a new or empty Node data directory:
+Export D1 as SQL and R2 objects into a local directory whose relative paths match the original keys. Import only into a new or empty Bun data directory:
 
 ```bash
 wrangler d1 export DB --remote --output ./d1-export.sql

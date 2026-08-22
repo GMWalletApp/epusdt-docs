@@ -1,6 +1,6 @@
 # 架構
 
-GMShop Edge 在 Cloudflare Workers 與 Node/Nitro 上運行同一套 React/TanStack 全棧應用。一個部署同時負責公開商城、使用者帳戶、結帳、交付、供應商整合、Telegram 整合和管理後台。
+GMShop Edge 在 Cloudflare Workers 與 Bun/Nitro 上運行同一套 React/TanStack 全棧應用。一個部署同時負責公開商城、使用者帳戶、結帳、交付、供應商整合、Telegram 整合和管理後台。
 
 ## 共享應用邊界
 
@@ -19,9 +19,9 @@ Workers 部署使用：
 - `EMAIL`：可選的 Cloudflare Send Email 繫結。
 - 每分鐘 Cron Trigger：執行定時處理和維護。
 
-## Node/Nitro 介面卡
+## Bun/Nitro 介面卡
 
-Node 執行時在一個資料目錄內提供等價介面卡：
+Bun 執行時在一個資料目錄內提供等價介面卡：
 
 - SQLite 權威資料庫。
 - 程序內有界快取。
@@ -29,10 +29,10 @@ Node 執行時在一個資料目錄內提供等價介面卡：
 - 基於 SQLite 的持久佇列。
 - 每分鐘執行的程序內排程器。
 
-`GMSHOP_DATA_DIR` 包含資料庫、物件、佇列狀態和全部執行時資料。Node 明確僅支援**單一執行個體**，不支援多副本部署或共享網路儲存。
+`GMSHOP_DATA_DIR` 包含資料庫、物件、佇列狀態和全部執行時資料。Bun 明確僅支援**單一執行個體**，不支援多副本部署或共享網路儲存。
 
 ## 資料與後台任務
 
 私有物件必須透過已授權的資料庫記錄解析，客戶端不能選擇物件鍵。佇列和定時任務在同步商城請求之外處理供應商同步與採購、交付、通知、退款、重試、保留策略、Telegram 維護和金鑰輪換。
 
-全新安裝的遷移基線是 `drizzle/0000_gmshop.sql`；後續遷移按順序應用，Node 資料操作會驗證其驗證碼。
+全新安裝的遷移基線是 `drizzle/0000_gmshop.sql`；後續遷移按順序應用，Bun 資料操作會驗證其驗證碼。

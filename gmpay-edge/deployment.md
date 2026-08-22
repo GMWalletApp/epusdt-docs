@@ -2,7 +2,7 @@
 
 GMPay Edge supports two production runtimes:
 
-- **Node/Nitro with Docker**: SQLite and a persistent local data volume. This is the recommended self-hosted path for a server or NAS.
+- **Bun/Nitro self-hosting**: SQLite and a persistent local data directory, using Docker or a source deployment with a service manager.
 - **Cloudflare Workers**: D1, KV, R2, Queues, and Cron Triggers.
 
 Both runtimes expose the same merchant APIs, checkout, admin console, background jobs, and `/install` flow.
@@ -40,7 +40,7 @@ The `latest` tag tracks the latest stable release. Pin a full version such as `1
 
 `GMPAY_DATA_DIR` contains SQLite, uploaded files, private objects, queue state, and all other runtime data. Preserve and back up the `gmpay-data` volume when updating or recreating the container.
 
-Read [Node data operations](./node-data-operations.md) before backing up, restoring, or migrating a deployment.
+Read [Bun data operations](./node-data-operations.md) before backing up, restoring, or migrating a deployment.
 
 Verify the service and inspect logs with:
 
@@ -68,6 +68,49 @@ docker run --detach --name gmpay-edge --restart unless-stopped \
   --env GMPAY_DATA_DIR=/var/lib/gmpay \
   --volume gmpay-data:/var/lib/gmpay \
   ghcr.io/gmwalletapp/gmpay-edge:latest
+```
+
+## Bun source deployment
+
+You can run the production server directly from source without Docker. Install Git and Bun 1.3 or later; Node.js is only required if you choose PM2 as the process manager.
+
+```bash
+git clone https://github.com/GMWalletApp/gmpay-edge.git
+cd gmpay-edge
+bun install --frozen-lockfile
+bun run build:bun
+sudo install -d -o "$USER" -g "$USER" /var/lib/gmpay
+NODE_ENV=production HOST=0.0.0.0 PORT=3000 \
+  GMPAY_DATA_DIR=/var/lib/gmpay \
+  bun run start:bun
+```
+
+The last command runs in the foreground. Keep it under systemd, Supervisor, PM2, or another service manager in production. Preserve and back up `GMPAY_DATA_DIR` just as you would preserve the Docker volume.
+
+### PM2
+
+PM2 itself requires Node.js and npm, but GMPay Edge still runs with Bun. Keep the explicit `--interpreter bun` option so PM2 does not try to start the generated server with Node.js.
+
+```bash
+npm install --global pm2
+NODE_ENV=production HOST=0.0.0.0 PORT=3000 \
+  GMPAY_DATA_DIR=/var/lib/gmpay \
+  pm2 start .output/server/index.mjs \
+    --name gmpay-edge --interpreter bun
+pm2 save
+pm2 startup
+```
+
+Run the command printed by `pm2 startup`, then run `pm2 save` again. Use `pm2 logs gmpay-edge` and `curl --fail http://127.0.0.1:3000/healthz` to verify the service.
+
+To update a source deployment:
+
+```bash
+pm2 stop gmpay-edge
+git pull --ff-only
+bun install --frozen-lockfile
+bun run build:bun
+pm2 restart gmpay-edge --update-env
 ```
 
 ## Cloudflare Workers
@@ -116,7 +159,7 @@ bun run dev
 
 ## First install
 
-After Docker starts, open `http://your-host:3000/install`. After a Workers deployment, open `/install` on the Worker URL. Confirm the detected public address and Allowed Hosts before creating the first root user.
+After Docker or Bun starts, open `http://your-host:3000/install`. After a Workers deployment, open `/install` on the Worker URL. Confirm the detected public address and Allowed Hosts before creating the first root user.
 
 Installation creates:
 

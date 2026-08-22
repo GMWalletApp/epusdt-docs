@@ -1,6 +1,6 @@
 # GMPay Edge
 
-[GMPay Edge](https://github.com/GMWalletApp/gmpay-edge) 是支持 **Cloudflare Workers 或 Node/Nitro Docker** 的自托管单租户加密货币支付网关。
+[GMPay Edge](https://github.com/GMWalletApp/gmpay-edge) 是支持 **Cloudflare Workers 或 Bun/Nitro Docker** 的自托管单租户加密货币支付网关。
 
 它是独立于 Epusdt 的另一个项目。如果需要本文件站描述的 Go 版本网关，请使用 Epusdt；如果需要可部署到 Cloudflare Workers，或以 Docker 容器搭配 SQLite 本地持久化执行的 TypeScript 网关，可以评估 GMPay Edge。
 
@@ -19,9 +19,9 @@
 
 ## 文件章节
 
-- [架构](./architecture.md)：Workers 与 Node 运行时服务、队列、回调和协议边界。
+- [架构](./architecture.md)：Workers 与 Bun 运行时服务、队列、回调和协议边界。
 - [部署](./deployment.md)：Docker Compose、GHCR 镜像、Deploy Button、Wrangler CLI、本地开发和首次安装。
-- [Node 数据操作](./node-data-operations.md)：备份、恢复及 Cloudflare D1/R2 导入。
+- [Bun 数据操作](./node-data-operations.md)：备份、恢复及 Cloudflare D1/R2 导入。
 - [商户 API](./merchant-api.md)：GMPay 订单创建、查询、签名、回调和 EPay 兼容。
 - [支付接入](./payment-integrations.md)：内建链上、交易所与钱包适配器目录。
 

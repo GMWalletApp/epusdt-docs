@@ -1,6 +1,6 @@
 # Architecture
 
-GMPay Edge runs as one Worker or one Node/Nitro container. Both runtimes own the same product surfaces and shared order/payment core; only the infrastructure adapters differ.
+GMPay Edge runs as one Worker or one Bun/Nitro container. Both runtimes own the same product surfaces and shared order/payment core; only the infrastructure adapters differ.
 
 ## Product surfaces
 
@@ -11,15 +11,15 @@ GMPay Edge runs as one Worker or one Node/Nitro container. Both runtimes own the
 
 ## Runtime services
 
-| Capability | Cloudflare Workers | Node/Nitro Docker |
+| Capability | Cloudflare Workers | Bun/Nitro Docker |
 | --- | --- | --- |
 | Database | D1 | SQLite in `GMPAY_DATA_DIR` |
 | Cache | KV | Local runtime cache |
 | Private objects | R2 | Persistent local object storage |
 | Background work | Cloudflare Queues | Durable local queues |
-| Scheduling | Cron Triggers | Node scheduler |
+| Scheduling | Cron Triggers | Bun scheduler |
 
-The Node data directory also contains uploaded files and durable queue state. It must be mounted to a persistent volume and included in backups.
+The Bun data directory also contains uploaded files and durable queue state. It must be mounted to a persistent volume and included in backups.
 
 ## Cloudflare bindings
 

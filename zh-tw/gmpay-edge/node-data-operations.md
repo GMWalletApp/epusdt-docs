@@ -1,6 +1,6 @@
-# Node 資料操作
+# Bun 資料操作
 
-Node 部署將 SQLite 資料庫儲存在 `$GMPAY_DATA_DIR/gmpay.sqlite`，私有物件儲存在 `$GMPAY_DATA_DIR/objects`。維護中的 CLI 使用 Bun 及其 SQLite 驅動執行，應用服務本身仍由 Node.js 執行。
+Bun 部署將 SQLite 資料庫儲存在 `$GMPAY_DATA_DIR/gmpay.sqlite`，私有物件儲存在 `$GMPAY_DATA_DIR/objects`。維護中的 CLI 和應用服務均使用 Bun 及其 SQLite 驅動執行。
 
 ## 備份與還原
 
@@ -26,7 +26,7 @@ docker compose run --rm --no-deps \
 
 ## 匯入 Cloudflare 資料
 
-先將 D1 匯出為 SQL，並將 R2 物件匯出到本地目錄；物件在該目錄中的相對路徑必須保持原始 Object Key。然後將資料匯入全新或空的 Node 資料目錄：
+先將 D1 匯出為 SQL，並將 R2 物件匯出到本地目錄；物件在該目錄中的相對路徑必須保持原始 Object Key。然後將資料匯入全新或空的 Bun 資料目錄：
 
 ```bash
 wrangler d1 export DB --remote --output ./d1-export.sql
@@ -52,4 +52,4 @@ GMPAY_DATA_DIR=/srv/gmpay bun run data -- import-cloudflare \
 
 支援的 HTTP 欄位為 `contentType`、`contentLanguage`、`contentDisposition`、`contentEncoding`、`cacheControl`，以及 ISO 8601 格式的 `cacheExpiry`。未知欄位、非字串自定義元資料，以及找不到對應匯出物件的清單 Key 都會被拒絕。不提供這個 Sidecar 時仍會匯入物件內容和 Key，但無法還原 R2 元資料。
 
-匯入會確認 D1 匯出包含倉庫中的全部遷移，為 Node 遷移器記錄驗證碼，驗證外鍵，並將 R2 Key 路徑轉換成私有物件的雜湊佈局。非空目標會被拒絕，因此失敗或重複執行匯入不會覆蓋現有例項。
+匯入會確認 D1 匯出包含倉庫中的全部遷移，為 Bun 遷移器記錄驗證碼，驗證外鍵，並將 R2 Key 路徑轉換成私有物件的雜湊佈局。非空目標會被拒絕，因此失敗或重複執行匯入不會覆蓋現有例項。

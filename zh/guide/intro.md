@@ -9,7 +9,7 @@ Epusdt 已完成第三方安全审计。
 
 `Epusdt` 是一个由 **Go** 编写的私有化 **加密支付网关**。
 
-GMWalletApp 组织也维护 [GMPay Edge](/zh/gmpay-edge/)。它是支持 Cloudflare Workers 或 Node/Nitro Docker 的独立网关，共用 GMPay / EPay 商户协议语境，但不是 Epusdt 的同一套运行时或部署模型。
+GMWalletApp 组织也维护 [GMPay Edge](/zh/gmpay-edge/)。它是支持 Cloudflare Workers 或 Bun/Nitro Docker 的独立网关，共用 GMPay / EPay 商户协议语境，但不是 Epusdt 的同一套运行时或部署模型。
 
 如果需要数字商品商城，请看 [GMShop Edge](/zh/gmshop-edge/)，它是独立的 Cloudflare Workers 商城，负责商品、结账、交付与管理后台。
 

@@ -48,7 +48,7 @@ features:
     details: 通过内建后台管理 API Keys、通知通道、链、代币、钱包地址与 EPay 默认值。
   - icon: ⚡
     title: GMPay Edge 相关项目
-    details: GMWalletApp/gmpay-edge 是支持 Cloudflare Workers 或 Node/Nitro Docker 的独立网关，支持 GMPay HMAC-SHA256 与 EPay 兼容流程。
+    details: GMWalletApp/gmpay-edge 是支持 Cloudflare Workers 或 Bun/Nitro Docker 的独立网关，支持 GMPay HMAC-SHA256 与 EPay 兼容流程。
   - icon: 🛒
     title: GMShop Edge 商城
     details: GMWalletApp/gmshop-edge 是独立的 Cloudflare Workers 数字商品商城，提供商品、结账、交付、管理后台、上游供货与运行时 Provider。

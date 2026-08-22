@@ -1,6 +1,6 @@
 # GMShop Edge
 
-[GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) 是一個可自託管、單部署、單租戶的數字商品商城，可執行在 **Cloudflare Workers** 或 **Node/Nitro Docker 容器**中。
+[GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) 是一個可自託管、單部署、單租戶的數字商品商城，可執行在 **Cloudflare Workers** 或 **Bun/Nitro Docker 容器**中。
 
 一次部署即可提供回應式商城、使用者帳戶、結帳與交付、Telegram 整合、供應商營運以及基於權限的管理後台。
 
@@ -24,9 +24,9 @@
 
 ## 文件目錄
 
-- [架構](./architecture.md)：共享應用棧、Workers 繫結、Node 介面卡、資料歸屬和執行限制。
-- [部署](./deployment.md)：Workers、Node/Docker、初始化和生產驗收。
-- [Node 資料操作](./node-data-operations.md)：備份、恢復及 Cloudflare D1/R2 匯入。
+- [架構](./architecture.md)：共享應用棧、Workers 繫結、Bun 介面卡、資料歸屬和執行限制。
+- [部署](./deployment.md)：Workers、Bun/Docker、初始化和生產驗收。
+- [Bun 資料操作](./node-data-operations.md)：備份、恢復及 Cloudflare D1/R2 匯入。
 - [原生供應商 API](./supplier-api.md)：GMShop Edge 執行個體間經過簽署的商品目錄、訂單、支付通道和儲值操作。
 - [商務與交付](./commerce-fulfillment.md)：商品、庫存、供應商、交付記錄、權益和自動化商品。
 - [結帳與服務商](./checkout-providers.md)：餘額與外部支付、法幣報價、郵件、身分驗證和 Telegram 客服。
@@ -35,5 +35,5 @@
 
 - 倉庫：[GMWalletApp/gmshop-edge](https://github.com/GMWalletApp/gmshop-edge)
 - 部署清單：[`docs/DEPLOYMENT.zh-CN.md`](https://github.com/GMWalletApp/gmshop-edge/blob/main/docs/DEPLOYMENT.zh-CN.md)
-- Node 資料操作：[`docs/NODE_DATA_OPERATIONS.zh-CN.md`](https://github.com/GMWalletApp/gmshop-edge/blob/main/docs/NODE_DATA_OPERATIONS.zh-CN.md)
+- Bun 資料操作：[`docs/NODE_DATA_OPERATIONS.zh-CN.md`](https://github.com/GMWalletApp/gmshop-edge/blob/main/docs/NODE_DATA_OPERATIONS.zh-CN.md)
 - OpenAPI：[`public/openapi.yaml`](https://github.com/GMWalletApp/gmshop-edge/blob/main/public/openapi.yaml)

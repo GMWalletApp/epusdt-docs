@@ -2,7 +2,7 @@
 
 GMPay Edge 支持两种正式部署运行环境：
 
-- **Node/Nitro + Docker**：使用 SQLite 与本地持久化数据卷，建议自建服务器或 NAS 优先采用。
+- **Bun/Nitro 自托管**：使用 SQLite 与本地持久化数据目录，可选择 Docker，或源码部署并交由服务管理器守护。
 - **Cloudflare Workers**：使用 D1、KV、R2、Queues 与 Cron Triggers。
 
 两种运行环境提供相同的商户 API、收银台、管理后台、背景任务与 `/install` 安装流程。
@@ -40,7 +40,7 @@ docker compose up -d
 
 `GMPAY_DATA_DIR` 会保存 SQLite、上传文件、私有对象、队列状态及其他全部运行时数据。更新或重建容器时，请保留并备份 `gmpay-data` 数据卷。
 
-备份、恢复或迁移部署前，请阅读 [Node 数据操作](./node-data-operations.md)。
+备份、恢复或迁移部署前，请阅读 [Bun 数据操作](./node-data-operations.md)。
 
 检查服务与查看日志：
 
@@ -68,6 +68,49 @@ docker run --detach --name gmpay-edge --restart unless-stopped \
   --env GMPAY_DATA_DIR=/var/lib/gmpay \
   --volume gmpay-data:/var/lib/gmpay \
   ghcr.io/gmwalletapp/gmpay-edge:latest
+```
+
+## Bun 源码部署
+
+不使用 Docker 时，也可以直接从源码构建并运行生产服务。请安装 Git 和 Bun 1.3 或更高版本；只有选择 PM2 作为进程管理器时才需要 Node.js。
+
+```bash
+git clone https://github.com/GMWalletApp/gmpay-edge.git
+cd gmpay-edge
+bun install --frozen-lockfile
+bun run build:bun
+sudo install -d -o "$USER" -g "$USER" /var/lib/gmpay
+NODE_ENV=production HOST=0.0.0.0 PORT=3000 \
+  GMPAY_DATA_DIR=/var/lib/gmpay \
+  bun run start:bun
+```
+
+最后一条命令会在前台运行。生产环境应交给 systemd、Supervisor、PM2 或其他服务管理器守护。`GMPAY_DATA_DIR` 与 Docker 数据卷一样需要持久保留并定期备份。
+
+### PM2
+
+PM2 本身需要 Node.js 和 npm，但 GMPay Edge 应用仍由 Bun 运行。必须保留 `--interpreter bun`，否则 PM2 可能尝试使用 Node.js 启动生成的服务。
+
+```bash
+npm install --global pm2
+NODE_ENV=production HOST=0.0.0.0 PORT=3000 \
+  GMPAY_DATA_DIR=/var/lib/gmpay \
+  pm2 start .output/server/index.mjs \
+    --name gmpay-edge --interpreter bun
+pm2 save
+pm2 startup
+```
+
+按 `pm2 startup` 输出的提示执行启动项命令，然后再次运行 `pm2 save`。使用 `pm2 logs gmpay-edge` 和 `curl --fail http://127.0.0.1:3000/healthz` 检查服务。
+
+更新源码部署：
+
+```bash
+pm2 stop gmpay-edge
+git pull --ff-only
+bun install --frozen-lockfile
+bun run build:bun
+pm2 restart gmpay-edge --update-env
 ```
 
 ## Cloudflare Workers
@@ -116,7 +159,7 @@ bun run dev
 
 ## 首次安装
 
-Docker 启动后请开启 `http://your-host:3000/install`；Workers 部署完成后则开启 Worker URL 的 `/install`。建立首位 root 用户前，请先确认侦测到的公开地址与 Allowed Hosts。
+Docker 或 Bun 启动后请打开 `http://your-host:3000/install`；Workers 部署完成后则打开 Worker URL 的 `/install`。创建首位 root 用户前，请先确认检测到的公开地址与 Allowed Hosts。
 
 安装会建立：
 

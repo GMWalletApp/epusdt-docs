@@ -51,7 +51,7 @@ features:
     details: Manage settings, wallets, chains, API keys, and notifications from the built-in admin API and UI.
   - icon: ⚡
     title: GMPay Edge Companion
-    details: GMWalletApp/gmpay-edge is a separate gateway for Cloudflare Workers or Node/Nitro Docker, with GMPay HMAC-SHA256 and EPay compatibility.
+    details: GMWalletApp/gmpay-edge is a separate gateway for Cloudflare Workers or Bun/Nitro Docker, with GMPay HMAC-SHA256 and EPay compatibility.
   - icon: 🛒
     title: GMShop Edge Storefront
     details: GMWalletApp/gmshop-edge is a separate Cloudflare Workers digital-goods store with catalog, checkout, fulfillment, administration, supplier sourcing, and runtime providers.

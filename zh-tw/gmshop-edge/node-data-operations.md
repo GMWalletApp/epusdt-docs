@@ -1,6 +1,6 @@
-# Node 資料操作
+# Bun 資料操作
 
-Node 執行時將權威 SQLite 資料庫儲存在 `$GMSHOP_DATA_DIR/gmshop.sqlite`，私有物件也位於同一資料目錄。請使用維護中的 `bun run data -- …` CLI，不要複製正在執行的 SQLite 檔案。
+Bun 執行時將權威 SQLite 資料庫儲存在 `$GMSHOP_DATA_DIR/gmshop.sqlite`，私有物件也位於同一資料目錄。請使用維護中的 `bun run data -- …` CLI，不要複製正在執行的 SQLite 檔案。
 
 ## 備份與恢復
 
@@ -31,7 +31,7 @@ CLI 使用 `$GMSHOP_DATA_DIR/.maintenance.lock`。如果主機崩潰後遺留鎖
 
 ## 匯入 Cloudflare 匯出資料
 
-將 D1 匯出為 SQL，並把 R2 物件匯出到相對路徑與原始鍵一致的本地目錄。只能匯入到全新或空的 Node 資料目錄：
+將 D1 匯出為 SQL，並把 R2 物件匯出到相對路徑與原始鍵一致的本地目錄。只能匯入到全新或空的 Bun 資料目錄：
 
 ```bash
 wrangler d1 export DB --remote --output ./d1-export.sql
