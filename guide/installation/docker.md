@@ -1,127 +1,43 @@
-# Docker Deployment (Recommended)
+# Install with Docker Compose
 
-This guide covers deploying Epusdt with the official Docker image using Docker Compose or `docker run`.
+Use the [Compose file](https://github.com/GMWalletApp/epusdt/blob/v2.1.1/docker-compose.yaml) from the version you are installing. The default service includes ChainScanner.
 
-**No manual `.env` is required for the first boot.** The recommended Docker layout is to mount a dedicated host directory and point `EPUSDT_CONFIG` to a file inside it. That keeps config, the default SQLite database, and runtime data persistent **without** shadowing files from the image.
+For a fresh installation, get the release files first.
 
-## Prerequisites
-
-- Docker and Docker Compose installed
-
-## Steps
-
-### 1. Create a directory
-
-```bash
-mkdir epusdt && cd epusdt
+```sh
+git clone --depth 1 --branch v2.1.1 https://github.com/GMWalletApp/epusdt.git
+cd epusdt
 ```
 
-### 2. Create `docker-compose.yaml`
+## Start the gateway
 
-```bash
-cat <<EOF > docker-compose.yaml
-services:
-  epusdt:
-    image: gmwallet/epusdt:latest
-    restart: always
-    environment:
-      EPUSDT_CONFIG: /data/.env
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data:/data
-EOF
+From the repository root, set the public checkout URL in the Compose environment (for example, a project-level `.env`). The entrypoint uses it on each startup.
+
+```dotenv
+APP_URI=https://pay.example.com
+EPUSDT_PORT=8000
 ```
 
-Why this layout:
-
-- `/data/.env` stores the generated config file
-- `/data/epusdt.db` becomes the default primary SQLite database
-- `/data/runtime/` stores runtime SQLite data and logs by default
-- the container image under `/app` stays untouched, so upgrades do not get masked by an old `/app` volume
-
-### 3. Start the service
-
-```bash
-docker compose up -d
+```sh
+docker compose up -d epusdt
+docker compose logs --tail=100 epusdt
+curl -fsS http://127.0.0.1:8000/payments/gmpay/v1/config
 ```
 
-### 4. Complete the install wizard
+Point your HTTPS reverse proxy at the mapped port. Configure a receiving address, then check `data.supported_assets` in the response.
 
-Open `http://your-server-ip:8000` in your browser. The install wizard currently focuses on these fields:
+## Storage and upgrades
 
-- `app_name`
-- `app_uri`
-- `http_bind_addr`
-- `http_bind_port`
-- `runtime_root_path`
-- `log_save_path`
-- `order_expiration_time`
-- `order_notice_max_retry`
+Compose mounts `./runtime/epusdt` at `/app/runtime`. That directory holds the application `.env`, business and runtime databases, and the embedded scanner database. The project-level Compose environment and the application configuration are separate files.
 
-::: warning Docker binding requirement
-For Docker deployments, set `http_bind_addr` to `0.0.0.0`.
+When upgrading from v2.0.0, stop the old service, back up its configuration and databases, and copy them to the new mount **before recreating the old container**. Preserve the original backups and check the configured database filenames. [Release notes](https://github.com/GMWalletApp/epusdt/releases/tag/v2.1.0)
 
-Do **not** use `127.0.0.1`. The current installer default can still show `127.0.0.1`, but if you save that value in Docker, Epusdt will only listen on `127.0.0.1:8000` inside the container after restart, so the published Docker port and reverse proxy access can fail.
-:::
+Starting with v2.1.1, the gateway uses SQLite only. Back up the configuration, business and runtime databases, and scanner data. For an older MySQL or PostgreSQL installation, migrate and verify the data before switching. Changing `db_type` alone does not migrate orders.
 
-If you already finished the wizard with the wrong value, edit `./data/.env` on the host and change:
+## Using a standalone scanner
 
-```ini
-http_listen=127.0.0.1:8000
+Set `CHAINSCANNER_URL=http://chainscanner:9081` and provide distinct consumer and admin tokens. Keep the existing scanner volume (`./runtime/chainscanner`), URL and credentials when upgrading a standalone deployment.
+
+```sh
+docker compose --profile scanner up -d
 ```
-
-into:
-
-```ini
-http_listen=0.0.0.0:8000
-```
-
-Then restart the container:
-
-```bash
-docker restart epusdt
-```
-
-Once submitted, the service restarts automatically and is ready to use.
-
----
-
-## Alternative: `docker run` quick start
-
-```bash
-docker run -d \
-  --name epusdt \
-  --restart always \
-  -e EPUSDT_CONFIG=/data/.env \
-  -p 8000:8000 \
-  -v $(pwd)/data:/data \
-  gmwallet/epusdt:latest
-```
-
-Then open `http://your-server-ip:8000` to complete setup.
-
----
-
-## File-based config management (optional)
-
-If you prefer to review or edit the generated config later, use the same `./data` directory created above. After installation, the config file is stored at:
-
-```text
-./data/.env
-```
-
-You can edit it directly on the host, then restart the container:
-
-```bash
-docker restart epusdt
-```
-
----
-
-## Notes
-
-- After setup completes, merchant credentials and runtime options are managed from the admin panel
-- For new integrations, use the merchant `pid` + `secret_key` created in the admin panel
-- Avoid mounting the entire `/app` directory. It can cause old files from a previous container volume to shadow the new image during upgrades.
-- To upgrade: `docker pull gmwallet/epusdt:latest && docker compose up -d`

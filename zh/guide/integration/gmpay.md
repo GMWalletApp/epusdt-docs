@@ -51,13 +51,13 @@ POST /payments/gmpay/v1/order/create-transaction
 
 如果前端需要动态取得可用链 / 代币，请从 `/payments/gmpay/v1/config` 响应中的 `data.supported_assets` 读取。
 
-同一个 config 响应也会带出公开收银台品牌信息（`data.site`）以及 EPay / OkPay 前端默认值（`data.epay`、`data.okpay`）。
+站点品牌信息见 `data.site`，支付设置见 `data.epay`、`data.okpay` 和 `data.xlayer`。
 
 ## 回调验证
 
 GMPay 成功回调会以 JSON `POST` 发送到 `notify_url`。
 
-使用同一商户的 `secret_key` 依相同 HMAC-SHA256 规则验证回传 `signature`，然后返回纯文字 `ok`。
+使用商户密钥验证 HMAC-SHA256 签名，核对订单并防止重复发货。处理完成后返回 HTTP 200 和纯文本 `ok` 或 `success`（不区分大小写）。
 
 ## 成功响应补充
 

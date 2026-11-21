@@ -1,8 +1,8 @@
 {
   "defaultBranch": "master",
-  "latestCommitSha": "aed4a970a28d734c8a35499496604b868a24ef7f",
+  "latestCommitSha": "78ac7cc97637bf5f35bcf7d717d7def7d9aa6232",
   "latestRelease": {
-    "tag": "v2.0.0",
-    "publishedAt": "2026-07-23T06:04:47Z"
+    "tag": "v2.1.1",
+    "publishedAt": "2026-11-21T18:01:00Z"
   }
 }

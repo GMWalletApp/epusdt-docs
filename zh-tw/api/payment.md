@@ -1,8 +1,12 @@
 # Epusdt API 文件
 
-開發者可透過 Epusdt 提供的 HTTP API 將收款能力整合到業務系統。本文件以當前程式碼路由為準。
+[Python 建立訂單示例](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/sdk/python/gmpay_create_order.py) · [OpenAPI 規範](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/src/docs/swagger.json)
+
+開發者可通過 Epusdt 提供的 HTTP API 將收款能力整合到業務系統。本文件以當前程式碼路由為準。
 
 > 舊版 `POST /api/v1/order/create-transaction` 已不再註冊；建立訂單請使用 `POST /payments/gmpay/v1/order/create-transaction`。
+
+[簽名規則](#signing) · [建立 GMPay 交易](#create) · [查詢支付狀態](#status) · [商戶非同步回撥](#callbacks)
 
 ## 介面總覽
 
@@ -15,6 +19,8 @@
 | 查詢支付狀態 | GET | `/pay/check-status/{trade_id}` | 否 |
 | 切換支付網路/通道 | POST | `/pay/switch-network` | 否 |
 | EPay 相容建立交易 | GET/POST | `/payments/epay/v1/order/create-transaction/submit.php` | 是 |
+| 提交交易雜湊核驗 | POST | `/pay/submit-tx-hash/{trade_id}` | 否，提交 `block_transaction_id` |
+| 收銀臺返回商戶 | GET | `/pay/return/{trade_id}` | 否，返回 HTTP 302 |
 | OkPay 平臺回撥 | POST | `/payments/okpay/v1/notify` | OkPay 簽名 |
 
 ## 統一響應格式
@@ -41,19 +47,21 @@
 
 簽名錯誤會返回 HTTP 401；業務錯誤通常返回 HTTP 400，並在 `status_code` 中給出具體業務碼。
 
+<a id="signing"></a>
+
 ## 簽名規則
 
 當前版本使用統一商戶憑證。請求必須攜帶 `pid`，服務端用 `pid` 查詢對應的 `secret_key` 作為簽名金鑰。預設安裝會建立一個 PID 為 `1000` 的預設金鑰。
 
 ### GMPay 簽名
 
-> 自 `v2.0.0` 起，GMPay 改用 HMAC-SHA256，這是相對 v2 之前 MD5 規則的破壞性變更。部署 `v2.0.0` 或更新版本前，既有 GMPay 客戶端必須先升級請求與回撥簽名；EPay 相容介面仍使用 MD5，不受影響。
-
 1. 將所有非空引數按引數名 ASCII 字典序升序排序。
 2. 使用 `key=value` 形式以 `&` 拼接。
 3. 不參與簽名的欄位：`signature`。
-4. 使用商戶 `secret_key` 作為 HMAC key，以上述拼接字串作為 message，計算 HMAC-SHA256。
-5. 將結果編碼為 64 位小寫十六進位字串，作為 `signature`。
+4. 使用 `secret_key` 作為 HMAC 金鑰，對拼接字串計算 HMAC-SHA256。
+5. 將結果編碼為 64 位小寫十六進位制字串，作為 `signature`。
+
+> GMPay 已硬切至 HMAC-SHA256，不再接受舊版 MD5 簽名，也不提供演算法協商或回退。
 
 注意：
 
@@ -79,7 +87,7 @@ name=VIP
 
 以下示例假設 `secret_key` 為 `epusdt_secret_key`，僅用於演示簽名計算。
 
-規範化引數字串：
+待簽名字串：
 
 ```text
 amount=100&currency=cny&name=VIP&network=tron&notify_url=https://merchant.example/notify&order_id=ORD202605230001&pid=1000&redirect_url=https://merchant.example/return&token=usdt
@@ -133,6 +141,8 @@ function epaySign(array $params, string $secretKey): string
 }
 ```
 
+<a id="create"></a>
+
 ## 建立 GMPay 交易
 
 `POST /payments/gmpay/v1/order/create-transaction`
@@ -142,7 +152,7 @@ function epaySign(array $params, string $secretKey): string
 - `Content-Type: application/json`
 - `Content-Type: application/x-www-form-urlencoded`
 
-### GMPay 請求示例
+### 請求示例
 
 ```json
 {
@@ -159,7 +169,7 @@ function epaySign(array $params, string $secretKey): string
 }
 ```
 
-### GMPay 請求引數
+### 請求引數
 
 | 欄位 | 型別 | 必填 | 說明 |
 | --- | --- | --- | --- |
@@ -167,19 +177,19 @@ function epaySign(array $params, string $secretKey): string
 | `order_id` | string | 是 | 商戶訂單號，最長 32 字元，不能重複。 |
 | `currency` | string | 是 | 法幣幣種，如 `cny`、`usd`。 |
 | `token` | string | 條件必填 | 收款幣種，如 `usdt`、`trx`、`usdc`、`sol`。GMPay 可與 `network` 同時省略以建立狀態 `4` 佔位訂單。 |
-| `network` | string | 條件必填 | 收款網路，如 `tron`、`solana`、`ethereum`、`bsc`、`polygon`、`plasma`。GMPay 可與 `token` 同時省略以建立狀態 `4` 佔位訂單。 |
+| `network` | string | 條件必填 | 收款網路，如 `tron`、`solana`、`ethereum`、`binance`、`polygon`、`plasma`。GMPay 可與 `token` 同時省略以建立狀態 `4` 佔位訂單。 |
 | `amount` | number | 是 | 法幣金額，必須大於 `0.01`。 |
 | `notify_url` | string | 是 | 支付成功非同步回撥地址。 |
 | `redirect_url` | string | 否 | 支付完成後的同步跳轉地址。 |
 | `name` | string | 否 | 商品/訂單名稱。 |
 | `payment_type` | string | 否 | GMPay 相容欄位，不要求必須傳；如果傳了非空值，必須參與 GMPay `signature` 計算。普通 GMPay 不傳時後臺會存為 `Gmpay`；傳 `Epay`（大小寫不敏感）會統一存為 `Epay` 並使用 EPay 回撥格式，且 PID 必須是數字。 |
-| `signature` | string | 是 | GMPay 簽名。 |
+| `signature` | string | 是 | 64 位小寫十六進位制 GMPay HMAC-SHA256 簽名。 |
 
 `token` 和 `network` 必須同傳或同缺。兩者同缺時只建立包含 `amount/currency` 的佔位訂單，狀態為 `4`，不會分配錢包、不會計算鏈上支付金額，也不會鎖定交易金額；後續由收銀臺呼叫 `/pay/switch-network` 選擇具體鏈和幣種或 OkPay。只缺其中一個會返回引數錯誤。
 
 建議先呼叫 `/payments/gmpay/v1/config` 獲取可用的 `network` 和 `token` 組合。
 
-### GMPay 成功響應
+### 成功響應
 
 ```json
 {
@@ -220,9 +230,9 @@ function epaySign(array $params, string $secretKey): string
 
 `GET /payments/gmpay/v1/config`
 
-返回收銀臺展示配置、可用鏈/幣種、EPay 預設配置和 OkPay 公共配置。
+返回收銀臺展示配置、可用鏈/幣種、EPay 預設配置和託管收銀臺的公共配置（`okpay`、`xlayer`）。
 
-### 公開配置成功響應示例
+### 成功響應示例
 
 ```json
 {
@@ -247,7 +257,8 @@ function epaySign(array $params, string $secretKey): string
       "website_title": "Acme Payments",
       "support_link": "https://example.com/support",
       "background_color": "#0f172a",
-      "background_image_url": "https://cdn.example.com/background.png"
+      "background_image_url": "https://cdn.example.com/background.png",
+      "withdrawal_reminder_enabled": true
     },
     "epay": {
       "default_token": "",
@@ -258,7 +269,11 @@ function epaySign(array $params, string $secretKey): string
       "enabled": false,
       "allow_tokens": ["USDT", "TRX"]
     },
-    "version": "v1.0.1"
+    "xlayer": {
+      "enabled": false,
+      "allow_tokens": ["USDC", "USDT0", "USDG"]
+    },
+    "version": "v2.1.0"
   },
   "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
 }
@@ -269,6 +284,22 @@ function epaySign(array $params, string $secretKey): string
 - 鏈已啟用。
 - 該鏈有可用錢包地址。
 - 該鏈至少有一個啟用中的 token。
+
+### 交易所提現提醒
+
+收銀臺從公共配置讀取 `data.site.withdrawal_reminder_enabled`（布林值，預設 `true`）。等配置返回後，僅在開關開啟、訂單處於鏈上待支付狀態、已有收款地址且 `actual_amount > 0` 時，於到賬金額下顯示提醒。關閉時整塊隱藏。對接舊版本後端時，已載入的配置缺少該欄位可按預設開啟處理。
+
+建議標題為「交易所提現提醒」，正文為「請核對交易所顯示的實際到賬數量。扣除手續費後，應為 **14.2857 USDT**。」其中金額與幣種複用頁面上方展示的訂單金額（`actual_amount`）與 `token`，保留相同的小數位。提醒可使用淺琥珀色底、深色模式下使用深琥珀色底，並配圖示與文字。各語言使用收銀臺當前語言。
+
+前端對接效果參考（示例訂單）：[淺色預覽](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/wiki/img/withdrawal-reminder-light.png) · [深色預覽](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/wiki/img/withdrawal-reminder-dark.png)。
+
+後臺可在品牌設定中新增「顯示交易所提現提醒」開關，讀取 `GET /admin/api/v1/settings?group=brand`，檢查鍵 `brand.withdrawal_reminder_enabled` 的字串值 `"true"` 或 `"false"`。缺少設定時預設開啟。儲存時呼叫已鑑權的 `PUT /admin/api/v1/settings`：
+
+```json
+{"items":[{"group":"brand","key":"brand.withdrawal_reminder_enabled","type":"bool","value":false}]}
+```
+
+響應中對應項的 `ok` 為 `true` 表示儲存成功。重新開啟收銀臺即可讀取新值。
 
 ## 收銀臺頁面
 
@@ -288,7 +319,7 @@ function epaySign(array $params, string $secretKey): string
 
 用於前端收銀臺讀取訂單展示資料。該介面只確認訂單存在並返回基礎資料；當前支付狀態請呼叫 `/pay/check-status/{trade_id}`。
 
-### 收銀臺初始化成功響應示例
+### 成功響應示例
 
 ```json
 {
@@ -308,14 +339,13 @@ function epaySign(array $params, string $secretKey): string
     "redirect_url": "https://merchant.example/return",
     "payment_url": "",
     "created_at": 1779530212000,
-    "server_time": 1779530312000,
     "is_selected": false
   },
   "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
 }
 ```
 
-注意：該介面的 `expiration_time`、`created_at` 和 `server_time` 是毫秒級時間戳。`server_time` 是服務端目前時間，託管收銀臺可用它計算倒數，避免依賴客戶端時鐘。
+注意：該介面的 `expiration_time` 和 `created_at` 是毫秒級時間戳。
 
 如果訂單是狀態 `4` 佔位訂單，返回的仍是同一個父訂單 `trade_id`，但鏈上支付欄位尚未生成。該狀態可能來自 GMPay 空 token/network 建立，也可能來自 EPay submit.php 在請求和資料庫預設值都沒有完整 token/network 時建立：
 
@@ -337,7 +367,6 @@ function epaySign(array $params, string $secretKey): string
     "redirect_url": "https://merchant.example/return",
     "payment_url": "",
     "created_at": 1779530212000,
-    "server_time": 1779530312000,
     "is_selected": false
   },
   "request_id": "b1344d70-ff19-4543-b601-37abfb3b3686"
@@ -348,11 +377,13 @@ function epaySign(array $params, string $secretKey): string
 
 前端看到 `status=4` 時，應展示選擇網路和幣種/支付通道的介面，並在使用者選擇後呼叫 `/pay/switch-network`。選擇鏈上支付成功後，該父訂單會變為 `status=1`，`actual_amount`、`token`、`network`、`receive_address` 會被補全，但 `is_selected` 保持 `false`，由後續同目標選擇流程標記為已選中。選擇 OkPay 成功後，介面返回同一個父訂單 `trade_id` 和第三方 `payment_url`；父訂單會變為 `status=1`、`is_selected=false`、`pay_provider=okpay`、`network=okpay`、`receive_address=OKPAY`。
 
+<a id="status"></a>
+
 ## 查詢支付狀態
 
 `GET /pay/check-status/{trade_id}`
 
-### 支付狀態成功響應示例
+### 成功響應示例
 
 ```json
 {
@@ -374,6 +405,20 @@ function epaySign(array $params, string $secretKey): string
 | `2` | 支付成功 |
 | `3` | 已過期 |
 | `4` | 等待選擇支付網路/幣種 |
+| `5` | 已發現匹配的鏈上轉賬，正在確認 |
+| `6` | 兩輪嚴格核驗未通過，等待管理員複核 |
+
+收到狀態 `5` 後，收銀臺應顯示“確認中”，繼續輪詢，無需使用者再次付款。預設開啟嚴格核驗。EPUSDT 持久化候選交易，達到鏈配置的確認深度後，呼叫 ChainScanner 的嚴格雜湊查詢。兩個節點返回一致結果且轉賬與訂單匹配後，訂單才進入狀態 `2` 並觸發到賬回撥。首次失敗後再查一輪。嘗試次數和首輪節點標識儲存在資料庫中；兩輪失敗後進入狀態 `6`，停止自動查詢。管理員可在訂單詳情中檢視 `review_transaction_hash`，修復節點或核對交易後，通過原有後臺補單介面重新嚴格核驗。等待區塊確認深度不佔用嘗試次數。
+
+## 收銀臺提交交易雜湊
+
+買家可為待支付（狀態 1）的鏈上直付訂單提交交易雜湊。過期訂單由商戶管理員另行核對。請求體使用 JSON。
+
+`POST /pay/submit-tx-hash/{trade_id}`
+
+```json
+{"block_transaction_id":"0x…"}
+```
 
 ## 切換支付網路/通道
 
@@ -381,7 +426,7 @@ function epaySign(array $params, string $secretKey): string
 
 該介面通常由收銀臺前端呼叫，用於切換到另一個鏈上收款地址，或切換到 OkPay 託管收銀臺。
 
-### 切換網路請求示例
+### 請求示例
 
 ```json
 {
@@ -390,6 +435,8 @@ function epaySign(array $params, string $secretKey): string
   "network": "solana"
 }
 ```
+
+託管收銀臺使用 `okpay` 或 `xlayer` 及該服務商允許的幣種。使用響應中的 `payment_url` 開啟付款頁。X Layer 由 EPUSDT 查詢 OKX 訂單並在核對 `settled` 後確認到賬。
 
 切換到 OkPay：
 
@@ -401,15 +448,15 @@ function epaySign(array $params, string $secretKey): string
 }
 ```
 
-### 切換網路請求引數
+### 請求引數
 
 | 欄位 | 型別 | 必填 | 說明 |
 | --- | --- | --- | --- |
 | `trade_id` | string | 是 | 父訂單交易號。 |
 | `token` | string | 是 | 目標幣種。 |
-| `network` | string | 是 | 目標網路，或特殊值 `okpay`。 |
+| `network` | string | 是 | 目標網路，或託管通道 `okpay`、`xlayer`。 |
 
-### 切換網路成功響應
+### 成功響應
 
 返回結構與收銀臺初始化資料一致。鏈上訂單的 `payment_url` 為空；OkPay 訂單的 `payment_url` 是 OkPay 返回的託管支付連結。若父訂單仍是 `status=4`，首次切換鏈上或 OkPay 都會原地補全父訂單並返回同一個 `trade_id`。
 
@@ -435,7 +482,7 @@ function epaySign(array $params, string $secretKey): string
 /pay/checkout-counter/{trade_id}
 ```
 
-### EPay 請求引數
+### 請求引數
 
 | 欄位 | 位置 | 型別 | 必填 | 說明 |
 | --- | --- | --- | --- | --- |
@@ -445,9 +492,9 @@ function epaySign(array $params, string $secretKey): string
 | `notify_url` | query/form | string | 是 | 非同步回撥地址。 |
 | `return_url` | query/form | string | 否 | 支付完成後的同步跳轉地址。 |
 | `name` | query/form | string | 否 | 商品/訂單名稱。 |
-| `type` | query/form | string | 否 | `alipay` 或有效的 `token.network` 選擇器（如 `usdt.tron`）。有效選擇器會決定實際鏈上幣種和網路，並覆蓋 EPay 預設 token/network。 |
-| `token` | query/form | string | 否 | 可選收款幣種。優先順序高於後臺 `epay.default_token`；傳了就必須參與 EPay 簽名。 |
-| `network` | query/form | string | 否 | 可選收款網路。優先順序高於後臺 `epay.default_network`；傳了就必須參與 EPay 簽名。 |
+| `type` | query/form | string | 否 | 僅支援空值、`alipay`，或當前已啟用並可收款的 `token.network` selector（如 `usdt.tron`）。推薦使用小寫 `alipay`。 |
+| `token` | query/form | string | 否 | 可選收款幣種。僅在 `type` 不是命中的 selector 時參與解析；傳了就必須參與 EPay 簽名。 |
+| `network` | query/form | string | 否 | 可選收款網路。僅在 `type` 不是命中的 selector 時參與解析；傳了就必須參與 EPay 簽名。 |
 | `currency` | query/form | string | 否 | 可選法幣幣種。優先順序高於後臺 `epay.default_currency`；傳了就必須參與 EPay 簽名。 |
 | `sign` | query/form | string | 是 | EPay 簽名。 |
 | `sign_type` | query/form | string | 否 | 通常為 `MD5`。 |
@@ -470,51 +517,20 @@ money=100&name=VIP&notify_url=https://merchant.example/notify&out_trade_no=ORD20
 sign=b865b0acbb2b01554c35a1bd33351452
 ```
 
-EPay 介面解析 `type/token/network/currency` 的優先順序：
+EPay 介面解析 `type/token/network/currency` 的規則：
 
-- `type=token.network`：如果是當前可用的鏈上組合（如 `usdt.tron`），優先決定 `token/network`；如果 `type` 既不是有效選擇器也不是 `alipay`，返回引數錯誤。
-- `token` / `network`：未使用有效 `type` 選擇器時，讀取請求引數；顯式傳入的欄位必須參與 EPay 簽名。
-- `epay.default_token` / `epay.default_network`：請求未提供對應欄位時使用後臺預設值；有效 `type` 選擇器會繞過這兩個預設值。
-- `currency`：請求引數 `currency` > 資料庫 `epay.default_currency` > `cny`；即使用了有效 `type` 選擇器，幣種回退規則也不變。
-- 最終 `token/network` 同時有值時，建立具體鏈上訂單；同時為空時，建立狀態 `4` 佔位訂單；只缺一個時返回引數錯誤。
-- 服務端會在 EPay 簽名校驗透過後內部注入 `payment_type=Epay`，該欄位不參與 EPay 入站簽名；但請求裡顯式傳入的 `type/token/network/currency` 屬於原始 EPay 引數，必須參與簽名。
+- `type` 只接受三類輸入：空值、`alipay`、命中的 `token.network` selector。
+- `type=token.network` 且命中當前已啟用支付資產時，會直接確定本次訂單的 `token/network`，並覆蓋請求引數裡的 `token/network` 以及後臺 `epay.default_token` / `epay.default_network`。
+- `type` 非空但既不是命中的 selector，也不是 `alipay` 時，直接返回 `10009 invalid params`。例如 `usdt-tron`、未啟用的 `usdc.tron` 都會被拒絕。
+- `type` 為空或為 `alipay` 時，`token/network` 繼續走原有解析：先看請求引數，再分別用資料庫 `epay.default_token` / `epay.default_network` 補齊。
+- `currency` 解析不受 selector 影響：請求引數 `currency` > 資料庫 `epay.default_currency` > `cny`。
+- 最終解析結果裡，`token/network` 同時有值時建立具體鏈上訂單；同時為空時建立狀態 `4` 佔位訂單；最終只缺一個時返回引數錯誤。
+- 這意味著“請求裡只傳了一個值”不一定報錯；如果另一個值能被 default 補齊，仍會成功。只有最終解析後仍然只剩一個值，才返回 `10009`。
+- 服務端會在 EPay 簽名校驗通過後內部注入 `payment_type=Epay`，該欄位不參與 EPay 入站簽名；但請求裡顯式傳入的 `type/token/network/currency` 仍屬於原始 EPay 引數，必須參與簽名。
 
-後臺預設配置可透過 `/payments/gmpay/v1/config` 的 `epay` 欄位檢視；新安裝預設只預置 `epay.default_currency=cny`，`epay.default_token` 和 `epay.default_network` 為空，因此 EPay 未顯式傳 token/network 時會建立狀態 `4` 佔位訂單。已有資料庫的配置不會被 seed 覆蓋，刪除或置空 `epay.default_token` 和 `epay.default_network` 後，這兩個欄位會返回空字串。
+後臺預設配置可通過 `/payments/gmpay/v1/config` 的 `epay` 欄位檢視；新安裝預設只預置 `epay.default_currency=cny`，`epay.default_token` 和 `epay.default_network` 為空，因此 EPay 未顯式傳 token/network 時會建立狀態 `4` 佔位訂單。已有資料庫的配置不會被 seed 覆蓋，刪除或置空 `epay.default_token` 和 `epay.default_network` 後，這兩個欄位會返回空字串。
 
-### 直接指定鏈和幣種
-
-支援傳遞 `type=token.network` 直接建立指定鏈上訂單。適合上遊「New API」或自定義支付方式列表把不同鏈/幣種拆成獨立支付選項的場景。
-
-示例支付方式配置：
-
-```json
-[
-  {
-    "color": "rgba(var(--semi-blue-5), 1)",
-    "name": "GM Pay",
-    "type": "custom1"
-  },
-  {
-    "color": "rgba(var(--semi-blue-5), 1)",
-    "name": "GM Pay usdt.binance",
-    "type": "usdt.binance"
-  },
-  {
-    "color": "rgba(var(--semi-blue-5), 1)",
-    "name": "GM Pay usdt.tron",
-    "type": "usdt.tron"
-  }
-]
-```
-
-其中：
-
-- `type=usdt.binance` 會直接解析為 `token=usdt`、`network=binance`。
-- `type=usdt.tron` 會直接解析為 `token=usdt`、`network=tron`。
-- 這類 `type` 必須是當前服務端可用的 `token.network` 組合；可用組合以 `/payments/gmpay/v1/config` 返回的 `supported_assets` 為準。
-- `custom1` 不是 Epusdt 的鏈上選擇器；如果上游用於「GM Pay 通用入口」，應由上游外掛對映為不傳 `type`、傳 `type=alipay`，或走普通 GMPay 佔位訂單流程。不要把 `custom1` 原樣提交到 EPay submit.php，否則當前服務端會按引數錯誤拒絕。
-
-提交到 EPay submit.php 時，`type` 是原始入站引數，必須參與 EPay 簽名。
+<a id="callbacks"></a>
 
 ## 商戶非同步回撥
 
@@ -534,7 +550,7 @@ EPay 介面解析 `type/token/network/currency` 的優先順序：
   "receive_address": "TTestTronAddress001",
   "token": "USDT",
   "block_transaction_id": "0xabc123...",
-  "signature": "a1b2c3d4e5f6...",
+  "signature": "498975a97bc34563bdb14df53fc18054645df9684d6c67d9b9dd90ec62be1018",
   "status": 2
 }
 ```
@@ -549,16 +565,18 @@ EPay 介面解析 `type/token/network/currency` 的優先順序：
 | `receive_address` | string | 收款地址。 |
 | `token` | string | 收款幣種。 |
 | `block_transaction_id` | string | 鏈上交易雜湊或第三方支付訂單號。 |
-| `signature` | string | 回撥簽名。 |
+| `signature` | string | 64 位小寫十六進位制 HMAC-SHA256 回撥簽名。 |
 | `status` | integer | 當前僅支付成功時回撥，值為 `2`。 |
 
-GMPay 回撥驗籤方式與建立訂單相同，均使用 HMAC-SHA256，並排除 `signature` 欄位。
+GMPay 回撥驗籤方式與建立訂單一致：排除 `signature` 欄位後，使用商戶 `secret_key` 對規範化引數字串計算 HMAC-SHA256。回撥體不包含 `payment_type` 欄位。
 
 ### EPay 相容回撥
 
-透過 EPay 相容介面建立的訂單，會使用 GET 請求回撥 `notify_url`，引數如下：
+通過 EPay 相容介面建立的訂單，會使用 GET 請求回撥 `notify_url`，引數如下：
 
 > EPay 回撥會把 `pid` 輸出為數字；使用 EPay 相容介面或 `payment_type=Epay` 時，請確保 API Key 的 PID 是數字。
+>
+> `type` 出站時使用訂單裡儲存的請求值。當前主分支正常入站能儲存下來的只會是 `alipay` 或命中的 `token.network` selector；如果入站請求沒傳 `type`，出站才回退為 `alipay`。
 
 ```text
 pid=1000
@@ -568,7 +586,7 @@ type=alipay
 name=VIP
 money=100.0000
 trade_status=TRADE_SUCCESS
-sign=a1b2c3d4...
+sign=cc44fab3f264615d859f8a1fd36d2f08
 sign_type=MD5
 ```
 
@@ -580,7 +598,7 @@ sign_type=MD5
 
 這是 OkPay/OkayPay 平臺通知 Epusdt 的介面，不是商戶系統主動呼叫的介面。配置 OkPay 時，回撥地址應填寫該路徑。
 
-支援 JSON、`application/x-www-form-urlencoded`、multipart form 和原始 query-string 風格 body。成功返回純文字：
+支援 JSON、`application/x-www-form-urlencoded`、multipart form 和原始 query-string 風格 body。成功返回純文本：
 
 ```text
 success
@@ -619,3 +637,14 @@ Epusdt 會按配置的 OkPay shop token 驗證 OkPay 簽名，成功後將對應
 | `10017` | 400 | 支付服務商未啟用 |
 | `10018` | 400 | 支付服務商配置不完整 |
 | `10019` | 400 | 支付服務商不支援該幣種或網路 |
+| `10038` | 400 | 交易雜湊核驗失敗 |
+| `10039` | 400 | 僅支援對鏈上訂單進行人工核驗 |
+| `10041` | 400 | 通知地址無效 |
+| `10042` | 400 | 支付服務商建立訂單失敗 |
+| `10044` | 400 | 訂單跳轉地址無效 |
+| `10045` | 400 | 訂單對應的商戶金鑰不可用 |
+| `10046` | 400 | 無法生成 EPay 返回簽名 |
+
+[完整業務錯誤碼](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/src/util/constant/errno.go)
+
+EPay 支付方式列表和幣種選擇優先順序見 [EPay 對接指南](/zh-tw/guide/integration/epay).

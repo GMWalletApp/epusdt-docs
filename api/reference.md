@@ -1,18 +1,21 @@
 # API Reference
 
+See [Merchant API](/api/payment) for signing examples, order states and callback verification.
+
 ## Live public routes
 
-| Method | Route | Description |
-| --- | --- | --- |
-| `POST` | `/payments/gmpay/v1/order/create-transaction` | Recommended order creation API |
-| `GET` | `/payments/gmpay/v1/config` | Return public payment config including `supported_assets`, site branding, EPay defaults, OkPay frontend config, and server `version` |
-| `GET` / `POST` | `/payments/epay/v1/order/create-transaction/submit.php` | EPay-compatible redirect create-order entry |
-| `POST` | `/payments/okpay/v1/notify` | OkPay server-side callback entry |
-| `POST` | `/pay/switch-network` | Switch token/network from hosted checkout; accepts on-chain networks and `okpay` |
-| `GET` | `/pay/checkout-counter/:trade_id` | Redirect entry that sends the browser into the hosted cashier SPA |
-| `GET` | `/pay/checkout-counter-resp/:trade_id` | JSON payload used by the hosted cashier SPA |
-| `GET` | `/pay/check-status/:trade_id` | Poll hosted checkout status |
-| `POST` | `/pay/submit-tx-hash/:trade_id` | Submit an on-chain transaction hash from the cashier for a waiting order |
+| Purpose | Method | Path | Authentication |
+| --- | --- | --- | --- |
+| Create a GMPay order | POST | `/payments/gmpay/v1/order/create-transaction` | Merchant HMAC-SHA256 |
+| Read public checkout settings | GET | `/payments/gmpay/v1/config` | Public |
+| Open checkout | GET | `/pay/checkout-counter/{trade_id}` | Public |
+| Read checkout details | GET | `/pay/checkout-counter-resp/{trade_id}` | Public |
+| Poll order status | GET | `/pay/check-status/{trade_id}` | Public |
+| Select network or provider | POST | `/pay/switch-network` | Public |
+| Submit a transfer hash for verification | POST | `/pay/submit-tx-hash/{trade_id}` | Public |
+| Return from checkout | GET | `/pay/return/{trade_id}` | Browser redirect |
+| Create an EPay order | GET or POST | `/payments/epay/v1/order/create-transaction/submit.php` | Merchant MD5 |
+| Receive an OKPay provider notification | POST | `/payments/okpay/v1/notify` | OKPay signature |
 
 ## Admin API surface
 
@@ -20,7 +23,7 @@ Management APIs live under `/admin/api/v1/*` and are JWT-protected except login 
 
 Key groups visible in current source:
 
-- Admin manual mark-paid accepts waiting or expired on-chain orders after transaction verification; public cashier hash submission remains waiting-order only.
+- The public cashier accepts a hash for a waiting on-chain order. An administrator can also recheck an expired order or a candidate in manual review.
 - Rate settings: `rate.mode` can be `fixed` or `auto`. Fixed mode uses `rate.forced_rate_list`; auto mode fetches `rate.api_url`, caches successful base-currency responses, and keeps the last durable cache when refreshes fail. Empty `rate.forced_rate_list` restores the built-in CNY USDT/USDC default.
 - `/auth/*`
 - `/api-keys/*`

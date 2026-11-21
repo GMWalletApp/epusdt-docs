@@ -16,15 +16,12 @@
 
 其中 `data.supported_assets` 会受到已启用的 chains、chain_tokens 与可用 wallet_address 影响。
 
-## 链设置
+## 需要配置哪些节点？
 
-### Tron 是否需要额外的 API Key？
+内置 ChainScanner 自带公共节点。TRON 可使用受支持的公共节点，TronGrid 密钥按所选服务商的要求配置。添加节点时，请选择对应的链以及服务商实际提供的协议。WebSocket 可用于监听新区块，再由 HTTP 节点读取区块内容。
 
-是的。必须在后台配置 [TronGrid API Key](https://www.trongrid.io/)，否则节点请求将受到速率限制或被拒绝。
+后台显示各链的扫描进度，观测到的追块延迟超过五分钟时会提示。Solana、TON 或 Plasma 查询频繁时，建议配置来自两家独立服务商的兜底节点，并核对服务商配额。
 
-### 各链的 RPC 地址应使用哪种协定？
+## 如何设置汇率？
 
-- **Tron** 和 **Solana（SOL）**：使用 **HTTP/HTTPS** 端点。
-- **其他所有链**（如 ETH、BSC、Polygon 等）：使用 **WSS**（WebSocket）端点。
-
-协定填错将导致交易监听静默失效。
+选择 `fixed` 使用 `rate.forced_rate_list`，或选择 `auto` 从 `rate.api_url` 获取汇率。自动刷新失败时沿用已缓存的汇率。清空固定汇率配置会恢复内置的 CNY 对 USDT、USDC 汇率。

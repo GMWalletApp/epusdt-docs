@@ -1,14 +1,21 @@
 # epctl 安裝與驗證指令碼
 
 `epctl` 是倉庫頂層的 Linux 二進位制安裝管理指令碼，面向已經發布到 GitHub Releases 的 `epusdt` 二進位制包。
-`epctl-docker-test.sh` 是配套的真實驗收指令碼，用本機 Docker 啟動 Ubuntu + systemd 容器，完整驗證下載、安裝、啟動、升級和初始化密碼流程。
+`epctl-docker-test.sh` 是配套的真實驗收指令碼，用本機 Docker 啟動 Ubuntu + systemd 容器，完整驗證安裝、啟動、升級和初始化密碼流程。
+
+全新安裝時先下載該版本的檔案。
+
+```sh
+git clone --depth 1 --branch v2.1.1 https://github.com/GMWalletApp/epusdt.git
+cd epusdt
+```
 
 ## 適用範圍
 
 - 僅支援 Linux
 - 僅支援二進位制安裝
 - 安裝源固定為 `https://github.com/GMWalletApp/epusdt/releases`
-- 預設透過 systemd 管理服務
+- 預設通過 systemd 管理服務
 
 ## 依賴與許可權
 
@@ -24,7 +31,7 @@
 其中：
 
 - `install`、`upgrade`、`self-install` 需要寫入 `/opt`、`/etc/systemd`、`/usr/local/bin`
-- `status`、`logs` 會在需要時自動透過 `sudo` 重新執行
+- `status`、`logs` 會在需要時自動通過 `sudo` 重新執行
 - 所以日常使用建議當前使用者具備 `sudo` 許可權
 
 ## 固定路徑
@@ -33,24 +40,18 @@
 |------|------|
 | 安裝目錄 | `/opt/epusdt` |
 | 主程式 | `/opt/epusdt/epusdt` |
+| 掃鏈程式 | `/opt/epusdt/chainscanner` |
 | 配置檔案 | `/opt/epusdt/.env` |
+| 掃鏈配置 | `/opt/epusdt/chainscanner.json` |
 | 示例配置 | `/opt/epusdt/.env.example` |
 | 前端釋放目錄 | `/opt/epusdt/www` |
 | 下載快取 | `/tmp/epusdt/<tag>/` |
-| systemd unit | `/etc/systemd/system/epusdt.service` |
+| systemd unit | `/etc/systemd/system/epusdt.service`、`/etc/systemd/system/chainscanner.service` |
 | epctl 全域性安裝位置 | `/usr/local/bin/epctl` |
 
 ## 快速開始
 
-Linux 伺服器上一鍵部署時，直接從上游 `master` 分支下載最新 `epctl`，賦予執行權限後進入互動選單：
-
-```bash
-curl -fsSLO https://raw.githubusercontent.com/GMWalletApp/epusdt/refs/heads/master/epctl
-chmod +x epctl
-./epctl
-```
-
-如果你已經 clone 了倉庫，也可以在倉庫根目錄直接執行：
+直接在倉庫根目錄執行互動選單：
 
 ```bash
 ./epctl
@@ -77,21 +78,39 @@ epctl
 下載指定版本：
 
 ```bash
-./epctl download --tag v1.0.8
+./epctl download --tag v2.1.0
 ```
 
-安裝服務：
+安裝服務（預設 `--component epusdt`，直接使用內建掃描器；顯式選擇 `--component all` 可部署兩個獨立服務）：
 
 ```bash
-./epctl install --tag v1.0.8 \
+./epctl install --tag v2.1.0 \
   --app-uri https://pay.example.com \
   --listen 127.0.0.1:18000
 ```
 
-升級到新版本：
+分機/獨立部署 `chainscanner`（自動生成或自定義 Token，並在終端列印連線憑證）：
 
 ```bash
-./epctl upgrade --tag v1.0.9
+./epctl install --component chainscanner \
+  --scanner-listen 0.0.0.0:9081
+```
+
+分機/獨立部署 `epusdt`（對接遠端 `chainscanner`）：
+
+```bash
+./epctl install --component epusdt \
+  --app-uri https://pay.example.com \
+  --listen 127.0.0.1:8000 \
+  --scanner-url http://10.0.0.2:9081 \
+  --scanner-token <chainscanner_token> \
+  --scanner-admin-token <chainscanner_admin_token>
+```
+
+升級到新版本（自動按當前已安裝元件升級，也可通過 `--component all|epusdt|chainscanner` 指定）：
+
+```bash
+./epctl upgrade --tag v2.1.0
 ```
 
 直接執行 `./epctl upgrade --tag ...` 時，指令碼會在檔案替換完成後預設立即執行 `systemctl restart epusdt`。
@@ -106,15 +125,11 @@ epctl
 ./epctl logs --lines 200
 ```
 
-請求初始化管理員密碼（僅當部署版本仍暴露舊版明文路由時可用）：
+請求初始化管理員密碼：
 
 ```bash
 ./epctl init-password
 ```
-
-::: warning v1.0.9 路由說明
-`v1.0.9` 服務端註冊的是 `/admin/api/v1/auth/init-password-hash`，沒有註冊 `epctl init-password` 會請求的舊版明文 `/admin/api/v1/auth/init-password` 路由。v1.0.9 首次安裝時，請從安裝 API 回應中的 `init_password` 讀取初始密碼。
-:::
 
 ## 不傳 `--tag` 時的行為
 
@@ -148,11 +163,11 @@ EPCTL_ASSUME_YES=1 ./epctl download
 自動生成 `.env` 時，指令碼只會補預設上線所需的最小改動：
 
 - `install=false`
-- `app_uri=<--app-uri，預設 http://127.0.0.1:8000>`
-- `http_listen=<--listen，預設 127.0.0.1:8000>`
+- `app_uri=<--app-uri，默认 http://127.0.0.1:8000>`
+- `http_listen=<--listen，默认 127.0.0.1:8000>`
 
 如果 `/opt/epusdt/.env` 已存在，則安裝和升級都會保留它，不會覆蓋。
-`/opt/epusdt/.env.example` 則會在每次 install / upgrade 時按當前 release 重新刷新。
+`/opt/epusdt/.env.example` 則會在每次 install / upgrade 時按當前 release 重新重新整理。
 
 ## 升級時會發生什麼
 
@@ -164,7 +179,7 @@ EPCTL_ASSUME_YES=1 ./epctl download
 4. 覆蓋 `/opt/epusdt/epusdt`
 5. 覆蓋 `/opt/epusdt/.env.example`
 6. 保留現有 `/opt/epusdt/.env`
-7. 刷新 `epusdt.service` 並執行 `systemctl daemon-reload`
+7. 重新整理 `epusdt.service` 並執行 `systemctl daemon-reload`
 8. 預設立即執行 `systemctl restart epusdt`
 
 補充行為：
@@ -172,7 +187,7 @@ EPCTL_ASSUME_YES=1 ./epctl download
 - `upgrade` 不會再補寫 `.env`，也不會再執行 `systemctl enable`
 - `upgrade --no-restart` 只替換檔案，不重啟服務，並輸出手動 restart 提示
 - `upgrade --prompt-restart` 會在互動終端下詢問是否重啟
-- 如果重啟前的檔案部署失敗，或升級後的重啟失敗，指令碼會嘗試回滾舊的二進位制、`.env.example` 和 unit 檔案
+- 如果升級後的重啟失敗，指令碼會嘗試回滾舊的二進位制、`.env.example` 和 unit 檔案
 
 ## systemd 服務說明
 
@@ -191,7 +206,7 @@ RestartSec=3
 
 ## `init-password` 的含義
 
-`epctl init-password` 只會請求本地 HTTP 路由。這是舊版明文路由，實際部署版本不一定註冊：
+`epctl init-password` 只會請求本地 HTTP 路由：
 
 ```text
 GET /admin/api/v1/auth/init-password
@@ -209,7 +224,7 @@ GET /admin/api/v1/auth/init-password
 - 管理員已經登入並修改過密碼
 - 初始化密碼已經被消費，當前不再允許再次取回
 
-如果介面返回 `404`，表示部署版本沒有暴露這個舊版明文端點；請改用安裝流程回應或初始化密碼雜湊狀態端點判斷。上述情況下，指令碼會直接把介面原始錯誤輸出出來，方便排查。
+此時指令碼會直接把介面原始錯誤輸出出來，方便排查。
 
 ## Docker 驗收指令碼
 
@@ -222,8 +237,8 @@ GET /admin/api/v1/auth/init-password
 示例：
 
 ```bash
-./epctl-docker-test.sh v1.0.6
-./epctl-docker-test.sh --lang zh v1.0.6 v1.0.8
+./epctl-docker-test.sh v2.1.0
+./epctl-docker-test.sh --lang zh v2.0.0 v2.1.0
 ```
 
 它會在本機：
@@ -233,9 +248,9 @@ GET /admin/api/v1/auth/init-password
 - 在容器內執行 `epctl self-install`
 - 下載真實 GitHub Release
 - 安裝 `epusdt`
-- 若傳入 `upgrade-tag`，驗證 `upgrade --no-restart`、預設非互動 `upgrade`，以及 `upgrade --prompt-restart` 的 `n` / 回車分支
+- 若傳入 `upgrade-tag`，驗證 `upgrade --no-restart`、預設 `upgrade`、以及 `upgrade --prompt-restart` 的 `n/回车` 分支
 - 檢查 `systemd` 服務、`www/index.html`、配置檔案、日誌、狀態輸出
-- 以真實 release artifact 驗證 init-password 行為；如果部署版本缺少舊版明文路由，檢查會輸出原始 HTTP 失敗內容以方便排查
+- 驗證 `init-password` 首次成功、修改管理員密碼後再次請求返回 `10040`
 
 執行前提：
 

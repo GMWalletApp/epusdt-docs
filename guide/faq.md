@@ -16,53 +16,12 @@ Because `GET /payments/gmpay/v1/config` is computed from your own admin data.
 
 Its `data.supported_assets` list depends on enabled chains, enabled chain tokens, and available wallet addresses in that environment.
 
-## Chain Settings
+## Which nodes do I need?
 
-### Does Tron require a special API key?
+The embedded ChainScanner includes public nodes. TRON can use a supported public endpoint without a TronGrid key. When adding a node, select its network and the protocol the provider actually serves. A WebSocket subscription can announce a new block while a separate HTTP endpoint reads it.
 
-Yes. You must configure a [TronGrid API key](https://www.trongrid.io/) for Tron chain support.
-Without it the node requests will be rate-limited or rejected.
+The dashboard shows scan progress and warns when observed lag exceeds five minutes. For frequent Solana, TON or Plasma queries, configure fallback nodes from two independent providers and check their quotas.
 
-### What protocol should I use for each chain's RPC URL?
+## How are exchange rates set?
 
-- **Tron** and **Solana (SOL)**: use an **HTTP/HTTPS** endpoint.
-- **All other chains** (e.g. ETH, BSC, Polygon …): use a **WSS** (WebSocket) endpoint.
-
-Setting the wrong protocol will silently prevent transaction monitoring from working.
-
-## Exchange Rate Settings
-
-The system uses an exchange rate API to convert fiat amounts to crypto equivalents.
-
-### Which exchange rate API is used?
-
-The system can be configured to fetch rates from the community-provided [Fawaz Ahmed Currency API](https://github.com/fawazahmed0/exchange-api).
-
-API base URL:
-
-https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/
-
-Example - fetch USDT rates:
-
-https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usdt.json
-
-> **Note:** This is a community-maintained free API. Accuracy is not guaranteed.
-> For production environments, consider using a paid exchange rate provider.
-
-### How do I configure the exchange rate API?
-
-In the admin panel, go to **Settings - Exchange Rate** and enter your preferred API endpoint.
-The system will poll it periodically to keep rates up to date.
-
-### What happens if I leave forced rates empty?
-
-Current releases seed `rate.forced_rate_list` with a built-in CNY stablecoin map:
-
-```json
-{"cny":{"usdt":0.14705882352941177,"usdc":0.14705882352941177}}
-```
-
-If the forced-rate setting is deleted or saved as empty, Epusdt restores this built-in default. If you save any non-empty JSON map, Epusdt treats it as intentional and does not merge or overwrite it.
-
-`rate.api_url` is optional. When it is set, it must be a public `http://` or `https://` URL.
-
+Choose `fixed` to use `rate.forced_rate_list` or `auto` to fetch rates from `rate.api_url`. Auto mode retains the last cached rates if a refresh fails. An empty forced-rate list restores the built-in CNY rates for USDT and USDC.

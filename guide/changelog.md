@@ -1,13 +1,18 @@
 # Release Notes
 
-This page summarizes published Epusdt releases using the repository's actual GitHub releases, tags, release notes, and compare diffs.
+## v2.1.1
 
-## Scope and Source Rules
+2026-11-21 · [Release notes](https://github.com/GMWalletApp/epusdt/releases/tag/v2.1.1)
 
-- Primary source: GitHub Releases in `GMWalletApp/epusdt`
-- Supplementary source: tag compare diffs and merged commit messages
-- This page avoids inventing features that are not visible in release or code history
+EPUSDT now uses SQLite exclusively. Existing SQLite users can retain their configuration and databases. For MySQL or PostgreSQL, back up, migrate and check the data before upgrading.
 
+## v2.1.0
+
+2026-11-21 · [Release notes](https://github.com/GMWalletApp/epusdt/releases/tag/v2.1.0)
+
+- Embedded ChainScanner resumes from saved progress and retries missing blocks. Strict verification adds confirming and manual-review states.
+- Eight new direct-payment networks bring the default total to 16. Checkout also supports OKX OnchainOS on X Layer and an optional exchange withdrawal fee reminder.
+- Fixes address SQLite lock contention and an expired order releasing a newer order’s amount reservation. Compose users upgrading from v2.0.0 must migrate their data before recreating the container.
 
 ## v2.0.0
 
@@ -761,4 +766,3 @@ For future releases, the most useful release format is:
 2. Deployment or config changes
 3. API or schema changes
 4. Upgrade notes or breaking changes
-

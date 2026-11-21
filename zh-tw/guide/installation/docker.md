@@ -1,127 +1,43 @@
-# Docker 部署（推薦）
+# 使用 Docker Compose 部署
 
-本教程基於官方 Docker 映象部署 Epusdt，支援 Docker Compose 或 `docker run` 方式。
+使用部署版本自帶的 [Compose 配置](https://github.com/GMWalletApp/epusdt/blob/v2.1.1/docker-compose.yaml)。預設支付服務內建 ChainScanner。
 
-**首次啟動通常不需要手動建立 `.env` 檔案。** 推薦做法是掛載一個獨立的宿主機目錄，並把 `EPUSDT_CONFIG` 指向這個目錄裡的設定檔。這樣可以同時持久化設定、預設 SQLite 主資料庫與執行時資料，且**不會**把映象內的 `/app` 檔案整個覆蓋掉。
+全新安裝時先下載該版本的檔案。
 
-## 前置條件
-
-- 已安裝 Docker 和 Docker Compose
-
-## 步驟
-
-### 1. 建立目錄
-
-```bash
-mkdir epusdt && cd epusdt
+```sh
+git clone --depth 1 --branch v2.1.1 https://github.com/GMWalletApp/epusdt.git
+cd epusdt
 ```
 
-### 2. 建立 `docker-compose.yaml`
+## 啟動閘道器
 
-```bash
-cat <<EOF > docker-compose.yaml
-services:
-  epusdt:
-    image: gmwallet/epusdt:latest
-    restart: always
-    environment:
-      EPUSDT_CONFIG: /data/.env
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data:/data
-EOF
+在倉庫根目錄設定 Compose 環境變數（例如寫入專案根目錄的 `.env`）。入口指令碼每次啟動都會讀取公開收銀臺地址。
+
+```dotenv
+APP_URI=https://pay.example.com
+EPUSDT_PORT=8000
 ```
 
-這種掛載方式的好處是：
-
-- `/data/.env` 會保存安裝嚮導產生的設定檔
-- `/data/epusdt.db` 會成為預設主 SQLite 資料庫
-- `/data/runtime/` 會保存執行時 SQLite 資料與日誌
-- 映象內 `/app` 保持乾淨，升級時不會被舊卷內容遮蔽
-
-### 3. 啟動服務
-
-```bash
-docker compose up -d
+```sh
+docker compose up -d epusdt
+docker compose logs --tail=100 epusdt
+curl -fsS http://127.0.0.1:8000/payments/gmpay/v1/config
 ```
 
-### 4. 完成安裝嚮導
+將 HTTPS 反向代理指向對映埠。在後臺新增收款地址後，檢查響應中的 `data.supported_assets`。
 
-瀏覽器開啟 `http://你的伺服器IP:8000`，按頁面提示完成安裝。當前安裝嚮導主要涵蓋以下欄位：
+## 持久化與升級
 
-- `app_name`
-- `app_uri`
-- `http_bind_addr`
-- `http_bind_port`
-- `runtime_root_path`
-- `log_save_path`
-- `order_expiration_time`
-- `order_notice_max_retry`
+Compose 將宿主機 `./runtime/epusdt` 掛載到容器的 `/app/runtime`。其中包含應用的 `.env`、業務庫、執行庫和內建掃描器資料庫。專案根目錄的 Compose 環境檔案與此處的應用配置檔案分別維護。
 
-::: warning Docker 綁定位址要求
-Docker 部署時，`http_bind_addr` 必須填 `0.0.0.0`。
+從 v2.0.0 升級時，先停止舊服務，備份配置和資料庫，**在重建舊容器之前**將資料遷移到新掛載目錄。保留原備份，並核對配置中的資料庫檔名。[升級說明](https://github.com/GMWalletApp/epusdt/releases/tag/v2.1.0)
 
-**不要**填 `127.0.0.1`。目前安裝頁的預設值仍可能顯示 `127.0.0.1`，但如果在 Docker 場景直接保存這個值，Epusdt 重啟後只會在容器內監聽 `127.0.0.1:8000`，導致 Docker 映射端口或反向代理無法正常存取。
-:::
+v2.1.1 起僅支援 SQLite。升級前備份配置、業務庫、執行庫和掃描器資料。舊版 MySQL 或 PostgreSQL 使用者需先遷移並核對資料，再切換資料庫。僅修改 `db_type` 不會遷移訂單。
 
-如果你已經用錯預設值完成安裝，請直接在宿主機編輯 `./data/.env`，把：
+## 使用獨立掃描器
 
-```ini
-http_listen=127.0.0.1:8000
+設定 `CHAINSCANNER_URL=http://chainscanner:9081`，配置不同的消費者令牌和管理員令牌。升級已有獨立部署時，應保留原掃描器資料卷（`./runtime/chainscanner`）、連線地址和憑據。
+
+```sh
+docker compose --profile scanner up -d
 ```
-
-改成：
-
-```ini
-http_listen=0.0.0.0:8000
-```
-
-然後重啟容器：
-
-```bash
-docker restart epusdt
-```
-
-提交後服務自動重啟，即可正常使用。
-
----
-
-## 備選：`docker run` 快速啟動
-
-```bash
-docker run -d \
-  --name epusdt \
-  --restart always \
-  -e EPUSDT_CONFIG=/data/.env \
-  -p 8000:8000 \
-  -v $(pwd)/data:/data \
-  gmwallet/epusdt:latest
-```
-
-啟動後同樣訪問 `http://你的伺服器IP:8000` 完成安裝嚮導。
-
----
-
-## 以檔案方式管理設定（可選）
-
-如果你希望後續直接在宿主機檢視或修改設定，安裝完成後可直接編輯：
-
-```text
-./data/.env
-```
-
-修改完成後重啟容器：
-
-```bash
-docker restart epusdt
-```
-
----
-
-## 注意事項
-
-- 安裝完成後，商戶憑證與執行設定都可在管理後臺調整
-- 新接入請使用管理後臺建立的商戶 `pid` + `secret_key`
-- 不要把整個 `/app` 直接掛成持久卷，否則升級時舊資料可能遮蔽新映象中的新二進位與新檔案
-- 升級映象：`docker pull gmwallet/epusdt:latest && docker compose up -d`
