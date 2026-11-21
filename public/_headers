@@ -6,3 +6,8 @@
   Content-Type: text/markdown; charset=utf-8
   Content-Language: zh-CN
   Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
+/agent-setup/payment-gateways.en.md
+  Content-Type: text/markdown; charset=utf-8
+  Content-Language: en
+  Content-Signal: search=yes, ai-input=yes, ai-train=yes

@@ -20,7 +20,12 @@ export const sitemap: NonNullable<UserConfig["sitemap"]> = {
       if (fallback) links.push({ ...fallback, lang: "x-default" });
       return { ...item, links };
     });
-    return [...articles, { url: "/agent-setup/payment-gateways.zh.md" }];
+    const guides = [
+      { lang: "en", url: origin + "/agent-setup/payment-gateways.en.md" },
+      { lang: "zh-Hans", url: origin + "/agent-setup/payment-gateways.zh.md" },
+    ];
+    const links = [...guides, { ...guides[0], lang: "x-default" }];
+    return [...articles, { url: "/agent-setup/prompt.md" }, ...guides.map(({ url }) => ({ url, links }))];
   },
 };
 
@@ -73,7 +78,7 @@ export function addPageMetadata(page: PageData, { siteConfig }: TransformPageCon
     graph.push({
       "@type": "WebSite", ...website, url: origin + "/", name: "EPUSDT",
       inLanguage: languages.map(lang => lang.tag),
-      about: { "@type": "SoftwareSourceCode", name: "EPUSDT", codeRepository: "https://github.com/GMWalletApp/epusdt", programmingLanguage: "Go" },
+      about: { "@type": "SoftwareSourceCode", name: "EPUSDT", alternateName: ["GMPay", "GM Pay"], codeRepository: "https://github.com/GMWalletApp/epusdt", programmingLanguage: "Go" },
     });
   }
   head.push(["script", { type: "application/ld+json" }, JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")]);
