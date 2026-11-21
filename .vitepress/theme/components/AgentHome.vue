@@ -15,8 +15,24 @@ const languages = [{ id: "en", label: "EN", url: "/" }, { id: "zh", label: "简"
 const agents = [["codex", "Codex"], ["claudecode-color", "Claude Code"], ["cursor", "Cursor"], ["opencode", "OpenCode"]];
 const state = ref<"idle" | "copied" | "manual">("idle");
 const field = ref<HTMLTextAreaElement>();
+const face = ref<HTMLSpanElement>();
+let rebound: Animation | undefined;
 let timer: ReturnType<typeof setTimeout>;
+function animateRelease() {
+  const pill = face.value;
+  if (!pill?.animate || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const from = getComputedStyle(pill).transform;
+  rebound?.cancel();
+  rebound = pill.animate([
+    { transform: from, offset: 0, easing: "ease-out" },
+    { transform: "scale(.965)", offset: 0.16, easing: "cubic-bezier(.16,.8,.32,1)" },
+    { transform: "scale(1.025)", offset: 0.48, easing: "ease-in-out" },
+    { transform: "scale(.996)", offset: 0.78, easing: "ease-out" },
+    { transform: "scale(1)", offset: 1 },
+  ], { duration: 390 });
+}
 async function copyPrompt() {
+  animateRelease();
   clearTimeout(timer);
   const text = translations[props.language].instruction.replace("{url}", guide);
   try {
@@ -30,7 +46,10 @@ async function copyPrompt() {
     field.value?.select();
   }
 }
-onUnmounted(() => clearTimeout(timer));
+onUnmounted(() => {
+  clearTimeout(timer);
+  rebound?.cancel();
+});
 </script>
 
 <template>
@@ -47,11 +66,20 @@ onUnmounted(() => clearTimeout(timer));
     <section class="ep-pitch">
       <h1><span v-for="line in translations[language].title" :key="line">{{ line }}</span></h1>
       <div class="ep-actions">
-        <UButton variant="solid" color="neutral" class="ep-deploy" type="button" :title="translations[language].copy" @click="copyPrompt">
-          <span class="ep-marks" aria-hidden="true"><img v-for="[name, label] in agents" :key="name" :src="'/agent-icons/' + name + '.svg'" alt="" :title="label"></span>
-          <span class="ep-wide-label">{{ state === 'copied' ? translations[language].copied : translations[language].action }}</span>
-          <span class="ep-short-label">{{ state === 'copied' ? translations[language].shortCopied : translations[language].shortAction }}</span>
-          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path v-if="state === 'copied'" d="m4 12 5 5L20 6"/><g v-else><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></g></svg>
+        <UButton variant="solid" color="neutral" class="ep-deploy" type="button"
+          :class="{ 'is-copied': state === 'copied' }"
+          :title="translations[language].copy" @click="copyPrompt">
+          <span ref="face" class="ep-deploy-face">
+            <span class="ep-marks" aria-hidden="true"><img v-for="[name, label] in agents" :key="name" :src="'/agent-icons/' + name + '.svg'" alt="" :title="label"></span>
+            <span class="ep-labels">
+              <span class="ep-idle" :aria-hidden="state === 'copied'"><span class="ep-wide-label">{{ translations[language].action }}</span><span class="ep-short-label">{{ translations[language].shortAction }}</span></span>
+              <span class="ep-success" :aria-hidden="state !== 'copied'"><span class="ep-wide-label">{{ translations[language].copied }}</span><span class="ep-short-label">{{ translations[language].shortCopied }}</span></span>
+            </span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6">
+              <g class="ep-idle"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></g>
+              <path class="ep-success" d="m4 12 5 5L20 6"/>
+            </svg>
+          </span>
         </UButton>
         <UButton variant="outline" color="neutral" class="ep-details" :to="translations[language].intro">{{ translations[language].details }} <span aria-hidden="true">↗</span></UButton>
       </div>
@@ -62,8 +90,13 @@ onUnmounted(() => clearTimeout(timer));
   </main>
 </template>
 
+<style>
+/* Paint the viewport behind the hero during browser chrome changes and overscroll. */
+html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
+</style>
+
 <style scoped>
-.ep-home { position:relative; isolation:isolate; overflow:hidden; display:flex; flex-direction:column; min-height:100svh; margin:0; background:#000; color:#f3f6ff; font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif; }
+.ep-home { position:relative; isolation:isolate; overflow:hidden; display:flex; flex-direction:column; min-height:100vh; min-height:100dvh; margin:0; background:#000; color:#f3f6ff; font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif; }
 .ep-atmosphere { position:absolute; inset:0; z-index:-1; pointer-events:none; background:#000; }
 .ep-atmosphere::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.78),rgba(0,0,0,.30) 45%,transparent 76%); }
 .ep-bar { display:flex; align-items:center; justify-content:space-between; padding:clamp(20px,3vw,42px) clamp(22px,5.6vw,100px); }
@@ -79,8 +112,21 @@ onUnmounted(() => clearTimeout(timer));
 .ep-actions { --action-height:54px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:center; gap:12px; margin-top:clamp(27px,4.8vh,54px); }
 .ep-short-label { display:none; }
 .ep-deploy,.ep-details { box-sizing:border-box; height:var(--action-height); display:inline-flex; align-items:center; justify-content:center; border-radius:100px; text-decoration:none; white-space:nowrap; }
-.ep-deploy { gap:13px; padding:0 20px; background:#f7f8fa; color:#14171c; font:inherit; font-weight:620; font-size:15px; box-shadow:0 1px 4px #0004; cursor:pointer; }
-.ep-deploy:hover { background:#fff; box-shadow:0 0 0 3px #ffffff2b; }
+.ep-deploy, .ep-deploy:hover, .ep-deploy:active { padding:0; background:transparent; color:#14171c; cursor:pointer; }
+.ep-deploy-face { display:inline-flex; height:100%; align-items:center; justify-content:center; border-radius:inherit; gap:13px; padding:0 20px; background:#f7f8fa; color:#14171c; font:inherit; font-weight:620; font-size:15px; box-shadow:0 1px 4px #0004; cursor:pointer; }
+.ep-deploy:hover .ep-deploy-face { background:#fff; box-shadow:0 0 0 3px #ffffff2b; }
+.ep-labels { display:inline-grid; text-align:center; }
+.ep-labels > span { grid-area:1 / 1; }
+.ep-success, .is-copied .ep-idle { opacity:0; }
+.is-copied .ep-success { opacity:1; }
+@media(prefers-reduced-motion:no-preference) {
+  .ep-deploy-face { transition:transform 100ms ease-out, background-color 150ms, box-shadow 150ms; }
+  .ep-deploy:active .ep-deploy-face { transform:scale(.965); }
+  .ep-idle, .ep-success { transition:opacity 160ms ease, transform 180ms ease; }
+  .ep-success { transform:translateY(3px); }
+  .is-copied .ep-idle { transform:translateY(-3px); }
+  .is-copied .ep-success { transform:translateY(0); }
+}
 .ep-marks { display:inline-flex; align-items:center; gap:5px; border-right:1px solid #cdd0d6; padding-right:12px; }
 .ep-marks img { width:19px; height:19px; }
 .ep-details { padding:0 17px; gap:7px; border:1px solid #dce7ff59; color:#fff; background:#000b; font-size:14px; }
@@ -89,7 +135,7 @@ onUnmounted(() => clearTimeout(timer));
 .ep-status { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
 .ep-manual { margin:16px auto; display:grid; gap:5px; max-width:540px; }
 .ep-manual textarea { background:white; color:#111; padding:9px; border-radius:7px; }
-@media(max-width:600px) { .ep-pitch { padding-top:16vh; } .ep-actions { --action-height:36px; gap:8px; } .ep-deploy,.ep-details { position:relative; } .ep-deploy::after,.ep-details::after { content:""; position:absolute; inset:-5px 0; border-radius:100px; } .ep-wide-label { display:none; } .ep-short-label { display:inline; } .ep-deploy { gap:6px; padding:0 12px; font-size:13px; } .ep-marks { gap:3px; padding-right:6px; } .ep-marks img { width:15px; height:15px; } .ep-details { padding:0 11px; font-size:13px; } .ep-pitch h1 { font-size:clamp(26px,8.8vw,50px); } :lang(zh) .ep-pitch h1 { font-size:clamp(26px,8.2vw,48px); } }
-@media(max-width:359px) { .ep-pitch { padding-inline:8px; } .ep-actions { gap:6px; } .ep-deploy { padding:0 9px; font-size:13px; } .ep-marks { gap:2px; } .ep-details { padding:0 9px; font-size:13px; } }
+@media(max-width:600px) { .ep-pitch { padding-top:16vh; } .ep-actions { --action-height:36px; gap:8px; } .ep-deploy,.ep-details { position:relative; } .ep-deploy::after,.ep-details::after { content:""; position:absolute; inset:-5px 0; border-radius:100px; } .ep-wide-label { display:none; } .ep-short-label { display:inline; } .ep-deploy-face { gap:6px; padding:0 12px; font-size:13px; } .ep-marks { gap:3px; padding-right:6px; } .ep-marks img { width:15px; height:15px; } .ep-details { padding:0 11px; font-size:13px; } .ep-pitch h1 { font-size:clamp(26px,8.8vw,50px); } :lang(zh) .ep-pitch h1 { font-size:clamp(26px,8.2vw,48px); } }
+@media(max-width:359px) { .ep-pitch { padding-inline:8px; } .ep-actions { gap:6px; } .ep-deploy-face { padding:0 9px; font-size:13px; } .ep-marks { gap:2px; } .ep-details { padding:0 9px; font-size:13px; } }
 @media(prefers-reduced-motion:no-preference) { .ep-pitch { animation:ep-arrive .75s ease-out both; } @keyframes ep-arrive { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } } }
 </style>
