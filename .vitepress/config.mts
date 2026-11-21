@@ -18,7 +18,7 @@ export default defineConfig({
         "lucide:book-open", "lucide:code-xml", "lucide:layers", "lucide:store", "lucide:heart",
         "lucide:send", "lucide:external-link", "lucide:arrow-up-right",
       ] } },
-      ui: { colors: { primary: "emerald", neutral: "slate" } },
+      ui: { colors: { primary: "blue", neutral: "neutral" } },
     })],
     ssr: { noExternal: [/^@nuxt\/ui/, "motion-v"] },
   },

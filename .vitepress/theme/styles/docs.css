@@ -1,5 +1,22 @@
 :root { --ui-container: 90rem; }
-:root:not(.dark) { --ui-primary: var(--color-emerald-700); }
+:root:not(.dark) { --ui-primary: #244bd4; }
+:root.dark {
+  --ui-primary: #9acaff;
+  --ui-bg: #000;
+  --ui-bg-muted: #000;
+  --ui-bg-elevated: #101010;
+  --ui-bg-accented: #262626;
+  --ui-border: #292929;
+  --ui-border-muted: #242424;
+  --ui-border-accented: #424242;
+  --vp-c-bg: #000;
+  --vp-c-bg-soft: #101010;
+  background: #000;
+  color-scheme: dark;
+}
+.dark .ep-docs-shell > header { background: #000; }
+.dark [role="dialog"] { background-color: #000; }
+.ep-docs-shell .sponsor-address-feedback { color: var(--ui-primary); }
 html { scroll-padding-top: calc(var(--ui-header-height) + 1.5rem); }
 .ep-docs-shell {
   --vp-c-brand-1: var(--ui-primary);
