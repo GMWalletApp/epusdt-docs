@@ -7,9 +7,9 @@ import GradientASCII from "./GradientASCII.vue";
 const props = defineProps<{ language: "en" | "zh" | "zh-tw" }>();
 const guide = "https://epusdt.com/agent-setup/prompt.md";
 const translations = {
-  en: { title: ["Onchain payments.", "Real-world commerce."], copy: "Copy deployment prompt", shortAction: "Deploy with AI", action: "Deploy EPUSDT with your agent", details: "Learn more", shortCopied: "Copied", copied: "Copied to clipboard", manual: "Copy this prompt into your agent", instruction: "Read {url} and follow its checklist to deploy EPUSDT in my target environment.", intro: "/guide/intro", nav: "Language" },
-  zh: { title: ["为真实经济而建的", "链上支付基础设施。"], copy: "复制部署指令", shortAction: "用 Agent 部署", action: "用 Agent 部署 EPUSDT", details: "了解详情", shortCopied: "已复制", copied: "部署指令已复制", manual: "复制这条指令，发给你的 Agent", instruction: "读取 {url}，按指南和清单在我的目标环境中部署 EPUSDT。", intro: "/zh/guide/intro", nav: "语言" },
-  "zh-tw": { title: ["為真實經濟而建的", "鏈上支付基礎設施。"], copy: "複製部署指令", shortAction: "用 Agent 部署", action: "用 Agent 部署 EPUSDT", details: "瞭解詳情", shortCopied: "已複製", copied: "部署指令已複製", manual: "複製這段指令，貼給你的 Agent", instruction: "讀取 {url}，依指南與清單在我的目標環境中部署 EPUSDT。", intro: "/zh-tw/guide/intro", nav: "語言" },
+  en: { title: ["Onchain payments.", "Real-world commerce."], copy: "Copy deployment or migration prompt", shortAction: "Deploy/migrate to EPUSDT", action: "Deploy / migrate to EPUSDT", details: "Learn more", shortCopied: "Copied", copied: "Copied to clipboard", manual: "Copy this instruction", instruction: "Read {url}. Inspect my target environment first, then deploy, upgrade or migrate to EPUSDT using Docker. Preserve existing data. For a new instance, open the setup wizard and let me complete password setup myself.", intro: "/guide/intro", nav: "Language" },
+  zh: { title: ["为真实经济而建的", "链上支付基础设施。"], copy: "复制部署或迁移指令", shortAction: "部署/迁移到EPUSDT", action: "部署/迁移到EPUSDT", details: "了解详情", shortCopied: "已复制", copied: "部署指令已复制", manual: "请复制这条部署或迁移指令", instruction: "读取 {url}。先检查我的目标环境，按现状用 Docker 新装、升级或从 bepusdt、TokenPay 迁移到 EPUSDT，保全原有数据。新实例请打开初始化页面，由我自己完成密码设置。", intro: "/zh/guide/intro", nav: "语言" },
+  "zh-tw": { title: ["為真實經濟而建的", "鏈上支付基礎設施。"], copy: "複製部署或遷移指令", shortAction: "部署/遷移到EPUSDT", action: "部署/遷移到EPUSDT", details: "瞭解詳情", shortCopied: "已複製", copied: "部署指令已複製", manual: "請複製這段部署或遷移指令", instruction: "讀取 {url}。先檢查我的目標環境，依現況用 Docker 新裝、升級或從 bepusdt、TokenPay 遷移到 EPUSDT，保全原有資料。新實例請開啟初始化頁面，由我自行完成密碼設定。", intro: "/zh-tw/guide/intro", nav: "語言" },
 };
 const languages = [{ id: "en", label: "EN", url: "/" }, { id: "zh", label: "简", url: "/zh/" }, { id: "zh-tw", label: "繁", url: "/zh-tw/" }];
 // Static Lobe Icons (9752d96); license at /licenses/lobe-icons.txt.
@@ -167,5 +167,10 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
 .ep-manual textarea { background:white; color:#111; padding:9px; border-radius:7px; }
 @media(max-width:600px) { .ep-pitch { padding-top:16vh; } .ep-actions { --action-height:36px; gap:8px; } .ep-deploy,.ep-details { position:relative; } .ep-deploy::after,.ep-details::after { content:""; position:absolute; inset:-5px 0; border-radius:100px; } .ep-wide-label { display:none; } .ep-short-label { display:inline; } .ep-deploy-face { gap:6px; padding:0 12px; font-size:13px; } .ep-marks { gap:3px; padding-right:6px; } .ep-marks img { width:15px; height:15px; } .ep-details-face { padding:0 11px; font-size:13px; } .ep-pitch h1 { font-size:clamp(26px,8.8vw,50px); } :lang(zh) .ep-pitch h1 { font-size:clamp(26px,8.2vw,48px); } }
 @media(max-width:359px) { .ep-pitch { padding-inline:8px; } .ep-actions { gap:6px; } .ep-deploy-face { padding:0 9px; font-size:13px; } .ep-marks { gap:2px; } .ep-details-face { padding:0 9px; font-size:13px; } }
+@media(max-width:359px) {
+  :lang(en) .ep-deploy-face, :lang(en) .ep-details-face { padding-inline:6px; font-size:12px; gap:4px; }
+  :lang(en) .ep-marks { gap:2px; padding-right:4px; }
+  :lang(en) .ep-marks img { width:12px; height:12px; }
+}
 @media(prefers-reduced-motion:no-preference) { .ep-pitch { animation:ep-arrive .75s ease-out both; } @keyframes ep-arrive { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } } }
 </style>
