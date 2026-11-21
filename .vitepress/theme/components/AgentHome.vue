@@ -14,7 +14,10 @@ const translations = {
 };
 const languages = [{ id: "en", label: "EN", url: "/" }, { id: "zh", label: "简", url: "/zh/" }, { id: "zh-tw", label: "繁", url: "/zh-tw/" }];
 // Static Lobe Icons (9752d96); license at /licenses/lobe-icons.txt.
-const agents = [["codex", "Codex"], ["claudecode-color", "Claude Code"], ["cursor", "Cursor"], ["opencode", "OpenCode"]];
+const agentPairs = [
+  [["codex", "Codex"], ["claudecode-color", "Claude Code"]],
+  [["cursor", "Cursor"], ["opencode", "OpenCode"]],
+];
 const state = ref<"idle" | "copied" | "manual">("idle");
 const promptText = computed(() => translations[props.language].instruction.replace("{url}", guide));
 let copyTrigger: HTMLElement | null = null;
@@ -136,7 +139,11 @@ onUnmounted(() => {
           :class="{ 'is-copied': state === 'copied' }"
           :title="translations[language].copy" @click="copyPrompt">
           <span ref="deployFace" class="ep-deploy-face">
-            <span class="ep-marks" aria-hidden="true"><img v-for="[name, label] in agents" :key="name" :src="'/agent-icons/' + name + '.svg'" alt="" :title="label"></span>
+            <span class="ep-marks" aria-hidden="true">
+              <span v-for="pair in agentPairs" :key="pair[0][0]" class="ep-mark-pair">
+                <img v-for="[name, label] in pair" :key="name" :src="'/agent-icons/' + name + '.svg'" alt="" :title="label">
+              </span>
+            </span>
             <span class="ep-labels">
               <span class="ep-idle" :aria-hidden="state === 'copied'"><span class="ep-wide-label">{{ translations[language].action }}</span><span class="ep-short-label">{{ translations[language].shortAction }}</span></span>
               <span class="ep-success" :aria-hidden="state !== 'copied'"><span class="ep-wide-label">{{ translations[language].copied }}</span><span class="ep-short-label">{{ translations[language].shortCopied }}</span></span>
@@ -243,18 +250,57 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
   .is-copied .ep-idle { transform:translateY(-3px); }
   .is-copied .ep-success { transform:translateY(0); }
 }
-.ep-marks { display:inline-flex; align-items:center; gap:5px; border-right:1px solid #cdd0d6; padding-right:12px; }
-.ep-marks img { width:19px; height:19px; }
+/* Give the labels their natural width and use the remaining space for marks. */
+.ep-deploy, .ep-deploy-face { min-width:0; }
+.ep-deploy-face { width:100%; }
+.ep-details, .ep-labels, .ep-deploy-face > svg { flex:none; }
+.ep-mark-pair { display:inline-flex; flex:none; gap:inherit; }
+.ep-marks {
+  display:inline-flex;
+  align-items:center;
+  gap:var(--mark-gap);
+  border-right:1px solid #cdd0d6;
+  padding-right:12px;
+  --logo-size:19px;
+  --mark-gap:.2em;
+  container:ep-logos / inline-size;
+  font-size:var(--logo-size);
+  box-sizing:content-box;
+  width:calc(4.6em + 1px);
+  min-width:1em;
+  justify-content:center;
+  height:var(--logo-size);
+  overflow:hidden;
+}
+.ep-marks img { flex:none; max-width:none; width:var(--logo-size); height:var(--logo-size); }
+@container ep-logos (width < 4.6em) {
+  .ep-mark-pair:last-child { display:none; }
+}
+@container ep-logos (width < 2.2em) {
+  .ep-mark-pair:first-child img:first-child { display:none; }
+}
 .ep-details-face { padding:0 17px; gap:7px; border:1px solid #dce7ff59; color:#fff; background:#000b; font-size:14px; }
 .ep-details:hover .ep-details-face { background:#1e2941; }
 .ep-home :focus-visible { outline:3px solid #8fe8ff; outline-offset:4px; }
 .ep-status { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
-@media(max-width:600px) { .ep-pitch { padding-top:16vh; } .ep-actions { --action-height:36px; gap:8px; } .ep-deploy,.ep-details { position:relative; } .ep-deploy::after,.ep-details::after { content:""; position:absolute; inset:-5px 0; border-radius:100px; } .ep-wide-label { display:none; } .ep-short-label { display:inline; } .ep-deploy-face { gap:6px; padding:0 12px; font-size:13px; } .ep-marks { gap:3px; padding-right:6px; } .ep-marks img { width:15px; height:15px; } .ep-details-face { padding:0 11px; font-size:13px; } .ep-pitch h1 { font-size:clamp(26px,8.8vw,50px); } :lang(zh) .ep-pitch h1 { font-size:clamp(26px,8.2vw,48px); } }
-@media(max-width:359px) { .ep-pitch { padding-inline:8px; } .ep-actions { gap:6px; } .ep-deploy-face { padding:0 9px; font-size:13px; } .ep-marks { gap:2px; } .ep-details-face { padding:0 9px; font-size:13px; } }
+@media(max-width:600px) { .ep-pitch { padding-top:16vh; } .ep-actions { --action-height:36px; gap:8px; } .ep-deploy,.ep-details { position:relative; } .ep-deploy::after,.ep-details::after { content:""; position:absolute; inset:-5px 0; border-radius:100px; } .ep-wide-label { display:none; } .ep-short-label { display:inline; } .ep-deploy-face { gap:6px; padding:0 12px; font-size:13px; } .ep-marks { padding-right:6px; } .ep-details-face { padding:0 11px; font-size:13px; } .ep-pitch h1 { font-size:clamp(26px,8.8vw,50px); } :lang(zh) .ep-pitch h1 { font-size:clamp(26px,8.2vw,48px); } }
+@media (max-width:600px) {
+  .ep-pitch { padding-inline:clamp(8px, 3vw, 16px); }
+  .ep-marks { --logo-size:15px; }
+}
+@media (max-width:600px) and (orientation:portrait) {
+  .ep-pitch {
+    margin-top:auto;
+    padding-top:24px;
+    padding-bottom:29vh;
+    /* The backdrop fills the large viewport; the actions follow the visible one. */
+    padding-bottom:max(24px, calc(100lvh - 71dvh - env(safe-area-inset-bottom, 0px)));
+  }
+}
+@media(max-width:359px) { .ep-pitch { padding-inline:8px; } .ep-actions { gap:6px; } .ep-deploy-face { padding:0 9px; font-size:13px; } .ep-details-face { padding:0 9px; font-size:13px; } }
 @media(max-width:359px) {
   :lang(en) .ep-deploy-face, :lang(en) .ep-details-face { padding-inline:6px; font-size:12px; gap:4px; }
-  :lang(en) .ep-marks { gap:2px; padding-right:4px; }
-  :lang(en) .ep-marks img { width:12px; height:12px; }
+  :lang(en) .ep-marks { padding-right:4px; }
 }
 @media(prefers-reduced-motion:no-preference) { .ep-pitch { animation:ep-arrive .75s ease-out both; } @keyframes ep-arrive { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } } }
 </style>
