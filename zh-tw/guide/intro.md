@@ -7,6 +7,8 @@ title: "支援的收款網路、代幣與商戶收款流程"
 
 EPUSDT 是可自行部署的支付閘道器。商戶建立訂單，買家在收銀臺付款，閘道器核驗到賬後向商戶傳送簽名回撥。鏈上直付的資金進入商戶配置的收款地址。
 
+使用 Codex、Claude Code、Cursor 或 OpenCode 部署時，將[部署指南與驗收清單](https://epusdt.com/agent-setup/prompt.md)交給你的 Agent。
+
 ## 接入第一筆收款
 
 1. [部署閘道器](/zh-tw/guide/installation/docker)，設定買家可以訪問的 HTTPS 收銀臺地址。

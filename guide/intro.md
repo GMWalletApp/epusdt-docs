@@ -7,6 +7,8 @@ title: "Supported networks, tokens and merchant checkout"
 
 EPUSDT is a self-hosted payment gateway. A merchant creates an order, the buyer pays at checkout, and the gateway sends a signed notification once payment is verified. Direct on-chain payments go to the merchant’s receiving address.
 
+To deploy with Codex, Claude Code, Cursor or OpenCode, give your agent the [deployment guide and acceptance checklist](https://epusdt.com/agent-setup/prompt.md).
+
 ## Set up your first payment
 
 1. [Deploy the gateway](/guide/installation/docker) and set the public HTTPS checkout URL.

@@ -7,6 +7,8 @@ title: "支持的收款网络、代币与商户收款流程"
 
 EPUSDT 是可自行部署的支付网关。商户创建订单，买家在收银台付款，网关核验到账后向商户发送签名回调。链上直付的资金进入商户配置的收款地址。
 
+使用 Codex、Claude Code、Cursor 或 OpenCode 部署时，把[部署指南与验收清单](https://epusdt.com/agent-setup/prompt.md)交给你的 Agent。
+
 ## 接入第一笔收款
 
 1. [部署网关](/zh/guide/installation/docker)，设置买家可以访问的 HTTPS 收银台地址。
