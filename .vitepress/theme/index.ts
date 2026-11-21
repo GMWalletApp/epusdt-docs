@@ -1,36 +1,17 @@
-// https://vitepress.dev/guide/custom-theme
-import Teek, { zhCn } from "vitepress-theme-teek";
-import "vitepress-theme-teek/index.css";
-import "./styles/custom.css";
 import type { Theme } from "vitepress";
-import { useData } from "vitepress";
-import { h, computed } from "vue";
-import GithubStarButton from "./components/GithubStarButton.vue";
-import BreadcrumbLocaleFix from "./components/BreadcrumbLocaleFix.vue";
-import SponsorPageEn from "./components/SponsorPageEn.vue";
-import SponsorPageZh from "./components/SponsorPageZh.vue";
-import SponsorPageZhTw from "./components/SponsorPageZhTw.vue";
+import { defineAsyncComponent } from "vue";
+import ui from "@nuxt/ui/vue-plugin";
+import SiteLayout from "./components/SiteLayout.vue";
+import "./styles/ui.css";
+import "./styles/custom.css";
+import "./styles/docs.css";
 
-const theme: Theme = {
-  extends: Teek,
+export default {
+  Layout: SiteLayout,
   enhanceApp({ app }) {
-    app.component("SponsorPageEn", SponsorPageEn);
-    app.component("SponsorPageZh", SponsorPageZh);
-    app.component("SponsorPageZhTw", SponsorPageZhTw);
+    app.use(ui);
+    app.component("SponsorPageEn", defineAsyncComponent(() => import("./components/SponsorPageEn.vue")));
+    app.component("SponsorPageZh", defineAsyncComponent(() => import("./components/SponsorPageZh.vue")));
+    app.component("SponsorPageZhTw", defineAsyncComponent(() => import("./components/SponsorPageZhTw.vue")));
   },
-  Layout: () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Layout = Teek.Layout as any;
-    const { localeIndex } = useData();
-    const locale = computed(() =>
-      localeIndex.value === "zh" || localeIndex.value === "zh-tw" ? zhCn : undefined
-    );
-
-    return h(Layout, { locale: locale.value }, {
-      "nav-bar-content-after": () => h(GithubStarButton),
-      "doc-before": () => h(BreadcrumbLocaleFix),
-    });
-  },
-};
-
-export default theme;
+} satisfies Theme;
