@@ -172,6 +172,14 @@ onUnmounted(() => {
 <style>
 /* Paint the viewport behind the hero during browser chrome changes and overscroll. */
 html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
+@media (hover:none) and (pointer:coarse) {
+  /* Safari can expose the document surface below its floating toolbar. */
+  html:has(.ep-home), body:has(.ep-home) {
+    background-color:#86caff;
+    background-image:linear-gradient(to bottom, #000 45%, #244ff5 82%, #86caff);
+    background-repeat:no-repeat;
+  }
+}
 .ep-copy-buffer { position:fixed; top:0; left:0; width:1px; height:1px; opacity:0; pointer-events:none; font-size:16px; }
 .ep-copy-overlay { background:rgb(0 0 0 / 65%); }
 .ep-copy-dialog { width:min(28rem, calc(100% - 2rem)); max-height:85vh; overflow-y:auto; border:1px solid #303746; border-radius:18px; background:#080b10; color:#f3f6ff; color-scheme:dark; }
@@ -182,6 +190,7 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
 .ep-copy-dialog [data-slot="body"] { padding:14px 20px 20px; }
 .ep-copy-text { display:block; width:100%; padding:10px 12px; resize:none; border:1px solid #40577f; border-radius:10px; background:#101621; color:#f3f6ff; font:400 16px/1.5 system-ui,sans-serif; }
 .ep-copy-text:focus-visible, .ep-copy-close:focus-visible { outline:2px solid #86caff; outline-offset:2px; }
+.ep-copy-close { touch-action:manipulation; }
 .ep-copy-text::selection { color:#fff; background:#344f8d; }
 </style>
 
@@ -196,6 +205,20 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
 .ep-languages a { display:grid; place-items:center; min-width:34px; min-height:36px; border-radius:50%; color:#bcc6d8; font-size:13px; text-decoration:none; }
 .ep-languages [aria-current], .ep-languages a:hover { color:white; background:#ffffff1a; }
 .ep-pitch { position:relative; text-align:center; padding:clamp(60px,12vh,150px) 20px clamp(160px,25vh,300px); }
+@media (hover:none) and (pointer:coarse) {
+  /* Keep the artwork behind the toolbar as Safari expands and collapses it. */
+  .ep-atmosphere { background:linear-gradient(to bottom, #000 45%, #152762 77%, #86caff); }
+  .ep-home {
+    min-height:100vh;
+    min-height:100lvh;
+    padding-top:env(safe-area-inset-top, 0px);
+    padding-right:env(safe-area-inset-right, 0px);
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+    padding-left:env(safe-area-inset-left, 0px);
+    box-sizing:border-box;
+  }
+}
+.ep-home :is(button, a) { touch-action:manipulation; }
 .ep-pitch h1 { margin:0 auto; color:#f7f8ff; font-size:clamp(46px,6.5vw,110px); font-weight:580; letter-spacing:-.058em; line-height:1.08; }
 .ep-pitch h1 span { display:block; }
 :lang(zh) .ep-pitch h1 { letter-spacing:-.035em; font-weight:600; line-height:1.2; font-size:clamp(36px,6.1vw,100px); }

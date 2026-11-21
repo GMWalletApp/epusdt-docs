@@ -36,14 +36,17 @@ function pageUrl(file: string) {
 export function addPageMetadata(page: PageData, { siteConfig }: TransformPageContext) {
   const file = page.relativePath;
   const head: HeadConfig[] = [...(page.frontmatter.head ?? [])];
+  const locale = languages.find(lang => lang.prefix && file.startsWith(lang.prefix)) ?? languages[0];
+  const topic = file.slice(locale.prefix.length);
+  const home = topic === "index.md";
+  // Manage both variants so client-side navigation restores the document viewport.
+  const viewport = "width=device-width,initial-scale=1" + (home ? ",viewport-fit=cover" : "");
+  head.push(["meta", { name: "viewport", content: viewport }]);
   if (/^README(?:\.[\w-]+)?\.md$/i.test(file)) {
     head.push(["meta", { name: "robots", content: "noindex, follow" }]);
     return { frontmatter: { ...page.frontmatter, head } };
   }
-  const locale = languages.find(lang => lang.prefix && file.startsWith(lang.prefix)) ?? languages[0];
-  const topic = file.slice(locale.prefix.length);
   const url = pageUrl(file);
-  const home = topic === "index.md";
   const translations = languages.filter(lang => siteConfig.pages.includes(lang.prefix + topic));
   const website = { "@id": origin + "/#website" };
   head.push(["link", { rel: "canonical", href: url }]);
