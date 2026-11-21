@@ -179,14 +179,6 @@ onUnmounted(() => {
 <style>
 /* Paint the viewport behind the hero during browser chrome changes and overscroll. */
 html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
-@media (hover:none) and (pointer:coarse) {
-  /* Safari can expose the document surface below its floating toolbar. */
-  html:has(.ep-home), body:has(.ep-home) {
-    background-color:#86caff;
-    background-image:linear-gradient(to bottom, #000 45%, #244ff5 82%, #86caff);
-    background-repeat:no-repeat;
-  }
-}
 .ep-copy-buffer { position:fixed; top:0; left:0; width:1px; height:1px; opacity:0; pointer-events:none; font-size:16px; }
 .ep-copy-overlay { background:rgb(0 0 0 / 65%); }
 .ep-copy-dialog { width:min(28rem, calc(100% - 2rem)); max-height:85vh; overflow-y:auto; border:1px solid #303746; border-radius:18px; background:#080b10; color:#f3f6ff; color-scheme:dark; }
@@ -213,8 +205,17 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
 .ep-languages [aria-current], .ep-languages a:hover { color:white; background:#ffffff1a; }
 .ep-pitch { position:relative; text-align:center; padding:clamp(60px,12vh,150px) 20px clamp(160px,25vh,300px); }
 @media (hover:none) and (pointer:coarse) {
-  /* Keep the artwork behind the toolbar as Safari expands and collapses it. */
-  .ep-atmosphere { background:linear-gradient(to bottom, #000 45%, #152762 77%, #86caff); }
+  /* Size the drawing surface independently of the content and Safari's moving toolbars. */
+  .ep-atmosphere {
+    --bleed-top:max(3vh, env(safe-area-inset-top, 0px));
+    --bleed-bottom:max(4vh, env(safe-area-inset-bottom, 0px));
+    position:fixed;
+    top:calc(0px - var(--bleed-top));
+    bottom:calc(0px - var(--bleed-bottom));
+    min-height:calc(100vh + var(--bleed-top) + var(--bleed-bottom));
+    min-height:calc(100lvh + var(--bleed-top) + var(--bleed-bottom));
+    background:linear-gradient(to bottom, #000 45%, #152762 77%, #86caff);
+  }
   .ep-home {
     min-height:100vh;
     min-height:100lvh;
