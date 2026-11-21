@@ -36,6 +36,7 @@ const teekConfig = defineTeekConfig({
 export default defineConfig({
   extends: teekConfig,
   cleanUrls: true,
+  srcExclude: ["public/**"],
   transformPageData: addPageMetadata,
   sitemap,
 
