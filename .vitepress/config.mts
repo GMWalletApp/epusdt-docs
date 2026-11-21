@@ -1,40 +1,27 @@
 import { defineConfig } from "vitepress";
-import { defineTeekConfig } from "vitepress-theme-teek/config";
+import ui from "@nuxt/ui/vite";
 
 import { addPageMetadata, origin, sitemap } from "./seo.mts";
 
-const ignoredGeneratedPaths = [
-  ".git",
-  ".github",
-  ".automation",
-  ".local",
-  "node_modules",
-  "dist",
-  "scripts",
-];
-
-const teekConfig = defineTeekConfig({
-  themeEnhance: {
-    themeColor: {
-      defaultColorName: "vp-green",
-    },
-  },
-  article: { author: "Epusdt" },
-  footer: { copyright: "Copyright © 2025 GMwallet" },
-  vitePlugins: {
-    sidebarOption: {
-      ignoreList: ignoredGeneratedPaths,
-    },
-    fileContentLoaderIgnore: ignoredGeneratedPaths.map((path) => `${path}/**`),
-  },
-  toComment: {
-    enabled: true,
-    done: () => { window.open("https://t.me/epusdt_group", "_blank"); },
-  },
-});
-
 export default defineConfig({
-  extends: teekConfig,
+  markdown: { headers: { level: [2] } },
+  vite: {
+    plugins: [ui({
+      router: false,
+      colorMode: false,
+      dts: false,
+      icon: { clientBundle: { icons: [
+        "lucide:chevron-right", "lucide:ellipsis", "lucide:link",
+        "lucide:file-text", "lucide:terminal", "lucide:check",
+        "lucide:search", "lucide:menu", "lucide:x", "lucide:languages", "lucide:sun", "lucide:moon",
+        "lucide:chevron-down", "lucide:arrow-left", "lucide:arrow-right", "lucide:list",
+        "lucide:book-open", "lucide:code-xml", "lucide:layers", "lucide:store", "lucide:heart",
+        "lucide:send", "lucide:external-link", "lucide:arrow-up-right",
+      ] } },
+      ui: { colors: { primary: "emerald", neutral: "slate" } },
+    })],
+    ssr: { noExternal: [/^@nuxt\/ui/, "motion-v"] },
+  },
   cleanUrls: true,
   srcExclude: ["public/**"],
   transformPageData: addPageMetadata,
@@ -318,6 +305,13 @@ export default defineConfig({
 
   themeConfig: {
     logo: "/logo.png",
+    search: {
+      provider: "local",
+      options: { locales: {
+        zh: { translations: { button: { buttonText: "搜索文档", buttonAriaLabel: "搜索文档" }, modal: { noResultsText: "未找到相关文档", resetButtonTitle: "清除搜索", footer: { selectText: "选择", navigateText: "切换", closeText: "关闭" } } } },
+        "zh-tw": { translations: { button: { buttonText: "搜尋文件", buttonAriaLabel: "搜尋文件" }, modal: { noResultsText: "找不到相關文件", resetButtonTitle: "清除搜尋", footer: { selectText: "選取", navigateText: "切換", closeText: "關閉" } } } },
+      } },
+    },
     socialLinks: [
       {
         icon: {

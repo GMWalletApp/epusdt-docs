@@ -1,0 +1,11 @@
+@layer theme, base, components, utilities;
+@import "tailwindcss" source(none);
+@import "@nuxt/ui";
+@import "vitepress/dist/client/theme-default/styles/vars.css" layer(base);
+@import "vitepress/dist/client/theme-default/styles/icons.css" layer(base);
+@import "vitepress/dist/client/theme-default/styles/components/custom-block.css" layer(components);
+@import "vitepress/dist/client/theme-default/styles/components/vp-code.css" layer(components);
+@import "vitepress/dist/client/theme-default/styles/components/vp-code-group.css" layer(components);
+@import "vitepress/dist/client/theme-default/styles/components/vp-doc.css" layer(components);
+@source "../components";
+@source "../../../node_modules/.nuxt-ui";

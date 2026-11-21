@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, nextTick, onUnmounted } from "vue";
+import UButton from "@nuxt/ui/components/Button.vue";
 import GradientASCII from "./GradientASCII.vue";
 
 const props = defineProps<{ language: "en" | "zh" | "zh-tw" }>();
@@ -40,19 +41,19 @@ onUnmounted(() => clearTimeout(timer));
     <header class="ep-bar">
       <a class="ep-brand" :href="languages.find(l => l.id === language)?.url" aria-label="EPUSDT"><img alt="" src="/logo.png" width="34" height="34">EPUSDT</a>
       <nav class="ep-languages" :aria-label="translations[language].nav">
-        <a v-for="item in languages" :key="item.id" :href="item.url" :lang="item.id" :aria-current="item.id === language ? 'page' : undefined">{{ item.label }}</a>
+        <UButton variant="ghost" color="neutral" v-for="item in languages" :key="item.id" :to="item.url" :active="item.id === language" :lang="item.id" :aria-current="item.id === language ? 'page' : undefined">{{ item.label }}</UButton>
       </nav>
     </header>
     <section class="ep-pitch">
       <h1><span v-for="line in translations[language].title" :key="line">{{ line }}</span></h1>
       <div class="ep-actions">
-        <button class="ep-deploy" type="button" :title="translations[language].copy" @click="copyPrompt">
+        <UButton variant="solid" color="neutral" class="ep-deploy" type="button" :title="translations[language].copy" @click="copyPrompt">
           <span class="ep-marks" aria-hidden="true"><img v-for="[name, label] in agents" :key="name" :src="'/agent-icons/' + name + '.svg'" alt="" :title="label"></span>
           <span class="ep-wide-label">{{ state === 'copied' ? translations[language].copied : translations[language].action }}</span>
           <span class="ep-short-label">{{ state === 'copied' ? translations[language].shortCopied : translations[language].shortAction }}</span>
           <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path v-if="state === 'copied'" d="m4 12 5 5L20 6"/><g v-else><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></g></svg>
-        </button>
-        <a class="ep-details" :href="translations[language].intro">{{ translations[language].details }} <span aria-hidden="true">↗</span></a>
+        </UButton>
+        <UButton variant="outline" color="neutral" class="ep-details" :to="translations[language].intro">{{ translations[language].details }} <span aria-hidden="true">↗</span></UButton>
       </div>
       <span class="ep-status" role="status">{{ state === 'copied' ? translations[language].copied : '' }}</span>
       <label v-if="state === 'manual'" class="ep-manual">{{ translations[language].manual }}<textarea ref="field" readonly :value="translations[language].instruction.replace('{url}', guide)" /></label>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UCard from "@nuxt/ui/components/Card.vue";
 import { ref } from 'vue';
 
 const copiedAddress = ref<string | null>(null);
@@ -29,7 +30,7 @@ const copyAddress = async (address: string) => {
     </p>
 
     <div class="sponsor-grid">
-      <section class="sponsor-card">
+      <UCard as="section" class="sponsor-card" variant="outline">
         <h2>TRON (TRC-20)</h2>
 
         <div class="sponsor-qr-frame">
@@ -45,9 +46,9 @@ const copyAddress = async (address: string) => {
             已複製
           </span>
         </div>
-      </section>
+      </UCard>
 
-      <section class="sponsor-card">
+      <UCard as="section" class="sponsor-card" variant="outline">
         <h2>EVM (BSC / ETH / Polygon)</h2>
 
         <div class="sponsor-qr-frame">
@@ -63,7 +64,7 @@ const copyAddress = async (address: string) => {
             已複製
           </span>
         </div>
-      </section>
+      </UCard>
     </div>
 
     <section class="sponsor-devs">
