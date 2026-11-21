@@ -1,3 +1,8 @@
+---
+description: "Connect an EPay-compatible merchant system to EPUSDT using the redirect checkout endpoint and signed request parameters."
+title: "EPay-compatible redirect checkout"
+---
+
 # EPay-Compatible Integration (Redirect Checkout)
 
 Use this flow only when your upstream system expects an EPay-style redirect order entry.

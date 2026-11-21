@@ -1,3 +1,7 @@
+---
+description: "Use epctl to install a released EPUSDT binary on Linux, verify the release, and manage the service."
+---
+
 # epctl Installation and Verification Scripts
 
 `epctl` is the repo-root Linux binary installer and service manager for released `epusdt` binaries on GitHub Releases.

@@ -1,4 +1,6 @@
 ---
+description: "用 EPUSDT 自建 USDT、USDC 收款网关，将链上付款直接收至商户钱包。查看支持的网络、Docker Compose 部署步骤、GMPay 商户 API 和易支付兼容接入文档。"
+title: "自建 USDT、USDC 收款网关"
 layout: home
 tk:
   teekHome: false
@@ -53,3 +55,13 @@ features:
     title: GMShop Edge 商城
     details: GMWalletApp/gmshop-edge 是独立的 Cloudflare Workers 数字商品商城，提供商品、结账、交付、管理后台、上游供货与运行时 Provider。
 ---
+
+## EPUSDT 是什么？
+
+EPUSDT 是用 Go 编写的自托管加密货币收款网关。例如，商户可以启用 TRON 上的 USDT，或 Ethereum 上的 USDC，并添加对应的收款地址。使用链上直付时，买家向该地址转账，EPUSDT 核验到账后向商户服务器发送签名通知。[查看支持的网络与代币](/zh/guide/intro#networks)。
+
+### 我的商城怎么接入？
+
+先[用 Docker Compose 部署 EPUSDT](/zh/guide/installation/docker)，再通过 [GMPay 商户 API](/zh/api/payment) 创建订单、验证支付回调。如果商城已经使用易支付插件，可以按[易支付兼容指南](/zh/guide/integration/epay)接入跳转收银台。
+
+[网关源代码](https://github.com/GMWalletApp/epusdt) · [版本记录](/zh/guide/changelog) · [AI 文档索引](https://epusdt.com/llms.txt)

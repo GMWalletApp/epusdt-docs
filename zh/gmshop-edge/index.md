@@ -1,3 +1,8 @@
+---
+title: "GMShop Edge 数字商品商城"
+description: "了解自托管数字商品商城 GMShop Edge，查看 Workers 和 Bun 部署、商品结账、自动交付与供应商对接文档。"
+---
+
 # GMShop Edge
 
 [GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) 是一个可自托管、单部署、单租户的数字商品商城，可运行在 **Cloudflare Workers** 或 **Bun/Nitro Docker 容器**中。

@@ -1,6 +1,8 @@
 import { defineConfig } from "vitepress";
 import { defineTeekConfig } from "vitepress-theme-teek/config";
 
+import { addPageMetadata, origin, sitemap } from "./seo.mts";
+
 const ignoredGeneratedPaths = [
   ".git",
   ".github",
@@ -33,13 +35,17 @@ const teekConfig = defineTeekConfig({
 
 export default defineConfig({
   extends: teekConfig,
+  cleanUrls: true,
+  transformPageData: addPageMetadata,
+  sitemap,
 
-  title: "Epusdt",
+  title: "EPUSDT",
   description:
     "Epusdt (Easy Payment Usdt) — a self-hosted multi-chain crypto payment gateway written in Go. GMPay API, EPay-compatible redirect checkout, hosted cashier, and Telegram notifications.",
 
   head: [
     ["link", { rel: "icon", href: "/logo.png" }],
+    ["link", { rel: "sitemap", type: "application/xml", href: origin + "/sitemap.xml" }],
   ],
 
   locales: {
@@ -129,7 +135,7 @@ export default defineConfig({
       label: "简体中文",
       lang: "zh-CN",
       link: "/zh/",
-      title: "Epusdt",
+      title: "EPUSDT",
       description: "Epusdt（简易 USDT 收款）— 基于 Go 的私有化多链加密收款网关，支持 GMPay API、EPay 兼容跳转流程与托管收银台，并提供 Telegram 通知。",
       themeConfig: {
         darkModeSwitchLabel: "外观",
@@ -220,7 +226,7 @@ export default defineConfig({
       label: "繁體中文",
       lang: "zh-TW",
       link: "/zh-tw/",
-      title: "Epusdt",
+      title: "EPUSDT",
       description: "Epusdt（簡易 USDT 收款）— 基於 Go 的私有化多鏈加密收款閘道，支援 GMPay API、EPay 相容跳轉流程與託管收銀臺，並提供 Telegram 通知。",
       themeConfig: {
         darkModeSwitchLabel: "外觀",

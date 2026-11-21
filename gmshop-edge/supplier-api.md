@@ -1,3 +1,8 @@
+---
+description: "Connect GMShop Edge stores through the native supplier API for signed catalog, order and payment-channel requests."
+titleTemplate: ":title | GMShop Edge"
+---
+
 # Native Supplier API
 
 GMShop Edge can act as an upstream digital-goods supplier for another GMShop Edge instance. The native protocol exposes catalog, order, payment-channel, and wallet top-up operations under `/api/v1/supplier/*`; it is a storefront supply protocol, not a payment-gateway API.

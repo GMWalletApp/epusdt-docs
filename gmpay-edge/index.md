@@ -1,3 +1,8 @@
+---
+title: "GMPay Edge payment gateway for Workers and Bun"
+description: "Explore GMPay Edge, a separate self-hosted payment gateway for Cloudflare Workers or Bun, with a GMPay merchant API and EPay compatibility."
+---
+
 # GMPay Edge
 
 [GMPay Edge](https://github.com/GMWalletApp/gmpay-edge) is a self-hosted, single-tenant cryptocurrency payment gateway for **Cloudflare Workers or Bun/Nitro Docker**.

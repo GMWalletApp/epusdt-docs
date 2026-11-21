@@ -1,3 +1,8 @@
+---
+description: "設定 GMShop Edge 結帳與付款服務商，查閱商城身分驗證與通知服務的相關設定。"
+titleTemplate: ":title | GMShop Edge"
+---
+
 # 結帳與服務商
 
 GMShop Edge 將結帳、餘額狀態、服務商憑證、身分驗證設定和通知交付儲存在商城部署內部。

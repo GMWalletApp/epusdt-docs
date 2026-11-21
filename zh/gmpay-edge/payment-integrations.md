@@ -1,3 +1,9 @@
+---
+title: "链上、交易所与钱包收款接入"
+description: "查阅 GMPay Edge 的链上、交易所与钱包收款集成，了解哪些设置决定收银台展示的付款方式。"
+titleTemplate: ":title | GMPay Edge"
+---
+
 # 支付接入
 
 GMPay Edge 内建链上、交易所与钱包适配器。收银台是否展示某个支付方式，由已配置且可用的收款方式独立控制。

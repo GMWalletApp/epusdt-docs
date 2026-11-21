@@ -1,3 +1,8 @@
+---
+description: "瞭解 GMPay Edge 在 Workers 與 Bun 上如何共用訂單與付款邏輯，以及兩種部署使用的儲存與執行環境服務。"
+titleTemplate: ":title | GMPay Edge"
+---
+
 # 架構
 
 GMPay Edge 可作為單個 Worker 或單個 Bun/Nitro 容器執行。兩種執行環境承載相同的產品入口與共享訂單 / 支付核心，差異僅在基礎設施適配器。

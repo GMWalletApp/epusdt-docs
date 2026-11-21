@@ -1,3 +1,7 @@
+---
+description: "Integrate the EPUSDT GMPay order endpoint, sign merchant requests, and redirect the buyer to the checkout URL returned by the gateway."
+---
+
 # GMPay Integration (Recommended)
 
 Use GMPay for all new integrations.

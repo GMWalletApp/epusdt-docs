@@ -1,3 +1,9 @@
+---
+title: "Deploy the gateway on Workers or Bun"
+description: "Deploy GMPay Edge on Cloudflare Workers or a Bun host. Compare the runtime configuration, storage requirements and deployment checks."
+titleTemplate: ":title | GMPay Edge"
+---
+
 # Deployment
 
 GMPay Edge supports two production runtimes:

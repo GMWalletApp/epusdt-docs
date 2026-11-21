@@ -1,3 +1,8 @@
+---
+description: "Configure GMShop Edge checkout and payment providers alongside authentication and notification settings for the storefront."
+titleTemplate: ":title | GMShop Edge"
+---
+
 # Checkout and Providers
 
 GMShop Edge keeps checkout, wallet state, provider credentials, authentication configuration, and notification delivery inside the store deployment.

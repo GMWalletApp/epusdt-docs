@@ -1,3 +1,8 @@
+---
+description: "备份和恢复 GMShop Edge 在 Bun 上的 SQLite 数据及私有对象，查看从 Cloudflare D1 和 R2 导入数据的流程。"
+titleTemplate: ":title | GMShop Edge"
+---
+
 # Bun 数据操作
 
 Bun 运行时将权威 SQLite 数据库保存在 `$GMSHOP_DATA_DIR/gmshop.sqlite`，私有对象也位于同一数据目录。请使用维护中的 `bun run data -- …` CLI，不要复制正在运行的 SQLite 文件。

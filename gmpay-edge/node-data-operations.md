@@ -1,3 +1,8 @@
+---
+description: "Locate the GMPay Edge SQLite database and private objects in a Bun deployment and follow the backup, restore and migration procedures."
+titleTemplate: ":title | GMPay Edge"
+---
+
 # Bun data operations
 
 The Bun deployment keeps its SQLite database at `$GMPAY_DATA_DIR/gmpay.sqlite` and private objects under `$GMPAY_DATA_DIR/objects`. The maintained CLI and application server both run with Bun and its SQLite driver.

@@ -1,3 +1,8 @@
+---
+title: "GMShop Edge digital goods storefront"
+description: "Explore GMShop Edge, a self-hosted digital goods storefront with checkout, fulfillment and supplier integrations for Workers or Bun."
+---
+
 # GMShop Edge
 
 [GMShop Edge](https://github.com/GMWalletApp/gmshop-edge) is a self-hosted, single-deployment, single-tenant digital-goods storefront for **Cloudflare Workers** or a **Bun/Nitro Docker container**.

@@ -1,3 +1,8 @@
+---
+description: "Understand how GMShop Edge connects the storefront, administration, storage and fulfillment across Workers and Bun deployments."
+titleTemplate: ":title | GMShop Edge"
+---
+
 # Architecture
 
 GMShop Edge runs the same React/TanStack full stack on Cloudflare Workers or Bun/Nitro. One deployment owns the public shop, customer account area, checkout, fulfillment, supplier integration, Telegram integration, and administration console.

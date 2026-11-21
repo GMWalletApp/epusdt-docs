@@ -1,3 +1,8 @@
+---
+title: "GMPay Edge 支付网关与商户接入"
+description: "了解独立支付网关 GMPay Edge，比较 Cloudflare Workers 与 Bun 部署方式，并查阅 GMPay 商户 API 和易支付兼容文档。"
+---
+
 # GMPay Edge
 
 [GMPay Edge](https://github.com/GMWalletApp/gmpay-edge) 是支持 **Cloudflare Workers 或 Bun/Nitro Docker** 的自托管单租户加密货币支付网关。

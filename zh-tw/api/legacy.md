@@ -1,3 +1,7 @@
+---
+description: "核對已停用的 EPUSDT API 路徑及其替代介面，更新舊版用戶端的請求網址。"
+---
+
 # 介面遷移說明
 
 目前原始碼 **已不再註冊** 舊路由 `POST /api/v1/order/create-transaction`。

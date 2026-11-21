@@ -1,3 +1,8 @@
+---
+description: "Find the networks and tokens EPUSDT supports, configure receiving addresses, and follow an order from checkout to signed payment notification."
+title: "Supported networks, tokens and merchant checkout"
+---
+
 # Introduction
 
 EPUSDT is a self-hosted payment gateway. A merchant creates an order, the buyer pays at checkout, and the gateway sends a signed notification once payment is verified. Direct on-chain payments go to the merchant’s receiving address.

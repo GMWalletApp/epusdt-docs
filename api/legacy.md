@@ -1,3 +1,7 @@
+---
+description: "Identify retired EPUSDT API endpoints and the current merchant API routes that replace them."
+---
+
 # API Migration
 
 Current source **does not register** the old route `POST /api/v1/order/create-transaction`.

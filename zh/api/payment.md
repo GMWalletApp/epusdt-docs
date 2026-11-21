@@ -1,3 +1,8 @@
+---
+description: "使用 EPUSDT 商户 API 创建 GMPay 订单、读取支付状态并验证回调，查阅请求参数、签名规则和代码示例。"
+title: "商户支付 API、请求签名与异步回调"
+---
+
 # Epusdt API 文档
 
 [Python 创建订单示例](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/sdk/python/gmpay_create_order.py) · [OpenAPI 规范](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/src/docs/swagger.json)

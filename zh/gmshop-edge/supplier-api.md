@@ -1,3 +1,8 @@
+---
+description: "利用 GMShop Edge 原生供货 API 连接商城，查阅商品目录、订单和支付通道请求的签名与交互方式。"
+titleTemplate: ":title | GMShop Edge"
+---
+
 # 原生供应商 API
 
 GMShop Edge 可以作为另一套 GMShop Edge 的上游数字商品供应商。原生协议在 `/api/v1/supplier/*` 下提供商品目录、订单、支付通道和余额充值操作；这是商城供货协议，不是支付网关 API。

@@ -1,3 +1,8 @@
+---
+description: "Follow a GMShop Edge order through checkout, inventory allocation, digital delivery, entitlements and after-sales handling."
+titleTemplate: ":title | GMShop Edge"
+---
+
 # Commerce and Fulfillment
 
 GMShop Edge owns catalog, checkout, inventory, entitlements, supplier purchasing, fulfillment, and after-sales state in one store deployment.

@@ -1,3 +1,8 @@
+---
+title: "Community installation tutorials"
+description: "Find the EPUSDT community tutorial collection for installation and configuration, alongside the official deployment guides."
+---
+
 # Tutorial
 
 This page links to the community-maintained Epusdt tutorial collection hosted at **epusdt.cc**.
