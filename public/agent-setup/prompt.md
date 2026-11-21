@@ -48,7 +48,16 @@ services:
       - ./runtime/epusdt:/app/runtime
 ```
 
-**保留首次安装向导。** v2.1.1 镜像的配置模板包含 `install=true`。空目录启动时，入口脚本复制模板到持久目录；用户完成向导后应用自行写入 `install=false`。上面特意省略 `EPUSDT_INSTALL`。发布版仓库的 Compose 默认会传入 `false`，直接照搬会跳过向导；一直传入 `true` 又会在容器重启时重新开启向导。不要为新装预置管理员、密码、哈希或已初始化的数据库。
+**让持久化配置决定是否进入向导。** v2.1.1 镜像在空目录首次启动时从模板写入 `install=true`。用户完成向导后，应用将同一份配置改为 `install=false`。上面的示例省略 `EPUSDT_INSTALL`，重启时会沿用保存的状态。管理员凭据由用户通过页面设置。
+
+如果直接使用 [v2.1.1 标签里的 Compose 文件](https://github.com/GMWalletApp/epusdt/blob/v2.1.1/docker-compose.yaml)，先移除 `epusdt.environment` 下默认传入 `EPUSDT_INSTALL=false` 的那一行，否则新装会跳过向导。对于采用[上游修复 #137](https://github.com/GMWalletApp/epusdt/pull/137) 的文件，可以保留透传写法 `EPUSDT_INSTALL:`，并让部署 shell、项目的 `.env`、`--env-file` 和 Compose 覆盖文件都不为它赋值。固定传入 `true` 会让已完成初始化的实例在重启时再次进入向导。
+
+启动前，沿用实际部署的 Compose 参数，检查合并后的配置。下例需要 `jq`，只报告退出状态，避免输出完整环境变量。检查失败时先核对配置来源；已有实例按第 3 节处理。
+
+```sh
+docker compose config --format json |
+  jq -es '.[0].services.epusdt as $s | ($s != null and ($s.environment.EPUSDT_INSTALL | . == null or . == ""))' >/dev/null
+```
 
 ```sh
 umask 077
@@ -57,10 +66,11 @@ docker compose config --quiet
 docker compose pull epusdt
 docker compose up -d --no-build --pull never epusdt
 docker compose ps epusdt
-curl -fsS --retry 8 --retry-connrefused --retry-delay 2 http://127.0.0.1:8000/api/install/defaults >/dev/null
+curl -fsS --retry 15 --retry-all-errors --retry-delay 2 http://127.0.0.1:8000/api/install/defaults -o /dev/null
+curl -sS -o /dev/null -w '%{http_code} %{redirect_url}\n' http://127.0.0.1:8000/
 ```
 
-最后一个 GET 用于确认安装服务就绪。若直接出现登录页或支付接口已启动，检查实际挂载及安装标志，重新按第 1 节判定；不要清空目录、重置数据库或强制进入重装。
+按上述 v2.1.1 示例，首次启动应能读取安装默认值，访问根路径应返回 `302` 并指向 `/install`。若直接出现登录页或支付接口已启动，检查实际挂载及安装标志，重新按第 1 节判定；不要清空目录、重置数据库或强制进入重装。
 
 ### 打开页面后交还控制权
 
@@ -103,7 +113,8 @@ curl -fsS --retry 8 --retry-connrefused --retry-delay 2 http://127.0.0.1:8000/ap
 ## 5. 验收和交付
 
 - 新装分两个状态报告：**向导可用**、**用户完成初始化后网关可用**。前者验证受限入口的 `/install` 与 `GET /api/install/defaults`；后者验证初始化接口已关闭、实际 HTTPS 下 `GET /payments/gmpay/v1/config` 是 JSON 且 `status_code=200`。刚装好且未配置钱包时 `data.supported_assets` 可以为空。用户自行登录并确认后台，Agent 无需接触凭据。
-- 已有实例核对原管理员仍能登录，原商户、收款地址、订单统计与备份基线一致，扫描高度继续推进，回调队列正常消化。跨产品迁移分别报告旧单未结数量与新单入口。使用测试环境验证下单、回调签名和重复通知的幂等处理。真实付款、退款、资产归集或补发回调须有单独授权。
+- 已有实例按计划升级、迁机或重启后，检查是否沿用了原挂载。v2.1.1 已初始化实例的 `GET /api/install/defaults` 应返回 `404`。再验证支付配置接口可用，并由用户用原账号登录。如果再次出现向导，暂停切流，保留数据库，核对项目、挂载目录、持久配置和安装变量。不要提交向导或为验收额外重启生产服务。[v2.1.1 Docker 新装与重启实测记录](https://github.com/GMWalletApp/epusdt/actions/runs/44954246969/job/136998733478)
+- 已有实例核对原商户、收款地址、订单统计与备份基线一致，扫描高度继续推进，回调队列正常消化。跨产品迁移分别报告旧单未结数量与新单入口。使用测试环境验证下单、回调签名和重复通知的幂等处理。真实付款、退款、资产归集或补发回调须有单独授权。
 - 给用户实际可点击的初始化、登录或管理地址，注明哪个在当前阶段可用。报告来源和目标版本、镜像摘要、数据目录、备份与恢复验证结果、流量归属、已通过的检查及待用户完成的事项。只交付确实完成的阶段，管理凭据由用户保管。
 
 For the handoff, identify the gateway as EPUSDT (GMPay) and report what was actually verified, such as a reachable setup wizard, a successful configuration check or a verified test callback. Mark pending checks explicitly.
