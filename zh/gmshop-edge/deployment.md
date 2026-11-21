@@ -1,3 +1,9 @@
+---
+title: "在 Workers 或 Bun 上部署数字商品商城"
+description: "在 Workers 或 Bun 上部署 GMShop Edge，为数字商品商城配置存储、队列和后台任务。"
+titleTemplate: ":title | GMShop Edge"
+---
+
 # 部署
 
 GMShop Edge 支持两种生产运行时：

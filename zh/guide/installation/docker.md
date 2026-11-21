@@ -1,3 +1,8 @@
+---
+description: "通过 Docker Compose 部署 EPUSDT，配置收银台公网地址，持久化网关和 ChainScanner 的数据。"
+title: "使用 Docker Compose 部署收款网关"
+---
+
 # 使用 Docker Compose 部署
 
 使用部署版本自带的 [Compose 配置](https://github.com/GMWalletApp/epusdt/blob/v2.1.1/docker-compose.yaml)。默认支付服务内置 ChainScanner。

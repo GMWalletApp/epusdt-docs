@@ -1,3 +1,8 @@
+---
+description: "串接 GMPay Edge 商戶憑證、HMAC 請求簽章和訂單回呼，或使用易支付相容介面。"
+titleTemplate: ":title | GMPay Edge"
+---
+
 # 商戶 API
 
 GMPay 是主商戶協議。EPay 是同一套憑證、訂單服務、冪等規則、狀態機、收銀臺、查詢行為與回撥流水線之上的相容適配器。

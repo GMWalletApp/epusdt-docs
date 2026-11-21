@@ -1,3 +1,8 @@
+---
+description: "Create a GMPay order, read its payment status and verify EPUSDT callbacks. Includes merchant request parameters, signing rules and examples."
+title: "Merchant payment API, signatures and callbacks"
+---
+
 # Merchant API
 
 Use the public configuration endpoint to discover payment options, create an order on your server, and send the buyer to the returned checkout URL. Verify the signed notification before fulfilling the order. [Python order example](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/sdk/python/gmpay_create_order.py) · [OpenAPI specification](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/src/docs/swagger.json)

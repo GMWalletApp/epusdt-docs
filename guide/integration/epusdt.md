@@ -1,3 +1,7 @@
+---
+description: "Move an existing EPUSDT merchant integration from retired order routes to GMPay or an EPay-compatible redirect flow."
+---
+
 # Legacy Migration
 
 Current source no longer exposes the old Epusdt order route.

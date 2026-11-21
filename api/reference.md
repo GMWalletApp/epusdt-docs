@@ -1,3 +1,8 @@
+---
+description: "Look up EPUSDT route paths and HTTP methods for merchant orders, checkout and payment status, then open the signing and callback examples."
+title: "Payment API endpoint reference"
+---
+
 # API Reference
 
 See [Merchant API](/api/payment) for signing examples, order states and callback verification.

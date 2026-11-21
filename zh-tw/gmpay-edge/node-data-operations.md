@@ -1,3 +1,8 @@
+---
+description: "查找 GMPay Edge 在 Bun 部署中的 SQLite 資料庫與私有物件，依步驟備份、還原或遷移。"
+titleTemplate: ":title | GMPay Edge"
+---
+
 # Bun 資料操作
 
 Bun 部署將 SQLite 資料庫儲存在 `$GMPAY_DATA_DIR/gmpay.sqlite`，私有物件儲存在 `$GMPAY_DATA_DIR/objects`。維護中的 CLI 和應用服務均使用 Bun 及其 SQLite 驅動執行。

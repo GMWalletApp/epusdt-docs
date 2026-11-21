@@ -1,3 +1,7 @@
+---
+description: "手动安装 EPUSDT 的 Linux 发行版，配置工作目录、网关设置和服务管理方式。"
+---
+
 # 手动部署 Linux 二进制
 
 可按以下步骤使用自己的进程管理器运行发布包。使用 systemd 自动安装请参阅 [epctl 指南](/zh/guide/installation/epctl)。

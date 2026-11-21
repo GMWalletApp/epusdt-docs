@@ -1,3 +1,8 @@
+---
+description: "按路径和 HTTP 方法查找 EPUSDT 下单、收银台和支付状态接口，并查看签名与回调示例。"
+title: "支付 API 路径与 HTTP 方法速查"
+---
+
 # API 概览
 
 参阅[商户 API](/zh/api/payment)，了解签名示例、订单状态和回调验签。

@@ -1,3 +1,7 @@
+---
+description: "Run the EPUSDT Linux release under your own service manager and configure its working directory and gateway settings."
+---
+
 # Manual Linux installation
 
 Use this procedure to run the released binary under your own service manager. For a managed systemd installation, follow the [epctl guide](/guide/installation/epctl).

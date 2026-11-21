@@ -1,3 +1,9 @@
+---
+title: "Deploy the storefront on Workers or Bun"
+description: "Deploy GMShop Edge on Workers or Bun and configure storage, queues and background jobs for the digital goods storefront."
+titleTemplate: ":title | GMShop Edge"
+---
+
 # Deployment
 
 GMShop Edge supports two production runtimes:

@@ -1,3 +1,9 @@
+---
+title: "在 Workers 或 Bun 上部署支付閘道"
+description: "在 Cloudflare Workers 或 Bun 主機上部署 GMPay Edge，核對執行設定、儲存需求與部署檢查步驟。"
+titleTemplate: ":title | GMPay Edge"
+---
+
 # 部署
 
 GMPay Edge 支援兩種正式部署執行環境：

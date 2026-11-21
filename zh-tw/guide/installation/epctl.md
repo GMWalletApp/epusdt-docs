@@ -1,3 +1,7 @@
+---
+description: "使用 epctl 在 Linux 上安裝 EPUSDT 官方發行版、驗證發布檔案並管理服務。"
+---
+
 # epctl 安裝與驗證指令碼
 
 `epctl` 是倉庫頂層的 Linux 二進位制安裝管理指令碼，面向已經發布到 GitHub Releases 的 `epusdt` 二進位制包。

@@ -1,3 +1,7 @@
+---
+description: "核对已停用的 EPUSDT API 路径及其替代接口，更新旧客户端的请求地址。"
+---
+
 # 接口迁移说明
 
 目前源代码 **已不再注册** 旧路由 `POST /api/v1/order/create-transaction`。

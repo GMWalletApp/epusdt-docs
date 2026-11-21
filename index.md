@@ -1,4 +1,6 @@
 ---
+description: "Deploy EPUSDT to accept USDT and USDC in your own wallet. Explore supported networks, install with Docker Compose, and integrate checkout with GMPay or EPay."
+title: "Self-hosted USDT and USDC payment gateway"
 layout: home
 tk:
   teekHome: false
@@ -53,3 +55,13 @@ features:
     title: GMShop Edge Storefront
     details: GMWalletApp/gmshop-edge is a separate Cloudflare Workers digital-goods store with catalog, checkout, fulfillment, administration, supplier sourcing, and runtime providers.
 ---
+
+## What is EPUSDT?
+
+EPUSDT is a self-hosted cryptocurrency payment gateway written in Go. A merchant can accept USDT on TRON or USDC on Ethereum, for example, by enabling the asset and adding a receiving address. For direct on-chain payments, the buyer sends funds to that address. EPUSDT checks the payment and notifies the merchant’s server. [View supported networks and assets](/guide/intro#networks).
+
+### How do I connect my store?
+
+[Deploy EPUSDT with Docker Compose](/guide/installation/docker), then use the [GMPay merchant API](/api/payment) to create an order and verify its callback. If your store already uses an EPay checkout plugin, follow the [EPay redirect guide](/guide/integration/epay).
+
+[Gateway source code](https://github.com/GMWalletApp/epusdt) · [Release notes](/guide/changelog) · [AI documentation index](https://epusdt.com/llms.txt)

@@ -1,3 +1,7 @@
+---
+description: "使用 epctl 在 Linux 上安装 EPUSDT 官方发行版、校验发布文件并管理服务。"
+---
+
 # epctl 安装与验证脚本
 
 `epctl` 是仓库顶层的 Linux 二进制安装管理脚本，面向已经发布到 GitHub Releases 的 `epusdt` 二进制包。

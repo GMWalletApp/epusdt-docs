@@ -1,3 +1,8 @@
+---
+description: "了解 GMShop Edge 在 Workers 和 Bun 环境中如何连接商城前台、管理后台、存储与交付流程。"
+titleTemplate: ":title | GMShop Edge"
+---
+
 # 架构
 
 GMShop Edge 在 Cloudflare Workers 与 Bun/Nitro 上运行同一套 React/TanStack 全栈应用。一个部署同时负责公开商城、用户账户、结账、交付、供应商集成、Telegram 集成和管理后台。

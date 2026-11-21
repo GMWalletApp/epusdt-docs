@@ -1,3 +1,8 @@
+---
+description: "Get answers about GMPay and EPay, merchant credentials, enabled assets, and callback verification when integrating EPUSDT."
+title: "Merchant integration FAQ"
+---
+
 # FAQ
 
 ## Which route should I use?

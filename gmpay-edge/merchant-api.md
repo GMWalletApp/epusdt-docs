@@ -1,3 +1,8 @@
+---
+description: "Integrate GMPay Edge merchant credentials, HMAC request signatures and order callbacks, or use its EPay compatibility adapter."
+titleTemplate: ":title | GMPay Edge"
+---
+
 # Merchant API
 
 GMPay is the primary merchant protocol. EPay is a compatibility adapter over the same credential, order service, idempotency rules, state machine, checkout, query behavior, and callback pipeline.

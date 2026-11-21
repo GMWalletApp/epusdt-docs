@@ -1,3 +1,7 @@
+---
+description: "Read EPUSDT release notes and check database, deployment and payment API changes before upgrading a self-hosted gateway."
+---
+
 # Release Notes
 
 ## v2.1.1

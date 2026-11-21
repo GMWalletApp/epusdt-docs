@@ -1,3 +1,7 @@
+---
+description: "Set up an EPUSDT checkout domain in aaPanel, configure HTTPS, and connect the reverse proxy to the gateway process."
+---
+
 # Install using aaPanel
 
 ## Create the site

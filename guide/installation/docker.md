@@ -1,3 +1,8 @@
+---
+description: "Install EPUSDT with Docker Compose, configure the public checkout URL, and persist the gateway and ChainScanner data across container restarts."
+title: "Install the payment gateway with Docker Compose"
+---
+
 # Install with Docker Compose
 
 Use the [Compose file](https://github.com/GMWalletApp/epusdt/blob/v2.1.1/docker-compose.yaml) from the version you are installing. The default service includes ChainScanner.

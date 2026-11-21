@@ -1,3 +1,8 @@
+---
+description: "See how GMPay Edge shares its order and payment logic across Workers and Bun, and which storage and runtime services each deployment uses."
+titleTemplate: ":title | GMPay Edge"
+---
+
 # Architecture
 
 GMPay Edge runs as one Worker or one Bun/Nitro container. Both runtimes own the same product surfaces and shared order/payment core; only the infrastructure adapters differ.

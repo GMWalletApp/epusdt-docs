@@ -1,3 +1,8 @@
+---
+description: "Back up and restore GMShop Edge SQLite data and private objects on Bun, and review the import paths from Cloudflare D1 and R2."
+titleTemplate: ":title | GMShop Edge"
+---
+
 # Bun data operations
 
 The Bun runtime keeps its authoritative SQLite database at `$GMSHOP_DATA_DIR/gmshop.sqlite` and private objects under the same data directory. Use the maintained `bun run data -- …` CLI instead of copying a live SQLite file.

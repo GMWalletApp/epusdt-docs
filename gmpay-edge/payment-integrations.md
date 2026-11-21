@@ -1,3 +1,9 @@
+---
+title: "On-chain, exchange and wallet payments"
+description: "Review the on-chain, exchange and wallet integrations in GMPay Edge and see what controls which options appear at checkout."
+titleTemplate: ":title | GMPay Edge"
+---
+
 # Payment integrations
 
 GMPay Edge includes on-chain, exchange, and wallet adapters. Checkout exposure is controlled separately by configured receiving methods.

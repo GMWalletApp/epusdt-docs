@@ -1,3 +1,8 @@
+---
+description: "瞭解 GMShop Edge 訂單從結帳、庫存分配、數位商品交付到權益管理與售後處理的流程。"
+titleTemplate: ":title | GMShop Edge"
+---
+
 # 商務與交付
 
 GMShop Edge 在一個商城部署內統一管理商品、結帳、庫存、權益、供應商採購、交付和售後狀態。
