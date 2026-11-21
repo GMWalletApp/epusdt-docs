@@ -8,7 +8,27 @@ import "./styles/docs.css";
 
 export default {
   Layout: SiteLayout,
-  enhanceApp({ app }) {
+  enhanceApp({ app, router }) {
+    if (import.meta.env.PROD && !import.meta.env.SSR) {
+      const browser = window as Window & { __VP_HASH_MAP__: Record<string, string> };
+      let loadedPages = browser.__VP_HASH_MAP__;
+      router.onBeforePageLoad = (href) => {
+        // VitePress replaces this manifest before retrying a missing page chunk.
+        const pages = browser.__VP_HASH_MAP__;
+        if (!router.route.component || pages === loadedPages) return;
+        const previous = loadedPages;
+        if (Object.keys(pages).length === Object.keys(previous).length &&
+            Object.keys(previous).every(key => previous[key] === pages[key])) {
+          loadedPages = pages;
+          return;
+        }
+
+        // Only navigate for the active request if two page loads raced.
+        if (new URL(href, location.href).pathname === location.pathname) location.reload();
+        return false;
+      };
+    }
+
     app.use(ui);
     app.component("SponsorPageEn", defineAsyncComponent(() => import("./components/SponsorPageEn.vue")));
     app.component("SponsorPageZh", defineAsyncComponent(() => import("./components/SponsorPageZh.vue")));
