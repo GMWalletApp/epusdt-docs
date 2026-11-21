@@ -1,7 +1,14 @@
 # epctl 安装与验证脚本
 
 `epctl` 是仓库顶层的 Linux 二进制安装管理脚本，面向已经发布到 GitHub Releases 的 `epusdt` 二进制包。
-`epctl-docker-test.sh` 是配套的真实验收脚本，用本地 Docker 启动 Ubuntu + systemd 容器，完整验证下载、安装、启动、升级和初始化密码流程。
+`epctl-docker-test.sh` 是配套的真实验收脚本，用本机 Docker 启动 Ubuntu + systemd 容器，完整验证安装、启动、升级和初始化密码流程。
+
+全新安装时先下载该版本的文件。
+
+```sh
+git clone --depth 1 --branch v2.1.1 https://github.com/GMWalletApp/epusdt.git
+cd epusdt
+```
 
 ## 适用范围
 
@@ -33,24 +40,18 @@
 |------|------|
 | 安装目录 | `/opt/epusdt` |
 | 主程序 | `/opt/epusdt/epusdt` |
+| 扫链程序 | `/opt/epusdt/chainscanner` |
 | 配置文件 | `/opt/epusdt/.env` |
+| 扫链配置 | `/opt/epusdt/chainscanner.json` |
 | 示例配置 | `/opt/epusdt/.env.example` |
 | 前端释放目录 | `/opt/epusdt/www` |
-| 下载快取 | `/tmp/epusdt/<tag>/` |
-| systemd unit | `/etc/systemd/system/epusdt.service` |
-| epctl 全域性安装位置 | `/usr/local/bin/epctl` |
+| 下载缓存 | `/tmp/epusdt/<tag>/` |
+| systemd unit | `/etc/systemd/system/epusdt.service`、`/etc/systemd/system/chainscanner.service` |
+| epctl 全局安装位置 | `/usr/local/bin/epctl` |
 
 ## 快速开始
 
-Linux 服务器上一键部署时，直接从上游 `master` 分支下载最新 `epctl`，赋予执行权限后进入交互选单：
-
-```bash
-curl -fsSLO https://raw.githubusercontent.com/GMWalletApp/epusdt/refs/heads/master/epctl
-chmod +x epctl
-./epctl
-```
-
-如果你已经 clone 了仓库，也可以在仓库根目录直接执行：
+直接在仓库根目录运行交互菜单：
 
 ```bash
 ./epctl
@@ -77,28 +78,46 @@ epctl
 下载指定版本：
 
 ```bash
-./epctl download --tag v1.0.8
+./epctl download --tag v2.1.0
 ```
 
-安装服务：
+安装服务（默认 `--component epusdt`，直接使用内置扫描器；显式选择 `--component all` 可部署两个独立服务）：
 
 ```bash
-./epctl install --tag v1.0.8 \
+./epctl install --tag v2.1.0 \
   --app-uri https://pay.example.com \
   --listen 127.0.0.1:18000
 ```
 
-升级到新版本：
+分机/独立部署 `chainscanner`（自动生成或自定义 Token，并在终端打印连接凭证）：
 
 ```bash
-./epctl upgrade --tag v1.0.9
+./epctl install --component chainscanner \
+  --scanner-listen 0.0.0.0:9081
+```
+
+分机/独立部署 `epusdt`（对接远端 `chainscanner`）：
+
+```bash
+./epctl install --component epusdt \
+  --app-uri https://pay.example.com \
+  --listen 127.0.0.1:8000 \
+  --scanner-url http://10.0.0.2:9081 \
+  --scanner-token <chainscanner_token> \
+  --scanner-admin-token <chainscanner_admin_token>
+```
+
+升级到新版本（自动按当前已安装组件升级，也可通过 `--component all|epusdt|chainscanner` 指定）：
+
+```bash
+./epctl upgrade --tag v2.1.0
 ```
 
 直接执行 `./epctl upgrade --tag ...` 时，脚本会在文件替换完成后默认立即执行 `systemctl restart epusdt`。
 如果你只想替换文件而不重启，请显式传入 `--no-restart`。
 如果你希望人工确认，再传 `--prompt-restart`；交互终端下提示为 `[Y/n]`，直接回车默认重启。
 
-检视配置、状态、日志：
+查看配置、状态、日志：
 
 ```bash
 ./epctl show-config
@@ -106,15 +125,11 @@ epctl
 ./epctl logs --lines 200
 ```
 
-请求初始化管理员密码（仅当部署版本仍暴露旧版明文路由时可用）：
+请求初始化管理员密码：
 
 ```bash
 ./epctl init-password
 ```
-
-::: warning v1.0.9 路由说明
-`v1.0.9` 服务端注册的是 `/admin/api/v1/auth/init-password-hash`，没有注册 `epctl init-password` 会请求的旧版明文 `/admin/api/v1/auth/init-password` 路由。v1.0.9 首次安装时，请从安装 API 响应中的 `init_password` 读取初始密码。
-:::
 
 ## 不传 `--tag` 时的行为
 
@@ -127,7 +142,7 @@ epctl
 ```
 
 交互模式下会先提示检测到的最新 tag。
-非交互脚本运行时，建议显式传入 `--tag`。如果你明确要跳过确认，可以设置：
+非交互脚本执行时，建议显式传入 `--tag`。如果你明确要跳过确认，可以设置：
 
 ```bash
 EPCTL_ASSUME_YES=1 ./epctl download
@@ -141,7 +156,7 @@ EPCTL_ASSUME_YES=1 ./epctl download
 2. 解压到 `/tmp/epusdt/<tag>/extract/`
 3. 安装二进制到 `/opt/epusdt/epusdt`
 4. 安装 `.env.example` 到 `/opt/epusdt/.env.example`
-5. 建立系统用户和组 `epusdt`
+5. 创建系统用户和组 `epusdt`
 6. 若 `/opt/epusdt/.env` 不存在，则从 `.env.example` 自动生成
 7. 写入并启用 `epusdt.service`
 
@@ -172,11 +187,11 @@ EPCTL_ASSUME_YES=1 ./epctl download
 - `upgrade` 不会再补写 `.env`，也不会再执行 `systemctl enable`
 - `upgrade --no-restart` 只替换文件，不重启服务，并输出手动 restart 提示
 - `upgrade --prompt-restart` 会在交互终端下询问是否重启
-- 如果重启前的文件部署失败，或升级后的重启失败，脚本会尝试回滚旧的二进制、`.env.example` 和 unit 文件
+- 如果升级后的重启失败，脚本会尝试回滚旧的二进制、`.env.example` 和 unit 文件
 
 ## systemd 服务说明
 
-脚本注册的服务名固定为 `epusdt.service`，核心引数如下：
+脚本注册的服务名固定为 `epusdt.service`，核心参数如下：
 
 ```ini
 WorkingDirectory=/opt/epusdt
@@ -191,7 +206,7 @@ RestartSec=3
 
 ## `init-password` 的含义
 
-`epctl init-password` 只会请求本地 HTTP 路由。这是旧版明文路由，实际部署版本不一定注册：
+`epctl init-password` 只会请求本地 HTTP 路由：
 
 ```text
 GET /admin/api/v1/auth/init-password
@@ -209,7 +224,7 @@ GET /admin/api/v1/auth/init-password
 - 管理员已经登录并修改过密码
 - 初始化密码已经被消费，当前不再允许再次取回
 
-如果接口返回 `404`，表示部署版本没有暴露这个旧版明文端点；请改用安装流程响应或初始化密码哈希状态端点判断。上述情况下，脚本会直接把接口原始错误输出出来，方便排查。
+此时脚本会直接把接口原始错误输出出来，方便排查。
 
 ## Docker 验收脚本
 
@@ -222,24 +237,24 @@ GET /admin/api/v1/auth/init-password
 示例：
 
 ```bash
-./epctl-docker-test.sh v1.0.6
-./epctl-docker-test.sh --lang zh v1.0.6 v1.0.8
+./epctl-docker-test.sh v2.1.0
+./epctl-docker-test.sh --lang zh v2.0.0 v2.1.0
 ```
 
-它会在本地：
+它会在本机：
 
 - 直接从 `ubuntu:24.04` 启动容器，并在容器启动阶段安装 systemd 与测试依赖
 - 启动一个特权容器
 - 在容器内执行 `epctl self-install`
 - 下载真实 GitHub Release
 - 安装 `epusdt`
-- 若传入 `upgrade-tag`，验证 `upgrade --no-restart`、默认非交互 `upgrade`，以及 `upgrade --prompt-restart` 的 `n` / 回车分支
+- 若传入 `upgrade-tag`，验证 `upgrade --no-restart`、默认 `upgrade`、以及 `upgrade --prompt-restart` 的 `n/回车` 分支
 - 检查 `systemd` 服务、`www/index.html`、配置文件、日志、状态输出
-- 以真实 release artifact 验证 init-password 行为；如果部署版本缺少旧版明文路由，检查会输出原始 HTTP 失败内容以方便排查
+- 验证 `init-password` 首次成功、修改管理员密码后再次请求返回 `10040`
 
-执行前提：
+运行前提：
 
-- 本地已安装 Docker
+- 本机已安装 Docker
 - 当前用户有权限执行 Docker
 - 宿主机能够访问 GitHub Releases
 

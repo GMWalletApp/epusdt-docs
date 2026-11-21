@@ -1,64 +1,45 @@
 # Introduction
 
-## What current source actually provides
+EPUSDT is a self-hosted payment gateway. A merchant creates an order, the buyer pays at checkout, and the gateway sends a signed notification once payment is verified. Direct on-chain payments go to the merchant’s receiving address.
 
-`Epusdt` is a self-hosted **crypto payment gateway** written in **Go**.
+## Set up your first payment
 
-The GMWalletApp organization also maintains [GMPay Edge](/gmpay-edge/), a separate gateway for Cloudflare Workers or Bun/Nitro Docker. It shares the GMPay/EPay merchant-protocol context, but it is not the same runtime or deployment model as Epusdt.
+1. [Deploy the gateway](/guide/installation/docker) and set the public HTTPS checkout URL.
+2. In the admin console, enable a network and an asset and add a receiving address. Create a merchant API key and keep its `pid` and `secret_key` on your server.
+3. [Create a GMPay order](/api/payment#create) and redirect the buyer to `payment_url`. For an existing EPay integration, use the [EPay redirect flow](/guide/integration/epay).
 
-For digital-goods stores, see [GMShop Edge](/gmshop-edge/), a separate Cloudflare Workers storefront for catalog, checkout, fulfillment, and administration.
+## Supported chains and tokens {#networks}
 
-Current source exposes two public order-entry flows:
+Checkout offers a direct-payment asset when its network and asset are enabled and a receiving address is configured. These are the defaults on a fresh installation. Read `data.supported_assets` from `GET /payments/gmpay/v1/config` for the options on your gateway.
 
-- **GMPay** — `POST /payments/gmpay/v1/order/create-transaction`
-- **EPay Compatible** — `GET/POST /payments/epay/v1/order/create-transaction/submit.php`
+| Network | API network ID | Default assets |
+| --- | --- | --- |
+| TRON | `tron` | TRX, USDT |
+| Ethereum | `ethereum` | USDT, USDC |
+| BNB Smart Chain | `binance` | USDT, USDC |
+| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
+| Solana | `solana` | SOL, USDT, USDC |
+| TON | `ton` | TON, USDT |
+| Plasma | `plasma` | USDT |
+| Aptos | `aptos` | USDT, USDC |
+| Sui | `sui` | SUI, USDC |
+| Arbitrum One | `arbitrum` | ETH, USDC |
+| Base | `base` | ETH, USDC |
+| OP Mainnet | `optimism` | ETH, USDC |
+| Avalanche C-Chain | `avalanche` | AVAX, USDC |
+| HyperEVM | `hyperevm` | HYPE, USDC |
+| Monad | `monad` | MON, USDC |
+| Arc | `arc` | USDC |
 
-It also exposes:
+Arc accepts native and ERC-20 USDC. On Polygon, USDC and USDC.e are separate assets.
 
-- Hosted cashier pages under `/pay/*`
-- Network switching for hosted checkout: `POST /pay/switch-network`
-- Public payment config for frontend/cashier bootstrapping: `GET /payments/gmpay/v1/config`
-- Admin API under `/admin/api/v1/*` for API keys, chains, chain tokens, wallet addresses, notification channels, and settings
-- Admin rate settings that can use either an exchange-rate API URL or a forced USDT rate; if you rely only on the forced rate, the API URL can be left empty
+### Hosted payment methods
 
-## Security Audit
+OKX OnchainOS on X Layer supports USDC, USDT0 and USDG. OKPay supports USDT and TRX by default. Enable each provider separately. Read its options from `data.xlayer` or `data.okpay`.
 
-Epusdt has completed a third-party security audit.
-[View Security Audit Report](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
+## From transfer to fulfillment
 
-
-## Credential model
-
-The live gateway no longer relies on a single global merchant key in the payment API docs.
-
-Instead, each merchant uses an **API key row** created in the admin panel:
-
-- `pid`
-- `secret_key`
-- optional `ip_whitelist`
-- optional default `notify_url`
-
-Incoming GMPay and EPay requests are both identified by `pid` and signed with the matching row's `secret_key`.
-
-## Supported chains and tokens
-
-Current source does **not** hardcode one public list in the docs layer.
-
-The `GET /payments/gmpay/v1/config` response is computed from live admin data.
-
-Its `data.supported_assets` field is built from:
-
-- enabled `chains`
-- enabled `chain_tokens`
-- available `wallet_address`
-
-The same response also includes public site/cashier branding plus EPay / OkPay frontend config fields.
-
-So the real supported networks/tokens depend on what the operator enabled in the admin console.
-
-## First-time setup
-
-If no config file is present on first boot, Epusdt launches a built-in **install wizard**. Complete database, domain, and initial settings in the browser, then continue managing runtime data from the admin UI/API.
+ChainScanner runs inside EPUSDT by default. When it sees a matching transfer, the order moves to **5 · Confirming**. With strict verification enabled (the default), the required confirmation depth and matching results from two independent nodes are needed for **2 · Paid**. Two unsuccessful rounds move the order to **6 · Manual review**. Fulfill the order only after verifying the signed success callback.
 
 ## Screenshots
 
@@ -82,3 +63,9 @@ If no config file is present on first boot, Epusdt launches a built-in **install
     </td>
   </tr>
 </table>
+
+## Related projects and audit
+
+- [GMPay Edge](/gmpay-edge/) · Payment gateway for Workers or Bun.
+- [GMShop Edge](/gmshop-edge/) · Digital goods storefront.
+- [EPUSDT security audit, May 2026](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)

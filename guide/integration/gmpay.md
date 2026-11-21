@@ -51,13 +51,13 @@ You need:
 
 If the client needs dynamic network/token options, read them from `data.supported_assets` in the `/payments/gmpay/v1/config` response.
 
-That same config response also exposes public cashier branding (`data.site`) plus EPay / OkPay frontend defaults (`data.epay`, `data.okpay`).
+Read `data.site` for branding and `data.epay`, `data.okpay` and `data.xlayer` for checkout settings.
 
 ## Callback verification
 
 GMPay callbacks are sent as JSON `POST` to `notify_url`.
 
-Verify the returned `signature` with the same HMAC-SHA256 rule and merchant `secret_key`, then reply with exact plain text `ok`.
+Verify the HMAC-SHA256 signature, match the paid order and process it idempotently. Acknowledge with HTTP 200 and plain text `ok` or `success` (case-insensitive).
 
 ## Success response note
 

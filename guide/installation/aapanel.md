@@ -1,55 +1,21 @@
-# aaPanel Deployment
+# Install using aaPanel
 
-This guide shows how to run the Epusdt service itself with aaPanel.
+## Create the site
 
-**No manual `.env` is required for first boot.** Start the binary, then finish setup in the browser wizard.
+Create a static site for your checkout domain and configure DNS and HTTPS. EPUSDT runs as a separate process with SQLite. Keep the binary, configuration and databases outside the site’s public directory.
 
-## Basic flow
+![Add the checkout domain](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/wiki/img/add_web.png)
 
-1. Create a site in aaPanel for your payment domain
-2. Upload the Epusdt release package or binary
-3. Reverse proxy the site to `http://127.0.0.1:8000`
-4. Fix program permissions before starting it with Supervisor
-5. Use aaPanel Supervisor with the correct working directory and command
-6. Open the bound domain to finish the install wizard
+## Configure the process
 
-## Recommended permissions before Supervisor
+1. Install the Supervisor manager in aaPanel. Download and unpack the release for your architecture. Follow the [manual installation guide](/guide/installation/manual) to prepare the service account, writable directories and `.env`.
+2. Set `app_uri` to your HTTPS checkout URL and `http_listen=127.0.0.1:8000`. In Supervisor set the working directory to your installation directory and the command to its full binary path followed by `http start`. Enable automatic start and restart.
+3. Check the process status and logs in Supervisor.
 
-If aaPanel Supervisor runs the process as `www`, make sure the deployment directory is executable and owned correctly first:
+![Supervisor process settings](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/wiki/img/supervisor.png)
 
-```bash
-cd /www/wwwroot/epusdt
-chmod +x epusdt
-chown -R www:www /www/wwwroot/epusdt
-```
+## Add the reverse proxy and verify
 
-## Recommended Supervisor settings
+In the site settings add a reverse proxy pointing at `http://127.0.0.1:8000`. Open `https://YOUR-DOMAIN/payments/gmpay/v1/config` and check for `status_code: 200`. Add a receiving address to make its enabled assets available at checkout. After a configuration change, restart EPUSDT from Supervisor.
 
-- **Working directory:** `/www/wwwroot/epusdt`
-- **Command:** `./epusdt http start`
-
-Using only `epusdt http start` can fail when the working directory is wrong, because the config file path is resolved relative to the current directory.
-
-## Finish the install wizard
-
-- Recommended: open the bound domain directly, such as `https://pay.example.com`
-- Only if you are connecting to the program port directly, open `http://server-ip:8000`
-
-## Verification
-
-Use your deployed domain as the API base URL, for example:
-
-```text
-https://pay.example.com
-```
-
-Recommended order route:
-
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
-
-## Notes
-
-- Admin panel settings now own merchant credentials and EPay defaults
-- Do not follow old docs that still mention `/payments/epusdt/v1/order/create-transaction`
+![Reverse proxy settings](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/wiki/img/fanxiang.png)

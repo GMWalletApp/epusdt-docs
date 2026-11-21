@@ -1,7 +1,18 @@
 # 版本日誌
 
-本文基於 `GMWalletApp/epusdt` 倉庫中實際存在的 GitHub Releases、Tag、Release Note 和程式碼差異整理，不憑空編寫未釋出特性。
+## v2.1.1
 
+2026-11-21 · [釋出說明](https://github.com/GMWalletApp/epusdt/releases/tag/v2.1.1)
+
+EPUSDT 僅支援 SQLite。現有 SQLite 使用者可保留原配置和資料庫。使用 MySQL 或 PostgreSQL 的使用者，請在升級前備份、遷移並核對資料。
+
+## v2.1.0
+
+2026-11-21 · [釋出說明](https://github.com/GMWalletApp/epusdt/releases/tag/v2.1.0)
+
+- 預設內建 ChainScanner，可從儲存的高度恢復掃描並補掃缺塊。嚴格核驗新增確認中和人工複核狀態。
+- 新增 8 條直付網路，預設共 16 條。收銀臺接入 OKX OnchainOS 的 X Layer 支付，並可開啟交易所提現手續費提醒。
+- 修復 SQLite 鎖競爭，以及過期訂單可能釋放新訂單收款金額的問題。從 v2.0.0 升級的 Compose 使用者需先遷移資料，再重建容器。
 
 ## v2.0.0
 

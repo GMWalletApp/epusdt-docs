@@ -4,39 +4,39 @@ tk:
   teekHome: false
 
 hero:
-  name: "Epusdt"
+  name: "EPUSDT"
   text: "私有化多鏈加密收款"
-  tagline: Go 驅動的多鏈支付閘道，提供 GMPay API、EPay 相容跳轉流程與託管收銀臺。私有部署，資金直接進錢包。
+  tagline: 通過 GMPay 或 EPay 建立訂單，直接用自己的錢包收款，到賬核驗完成後接收簽名回撥。
   image:
     src: /logo.png
     alt: Epusdt
   actions:
     - theme: brand
-      text: 快速開始
-      link: /zh-tw/guide/intro
+      text: 部署 EPUSDT
+      link: "/zh-tw/guide/installation/docker"
     - theme: alt
-      text: Docker 部署
-      link: /zh-tw/guide/installation/docker
+      text: 商戶 API
+      link: "/zh-tw/api/payment"
     - theme: alt
-      text: API 文件
-      link: /zh-tw/api/reference
+      text: 網路與幣種
+      link: "/zh-tw/guide/intro#networks"
     - theme: alt
-      text: GMPay Edge
-      link: /zh-tw/gmpay-edge/
+      text: Telegram 頻道
+      link: "https://t.me/epusdt"
     - theme: alt
-      text: GMShop Edge
-      link: /zh-tw/gmshop-edge/
+      text: Telegram 群組
+      link: "https://t.me/epusdt_group"
 
 features:
   - icon: 🐳
-    title: 安裝嚮導優先
-    details: 首次啟動直接進瀏覽器安裝嚮導，通常不需要先手動編寫配置檔。
+    title: Docker 與 SQLite
+    details: 預設 Compose 服務同時啟動支付閘道器與 ChainScanner，配置和資料庫儲存在宿主機的掛載目錄。
   - icon: 🔑
     title: 統一商戶憑證
     details: 每個商戶使用後臺建立的 PID + secret_key，同一組憑證可同時用於 GMPay 與 EPay 流程。
   - icon: 🌐
-    title: 多鏈收款
-    details: 當前原始碼以後臺配置的 chains、chain_tokens、wallet_address 作為可用鏈與代幣來源。
+    title: 16 條鏈上直付網路
+    details: 啟用所需幣種並新增收款地址，也可單獨開啟 OKX OnchainOS 或 OKPay 託管支付。
   - icon: 🧾
     title: 收銀臺 + 回撥
     details: 建立訂單後可跳轉內建收銀臺，鏈上確認後由系統發送已簽名的非同步回撥。

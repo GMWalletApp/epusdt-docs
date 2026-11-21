@@ -3,6 +3,13 @@
 `epctl` is the repo-root Linux binary installer and service manager for released `epusdt` binaries on GitHub Releases.
 `epctl-docker-test.sh` is the matching end-to-end validation script. It launches Ubuntu + systemd in Docker and verifies download, install, startup, upgrade, and init-password behavior with real release artifacts.
 
+For a fresh installation, get the release files first.
+
+```sh
+git clone --depth 1 --branch v2.1.1 https://github.com/GMWalletApp/epusdt.git
+cd epusdt
+```
+
 ## Scope
 
 - Linux only
@@ -33,24 +40,18 @@ Notes:
 |------|------|
 | Install directory | `/opt/epusdt` |
 | Main binary | `/opt/epusdt/epusdt` |
+| Scanner binary | `/opt/epusdt/chainscanner` |
 | Active config | `/opt/epusdt/.env` |
+| Scanner config | `/opt/epusdt/chainscanner.json` |
 | Example config | `/opt/epusdt/.env.example` |
 | Extracted frontend assets | `/opt/epusdt/www` |
 | Download cache | `/tmp/epusdt/<tag>/` |
-| systemd unit | `/etc/systemd/system/epusdt.service` |
+| systemd unit | `/etc/systemd/system/epusdt.service`, `/etc/systemd/system/chainscanner.service` |
 | Global epctl path | `/usr/local/bin/epctl` |
 
 ## Quick Start
 
-For a one-click deployment on a Linux server, download the latest `epctl` script from the upstream `master` branch, make it executable, then run the interactive menu:
-
-```bash
-curl -fsSLO https://raw.githubusercontent.com/GMWalletApp/epusdt/refs/heads/master/epctl
-chmod +x epctl
-./epctl
-```
-
-If you already cloned the repository, you can also run the repo-root script directly:
+Run the interactive menu from the repo root:
 
 ```bash
 ./epctl
@@ -77,21 +78,39 @@ epctl
 Download a specific release:
 
 ```bash
-./epctl download --tag v1.0.10
+./epctl download --tag v2.1.0
 ```
 
-Install the service:
+Install the service (defaults to `--component epusdt` with the embedded scanner. Use `--component all` for two separate services):
 
 ```bash
-./epctl install --tag v1.0.10 \
+./epctl install --tag v2.1.0 \
   --app-uri https://pay.example.com \
   --listen 127.0.0.1:18000
 ```
 
-Upgrade to a newer release:
+Deploy `chainscanner` standalone (auto-generates or accepts tokens and prints connection credentials):
 
 ```bash
-./epctl upgrade --tag v1.0.10
+./epctl install --component chainscanner \
+  --scanner-listen 0.0.0.0:9081
+```
+
+Deploy `epusdt` standalone (connecting to a remote `chainscanner`):
+
+```bash
+./epctl install --component epusdt \
+  --app-uri https://pay.example.com \
+  --listen 127.0.0.1:8000 \
+  --scanner-url http://10.0.0.2:9081 \
+  --scanner-token <chainscanner_token> \
+  --scanner-admin-token <chainscanner_admin_token>
+```
+
+Upgrade to a newer release (auto-detects installed components, or pass `--component all|epusdt|chainscanner`):
+
+```bash
+./epctl upgrade --tag v2.1.0
 ```
 
 Running `./epctl upgrade --tag ...` directly restarts `epusdt` immediately after the files are replaced.
@@ -106,15 +125,11 @@ Inspect config, status, and logs:
 ./epctl logs --lines 200
 ```
 
-Request the initial admin password, if the deployed release exposes the legacy plaintext route:
+Request the initial admin password:
 
 ```bash
 ./epctl init-password
 ```
-
-::: warning v1.0.9 route note
-The `v1.0.9` server registers `/admin/api/v1/auth/init-password-hash`, but does **not** register the legacy plaintext `/admin/api/v1/auth/init-password` route that this command calls. For v1.0.9 first-time installs, read `init_password` from the install API response instead.
-:::
 
 ## Behavior When `--tag` Is Omitted
 
@@ -172,7 +187,7 @@ Additional behavior:
 - `upgrade` no longer creates `.env` and no longer runs `systemctl enable`
 - `upgrade --no-restart` replaces files only and prints a manual restart warning
 - `upgrade --prompt-restart` asks whether to restart when an interactive terminal is available
-- if file deployment fails before restart, or the restart fails after an upgrade, the script attempts to roll back the previous binary, `.env.example`, and unit file
+- if the restart fails after an upgrade, the script attempts to roll back the previous binary, `.env.example`, and unit file
 
 ## systemd Service Details
 
@@ -191,7 +206,7 @@ The working directory stays at `/opt/epusdt` because the program extracts its `w
 
 ## What `init-password` Does
 
-`epctl init-password` only calls the local HTTP route. This is a legacy plaintext route and may not be registered by the deployed server version:
+`epctl init-password` only calls the local HTTP route:
 
 ```text
 GET /admin/api/v1/auth/init-password
@@ -209,7 +224,7 @@ If the API returns `10040`, the bootstrap plaintext password is no longer availa
 - the admin password has already been changed
 - the initial password has already been consumed and cannot be fetched again
 
-If the API returns `404`, the deployed server does not expose this legacy plaintext endpoint; use the install response or the hash endpoint state instead. In either case, `epctl` prints the original HTTP error body for diagnosis.
+In that case, `epctl` prints the original HTTP error body for diagnosis.
 
 ## Docker Validation Script
 
@@ -222,8 +237,8 @@ The repo also provides:
 Examples:
 
 ```bash
-./epctl-docker-test.sh v1.0.6
-./epctl-docker-test.sh --lang en v1.0.6 v1.0.8
+./epctl-docker-test.sh v2.1.0
+./epctl-docker-test.sh --lang en v2.0.0 v2.1.0
 ```
 
 It performs these checks on the local machine:
@@ -235,7 +250,7 @@ It performs these checks on the local machine:
 - installs `epusdt`
 - when `upgrade-tag` is provided, verifies `upgrade --no-restart`, the default non-interactive `upgrade`, and both the `n` / Enter branches of `upgrade --prompt-restart`
 - verifies the systemd service, `www/index.html`, config output, logs, and status
-- verifies init-password behavior against real release artifacts; on releases where the legacy plaintext route is absent, the check reports the original HTTP failure for diagnosis
+- verifies that `init-password` succeeds once and later returns `10040` after the admin password is changed
 
 Requirements:
 

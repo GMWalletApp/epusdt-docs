@@ -1,17 +1,21 @@
 # API 概覽
 
+參閱[商戶 API](/zh-tw/api/payment)，瞭解簽名示例、訂單狀態和回撥驗籤。
+
 ## 當前對外可用路由
 
-| 方法 | 路由 | 說明 |
-| --- | --- | --- |
-| `POST` | `/payments/gmpay/v1/order/create-transaction` | 推薦的建立訂單 API |
-| `GET` | `/payments/gmpay/v1/config` | 返回公開支付配置，包含 `supported_assets`、站點品牌資訊、EPay 預設值、OkPay 前端配置及伺服器 `version` |
-| `GET` / `POST` | `/payments/epay/v1/order/create-transaction/submit.php` | EPay 相容跳轉式建立訂單入口 |
-| `POST` | `/payments/okpay/v1/notify` | OkPay 伺服器端回撥入口 |
-| `POST` | `/pay/switch-network` | 在託管收銀臺切換支付網路；可接受鏈上網路值與 `okpay` |
-| `GET` | `/pay/checkout-counter/:trade_id` | 跳轉入口，會把瀏覽器導向託管收銀臺 SPA |
-| `GET` | `/pay/checkout-counter-resp/:trade_id` | 託管收銀臺 SPA 使用的 JSON 資料介面 |
-| `GET` | `/pay/check-status/:trade_id` | 查詢收銀臺訂單狀態 |
+| 場景 | 方法 | 路徑 | 是否需要簽名 |
+| --- | --- | --- | --- |
+| 建立 GMPay 交易 | POST | `/payments/gmpay/v1/order/create-transaction` | 是 |
+| 獲取公開支付配置 | GET | `/payments/gmpay/v1/config` | 否 |
+| 收銀臺頁面 | GET | `/pay/checkout-counter/{trade_id}` | 否 |
+| 收銀臺初始化資料 | GET | `/pay/checkout-counter-resp/{trade_id}` | 否 |
+| 查詢支付狀態 | GET | `/pay/check-status/{trade_id}` | 否 |
+| 切換支付網路/通道 | POST | `/pay/switch-network` | 否 |
+| EPay 相容建立交易 | GET/POST | `/payments/epay/v1/order/create-transaction/submit.php` | 是 |
+| 提交交易雜湊核驗 | POST | `/pay/submit-tx-hash/{trade_id}` | 否，提交 `block_transaction_id` |
+| 收銀臺返回商戶 | GET | `/pay/return/{trade_id}` | 否，返回 HTTP 302 |
+| OkPay 平臺回撥 | POST | `/payments/okpay/v1/notify` | OkPay 簽名 |
 
 ## 管理 API
 

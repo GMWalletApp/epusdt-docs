@@ -1,82 +1,53 @@
-# 手動部署
+# 手動部署 Linux 二進位制
 
-本文說明如何在普通 Linux 伺服器上直接部署 Epusdt。
+可按以下步驟使用自己的程序管理器執行釋出包。使用 systemd 自動安裝請參閱 [epctl 指南](/zh-tw/guide/installation/epctl)。
 
-**首次啟動通常不需要手動建立 `.env`。** 若配置檔不存在，Epusdt 會直接啟動內建安裝嚮導。
+## 準備應用目錄
 
-## 1. 準備目錄
+從[釋出頁](https://github.com/GMWalletApp/epusdt/releases)下載與伺服器架構相符的 Linux 壓縮包，解壓到 `/opt/epusdt` 等私有應用目錄。為服務賬號授予配置及 SQLite 目錄寫許可權，資料目錄應位於網站公開目錄之外。
 
-```bash
-mkdir -p /opt/epusdt
+## 配置並驗證
+
+首次安裝時複製示例後編輯副本。升級時保留已有的 `.env`。
+
+```sh
 cd /opt/epusdt
+chmod +x epusdt
+cp -n .env.example .env
 ```
 
-## 2. 取得執行檔
+在已配置、使用 HTTPS 反向代理的服務上，將以下配置寫入 `.env` 並替換為自己的域名。首次啟動會建立 SQLite 表。
 
-### 方式 A：下載釋出包
-
-請先到目前的 release 頁面依伺服器架構選擇對應檔案，例如：
-
-- `epusdt-1.0.9-linux-amd64.tar.gz`
-- `epusdt-1.0.9-linux-arm64.tar.gz`
-
-以下示例適用於 Linux x86_64 / amd64：
-
-```bash
-wget https://github.com/GMWalletApp/epusdt/releases/download/v1.0.9/epusdt-1.0.9-linux-amd64.tar.gz -O epusdt.tar.gz
-tar -xzf epusdt.tar.gz
-rm epusdt.tar.gz
+```dotenv
+app_uri=https://pay.example.com
+http_listen=127.0.0.1:8000
+runtime_root_path=./runtime
+sqlite_database_filename=epusdt.db
+install=false
 ```
 
-如果你的主機不是 amd64，請直接到 release 頁面下載對應架構的壓縮包：
+在應用目錄執行 `./epusdt http start`。另開終端執行 `curl -fsS http://127.0.0.1:8000/payments/gmpay/v1/config`。驗證後停止前臺程序，再使用程序管理器啟動。
 
-```text
-https://github.com/GMWalletApp/epusdt/releases/latest
+## 程序守護與代理
+
+Supervisor 可使用以下配置，按實際服務賬號修改 `user`，然後執行 `supervisorctl reread` 和 `supervisorctl update`。
+
+```ini
+[program:epusdt]
+directory=/opt/epusdt
+command=/opt/epusdt/epusdt http start
+user=epusdt
+autostart=true
+autorestart=true
+redirect_stderr=true
 ```
 
-### 方式 B：從原始碼編譯
+將 HTTPS 站點的反向代理指向 `http://127.0.0.1:8000`。Nginx 可在 TLS 站點配置中加入以下片段。修改應用配置後重啟服務；升級前備份配置和資料目錄。
 
-前置條件至少需要先安裝：
-
-- `git`
-- `Go`
-
-```bash
-git clone https://github.com/GMWalletApp/epusdt.git
-cd epusdt/src
-go build -o /opt/epusdt/epusdt .
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
 ```
-
-## 3. 啟動服務
-
-```bash
-chmod +x /opt/epusdt/epusdt
-cd /opt/epusdt
-./epusdt http start
-```
-
-之後在瀏覽器打開 `http://你的伺服器IP:8000`，完成安裝嚮導。
-
-## 4. 反向代理
-
-把你的域名（例如 `pay.example.com`）反代到 `http://127.0.0.1:8000`。
-
-## 5. 驗證實際接入地址
-
-基礎地址示例：
-
-```text
-https://pay.example.com
-```
-
-推薦下單路由：
-
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
-
-## 注意事項
-
-- 目前原始碼模板以 `src/.env.example` 為準
-- 初始商戶憑證請以安裝流程 / 管理後臺為準，不要照抄舊文件裡的過時示例
-- 不要再依賴已移除的 `/payments/epusdt/v1/order/create-transaction`

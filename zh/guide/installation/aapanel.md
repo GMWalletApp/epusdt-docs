@@ -1,55 +1,21 @@
-# aaPanel 部署
+# 使用宝塔面板部署
 
-本文说明如何使用 aaPanel 部署 Epusdt 服务本体。
+## 创建站点
 
-**首次启动通常不需要手动建立 `.env`。** 先把程序跑起来，再在浏览器里完成安装向导即可。
+为收银台域名创建纯静态站点，完成 DNS 解析并启用 HTTPS。EPUSDT 独立运行并使用 SQLite。二进制、配置和数据库均放在网站公开目录之外。
 
-## 基本流程
+![创建收银台站点](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/wiki/img/add_web.png)
 
-1. 在 aaPanel 为支付域名建立站点
-2. 上传 Epusdt 发布包或二进制
-3. 把站点反代到 `http://127.0.0.1:8000`
-4. 先修正程序目录权限
-5. 在 aaPanel Supervisor 中设置正确的启动目录与命令
-6. 优先直接打开绑定域名完成安装向导
+## 配置应用进程
 
-## Supervisor 启动前的建议权限设置
+1. 安装面板的 Supervisor 管理器，下载并解压对应架构的发行包。按[手动安装指南](/zh/guide/installation/manual)准备运行账号、可写目录和 `.env`。
+2. 将 `app_uri` 设为收银台 HTTPS 网址，设置 `http_listen=127.0.0.1:8000`。在 Supervisor 中指定安装目录为工作目录，启动命令为二进制完整路径加 `http start`，启用自动启动和重启。
+3. 在进程管理器中查看运行状态和日志。
 
-如果 aaPanel Supervisor 以 `www` 用户执行程序，建议先执行：
+![Supervisor 进程设置](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/wiki/img/supervisor.png)
 
-```bash
-cd /www/wwwroot/epusdt
-chmod +x epusdt
-chown -R www:www /www/wwwroot/epusdt
-```
+## 配置反向代理并验证
 
-## 建议的 Supervisor 设置
+在网站设置中添加指向 `http://127.0.0.1:8000` 的反向代理。访问 `https://你的域名/payments/gmpay/v1/config`，确认返回 `status_code: 200`。添加收款地址后，对应的已启用币种会出现在收银台。修改配置后从 Supervisor 重启 EPUSDT。
 
-- **启动目录：** `/www/wwwroot/epusdt`
-- **启动命令：** `./epusdt http start`
-
-不要只写 `epusdt http start`。如果工作目录不正确，`.env` 等相对路径可能会解析错误，导致启动失败或读到错误位置。
-
-## 完成安装向导
-
-- 建议直接打开绑定好的域名，例如 `https://pay.example.com`
-- 只有在直连程序埠时，才使用 `http://服务器IP:8000`
-
-## 验证
-
-对外基础地址示例：
-
-```text
-https://pay.example.com
-```
-
-推荐下单路由：
-
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
-
-## 注意事项
-
-- 商户凭证与 EPay 默认值现在都由管理后台维护
-- 不要再依赖旧文件里的 `/payments/epusdt/v1/order/create-transaction`
+![反向代理设置](https://github.com/GMWalletApp/epusdt/blob/78ac7cc97637bf5f35bcf7d717d7def7d9aa6232/wiki/img/fanxiang.png)

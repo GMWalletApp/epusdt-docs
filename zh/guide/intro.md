@@ -1,63 +1,45 @@
 # 项目简介
 
-## 安全审计
+EPUSDT 是可自行部署的支付网关。商户创建订单，买家在收银台付款，网关核验到账后向商户发送签名回调。链上直付的资金进入商户配置的收款地址。
 
-Epusdt 已完成第三方安全审计。
-[查看安全审计报告](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)
+## 接入第一笔收款
 
-## 目前源代码实际提供什么
+1. [部署网关](/zh/guide/installation/docker)，设置买家可以访问的 HTTPS 收银台地址。
+2. 在后台启用网络和币种，添加收款地址。创建商户 API 密钥，将 `pid` 与 `secret_key` 保存在商户服务器。
+3. [创建 GMPay 订单](/zh/api/payment#create)，将买家跳转至返回的 `payment_url`。已对接易支付的系统可使用 [EPay 兼容入口](/zh/guide/integration/epay).
 
-`Epusdt` 是一个由 **Go** 编写的私有化 **加密支付网关**。
+## 支持的链与代币 {#networks}
 
-GMWalletApp 组织也维护 [GMPay Edge](/zh/gmpay-edge/)。它是支持 Cloudflare Workers 或 Bun/Nitro Docker 的独立网关，共用 GMPay / EPay 商户协议语境，但不是 Epusdt 的同一套运行时或部署模型。
+下表列出新安装的默认网络和币种。启用链和币种并配置收款地址后，收银台才会显示对应选项。可通过 `GET /payments/gmpay/v1/config` 的 `data.supported_assets` 获取当前网关的实际列表。
 
-如果需要数字商品商城，请看 [GMShop Edge](/zh/gmshop-edge/)，它是独立的 Cloudflare Workers 商城，负责商品、结账、交付与管理后台。
+| 网络 | API 网络 ID | 默认币种 |
+| --- | --- | --- |
+| TRON | `tron` | TRX, USDT |
+| Ethereum | `ethereum` | USDT, USDC |
+| BNB Smart Chain | `binance` | USDT, USDC |
+| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
+| Solana | `solana` | SOL, USDT, USDC |
+| TON | `ton` | TON, USDT |
+| Plasma | `plasma` | USDT |
+| Aptos | `aptos` | USDT, USDC |
+| Sui | `sui` | SUI, USDC |
+| Arbitrum One | `arbitrum` | ETH, USDC |
+| Base | `base` | ETH, USDC |
+| OP Mainnet | `optimism` | ETH, USDC |
+| Avalanche C-Chain | `avalanche` | AVAX, USDC |
+| HyperEVM | `hyperevm` | HYPE, USDC |
+| Monad | `monad` | MON, USDC |
+| Arc | `arc` | USDC |
 
-当前源代码对外提供两条建立订单主流程：
+Arc 支持原生和 ERC-20 两种 USDC。Polygon 的 USDC 和 USDC.e 是两种独立资产。
 
-- **GMPay**：`POST /payments/gmpay/v1/order/create-transaction`
-- **EPay 兼容**：`GET/POST /payments/epay/v1/order/create-transaction/submit.php`
+### 托管支付方式
 
-另外还提供：
+OKX OnchainOS 在 X Layer 上支持 USDC、USDT0 和 USDG。OKPay 默认支持 USDT 和 TRX。商户须分别启用服务商，客户端从 `data.xlayer` 或 `data.okpay` 读取选项。
 
-- `/pay/*` 之下的托管收银台页面
-- 收银台切换网络：`POST /pay/switch-network`
-- 前端 / 收银台初始化用的公开支付配置：`GET /payments/gmpay/v1/config`
-- `/admin/api/v1/*` 管理 API，用于管理 API Keys、链、代币、钱包地址、通知通道与设置
-- 后台汇率设置支持二选一：配置汇率 API 地址，或直接填写强制 USDT 汇率；如果只使用强制汇率，API 地址可以留空
+## 从转账到发货
 
-## 商户凭证模型
-
-目前支付 API 不再依赖单一全域密钥。
-
-现在每个商户都对应后台建立的一条 **API key**：
-
-- `pid`
-- `secret_key`
-- 可选 `ip_whitelist`
-- 可选默认 `notify_url`
-
-GMPay 与 EPay 入站请求都会先根据 `pid` 找到对应 API key，再使用该笔数据的 `secret_key` 验签。
-
-## 支持的链与代币
-
-目前源代码不再把固定的公开链清单直接写死在文件层。
-
-`GET /payments/gmpay/v1/config` 的响应来自实际后台数据。
-
-其中 `data.supported_assets` 会根据以下数据实时组装：
-
-- 已启用的 `chains`
-- 已启用的 `chain_tokens`
-- 该链上存在可用 `wallet_address`
-
-同一个响应还会带出公开站点 / 收银台品牌信息，以及 EPay / OkPay 前端配置字段。
-
-也就是说，真正可用的网络与代币，取决于管理后台目前启用了什么。
-
-## 首次安装
-
-若首次启动时没有配置文件，Epusdt 会直接进入内建 **安装向导**。先在浏览器完成数据库、域名与初始化设置，之后再通过管理后台或管理 API 维护执行数据。
+ChainScanner 默认随 EPUSDT 启动。发现匹配转账后，订单进入 **5 · 确认中**。默认开启严格核验，达到规定确认深度且两个独立节点结果一致后，订单进入 **2 · 已支付**。两轮核验均未通过则进入 **6 · 人工复核**。商户应在收到并验证成功回调后再发货。
 
 ## 程序截图
 
@@ -81,3 +63,9 @@ GMPay 与 EPay 入站请求都会先根据 `pid` 找到对应 API key，再使�
     </td>
   </tr>
 </table>
+
+## 相关项目与审计
+
+- [GMPay Edge](/zh/gmpay-edge/) · 可部署于 Workers 或 Bun 的支付网关。
+- [GMShop Edge](/zh/gmshop-edge/) · 数字商品商城。
+- [EPUSDT 安全审计报告，2026 年 5 月](https://github.com/VectorBits/audit/blob/main/epusdt-secure-audit-report-2026-05-14.pdf)

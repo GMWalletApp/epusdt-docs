@@ -1,82 +1,53 @@
-# Manual Installation
+# Manual Linux installation
 
-This guide covers running Epusdt on a normal Linux server without Docker or aaPanel.
+Use this procedure to run the released binary under your own service manager. For a managed systemd installation, follow the [epctl guide](/guide/installation/epctl).
 
-**No manual `.env` is required for the first run.** If the config file does not exist, Epusdt starts the built-in install wizard in the browser.
+## Prepare the application directory
 
-## 1. Prepare the directory
+Download the Linux archive for your architecture from [Releases](https://github.com/GMWalletApp/epusdt/releases). Extract it into a private application directory such as `/opt/epusdt`. Configure a dedicated service account with write access to the configuration and SQLite directories. Keep these directories outside the public web root.
 
-```bash
-mkdir -p /opt/epusdt
+## Configure and test
+
+On a fresh installation copy the included example, then edit the copy. Preserve an existing `.env` on upgrades.
+
+```sh
 cd /opt/epusdt
+chmod +x epusdt
+cp -n .env.example .env
 ```
 
-## 2. Get the binary
+For a configured service behind an HTTPS proxy, set these entries in `.env` and use your public domain. The first startup creates the SQLite tables.
 
-### Option A. Download release
-
-Choose the archive that matches your server architecture from the current release page:
-
-- `epusdt-1.0.10-linux-amd64.tar.gz`
-- `epusdt-1.0.10-linux-arm64.tar.gz`
-
-Example for Linux x86_64 / amd64:
-
-```bash
-wget https://github.com/GMWalletApp/epusdt/releases/download/v1.0.10/epusdt-1.0.10-linux-amd64.tar.gz -O epusdt.tar.gz
-tar -xzf epusdt.tar.gz
-rm epusdt.tar.gz
+```dotenv
+app_uri=https://pay.example.com
+http_listen=127.0.0.1:8000
+runtime_root_path=./runtime
+sqlite_database_filename=epusdt.db
+install=false
 ```
 
-If you are not on amd64, open the release page and download the matching archive for your architecture:
+Run `./epusdt http start` in the application directory. From another shell check `curl -fsS http://127.0.0.1:8000/payments/gmpay/v1/config`. Stop the foreground process before starting the managed service.
 
-```text
-https://github.com/GMWalletApp/epusdt/releases/latest
+## Keep the service running
+
+For Supervisor, use the following program definition and replace `epusdt` in the user field with the service account you prepared. Run `supervisorctl reread`, then `supervisorctl update`.
+
+```ini
+[program:epusdt]
+directory=/opt/epusdt
+command=/opt/epusdt/epusdt http start
+user=epusdt
+autostart=true
+autorestart=true
+redirect_stderr=true
 ```
 
-### Option B. Build from source
+Point your HTTPS virtual host at `http://127.0.0.1:8000`. For Nginx, use this location inside the TLS server block. Restart the service after editing its configuration. Back up the configuration and data directories before upgrading.
 
-Prerequisites:
-
-- `git`
-- `Go`
-
-```bash
-git clone https://github.com/GMWalletApp/epusdt.git
-cd epusdt/src
-go build -o /opt/epusdt/epusdt .
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:8000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+}
 ```
-
-## 3. Start service
-
-```bash
-chmod +x /opt/epusdt/epusdt
-cd /opt/epusdt
-./epusdt http start
-```
-
-Then open `http://your-server-ip:8000` and finish the install wizard.
-
-## 4. Reverse proxy
-
-Point your domain, for example `pay.example.com`, to `http://127.0.0.1:8000` behind Nginx.
-
-## 5. Verify the real API base URL
-
-Example base URL:
-
-```text
-https://pay.example.com
-```
-
-Recommended create-order route:
-
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
-
-## Notes
-
-- `src/.env.example` is the current source template
-- Initial merchant credentials are managed from the install flow / admin panel, not from old docs-only examples
-- Do not rely on removed routes such as `/payments/epusdt/v1/order/create-transaction`

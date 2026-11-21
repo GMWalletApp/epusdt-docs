@@ -4,42 +4,39 @@ tk:
   teekHome: false
 
 hero:
-  name: "Epusdt"
+  name: "EPUSDT"
   text: "Self-Hosted Multi-Chain Crypto Payment"
-  tagline: Go-powered gateway for hosted checkout, GMPay API, and EPay-compatible redirect flow. Private deployment, direct-to-wallet settlement.
+  tagline: Accept on-chain payments to your own wallet. Create an order with GMPay or EPay and receive a signed notification when payment is verified.
   image:
     src: /logo.png
     alt: Epusdt
   actions:
     - theme: brand
-      text: Get Started
-      link: /guide/intro
+      text: Install EPUSDT
+      link: "/guide/installation/docker"
     - theme: alt
-      text: Docker Install
-      link: /guide/installation/docker
+      text: Merchant API
+      link: "/api/payment"
     - theme: alt
-      text: API Reference
-      link: /api/reference
+      text: Networks and assets
+      link: "/guide/intro#networks"
     - theme: alt
-      text: GMPay Edge
-      link: /gmpay-edge/
+      text: Telegram channel
+      link: "https://t.me/epusdt"
     - theme: alt
-      text: GMShop Edge
-      link: /gmshop-edge/
-    - theme: alt
-      text: FAQ
-      link: /guide/faq
+      text: Telegram group
+      link: "https://t.me/epusdt_group"
 
 features:
   - icon: 🐳
-    title: Wizard-Based Deployment
-    details: First boot launches the install wizard in your browser. No need to handwrite a config file before startup.
+    title: Docker and SQLite
+    details: The default Compose service starts the gateway and ChainScanner together. A single host directory holds the configuration and databases.
   - icon: 🔑
     title: Unified Merchant Credentials
     details: Each merchant uses a PID + secret_key pair from the admin panel. The same credential works for GMPay and EPay flows.
   - icon: 🌐
-    title: Multi-Chain Receiving
-    details: Current source includes chain and token management backed by admin-configured chains, chain_tokens, and wallet addresses.
+    title: 16 direct-payment networks
+    details: Enable the assets you accept and add receiving addresses. Checkout also offers optional hosted payments through OKX OnchainOS and OKPay.
   - icon: 🧾
     title: Hosted Checkout + Callback
     details: Create orders, redirect customers to the cashier page, and receive signed async callbacks after on-chain confirmation.
