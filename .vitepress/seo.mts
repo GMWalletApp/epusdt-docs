@@ -11,7 +11,7 @@ const languages = [
 export const sitemap: NonNullable<UserConfig["sitemap"]> = {
   hostname: origin,
   transformItems(items) {
-    return items.filter(item => !/^\/?README(?:\.|$)/i.test(item.url)).map(item => {
+    const articles = items.filter(item => !/^\/?README(?:\.|$)/i.test(item.url)).map(item => {
       const links = (item.links ?? []).map(link => ({
         ...link,
         lang: languages.find(locale => locale.openGraph.replace("_", "-") === link.lang)?.tag ?? link.lang,
@@ -20,6 +20,7 @@ export const sitemap: NonNullable<UserConfig["sitemap"]> = {
       if (fallback) links.push({ ...fallback, lang: "x-default" });
       return { ...item, links };
     });
+    return [...articles, { url: "/agent-setup/payment-gateways.zh.md" }];
   },
 };
 
