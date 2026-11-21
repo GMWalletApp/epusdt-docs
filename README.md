@@ -16,3 +16,9 @@ bun run docs:dev
 ```bash
 bun run docs:build
 ```
+
+## Production deployment
+
+Cloudflare Workers Builds watches `main` in this repository. A push or merged pull request triggers `npx wrangler deploy` from the repository root. Wrangler runs `bun install && bun run docs:build` and serves the files in `.vitepress/dist` at [epusdt.com](https://epusdt.com).
+
+To check a release, open the **epusdt-docs** Worker in Cloudflare, find the build for the merged commit, and check the updated page on the public site. If the build reports a deleted or rotated token, select a valid deployment token under **Settings → Builds** and retry that commit.
