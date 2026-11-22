@@ -7,7 +7,7 @@ description: "Đơn EPay đã thanh toán chuyển về trang người bán vớ
 
 # Quay về trang người bán
 
-<span class="api-route"><b>GET</b> <code>/pay/return/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

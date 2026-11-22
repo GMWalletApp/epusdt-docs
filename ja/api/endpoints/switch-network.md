@@ -7,7 +7,7 @@ description: "JSON 本文に親注文の trade_id、token、network を指定し
 
 # ネットワークまたは決済事業者を選択
 
-<span class="api-route"><b>POST</b> <code>/pay/switch-network</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">リクエスト例 ↓</a>
 

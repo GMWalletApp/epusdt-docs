@@ -7,7 +7,7 @@ description: "通过 GET 查询串或 POST 表单提交已签名参数。MD5 签
 
 # 创建易支付订单
 
-<span class="api-route"><b>GET/POST</b> <code>/payments/epay/v1/order/create-transaction/submit.php</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">请求示例 ↓</a>
 

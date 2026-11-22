@@ -30,6 +30,7 @@ export default {
     }
 
     app.use(ui);
+    app.component("ApiRoute", defineAsyncComponent(() => import("./components/ApiRoute.vue")));
     app.component("SponsorPageEn", defineAsyncComponent(() => import("./components/SponsorPageEn.vue")));
     app.component("SponsorPageZh", defineAsyncComponent(() => import("./components/SponsorPageZh.vue")));
     app.component("SponsorPageZhTw", defineAsyncComponent(() => import("./components/SponsorPageZhTw.vue")));

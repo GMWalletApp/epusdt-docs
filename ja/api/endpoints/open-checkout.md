@@ -7,7 +7,7 @@ description: "決済 URL をブラウザで開くと、HTTP 301 で /cashier/{tr
 
 # 決済画面を開く
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">リクエスト例 ↓</a>
 

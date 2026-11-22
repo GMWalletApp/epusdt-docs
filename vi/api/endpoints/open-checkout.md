@@ -7,7 +7,7 @@ description: "Mở liên kết thanh toán trong trình duyệt. EPUSDT chuyển
 
 # Mở trang thanh toán
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

@@ -7,7 +7,7 @@ description: "支払い待ち（状態 1）のオンチェーン注文につい�
 
 # 取引ハッシュを送信
 
-<span class="api-route"><b>POST</b> <code>/pay/submit-tx-hash/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">リクエスト例 ↓</a>
 

@@ -7,7 +7,7 @@ description: "透過 GET 查詢字串或 POST 表單提交已簽章的參數。M
 
 # 建立易支付訂單
 
-<span class="api-route"><b>GET/POST</b> <code>/payments/epay/v1/order/create-transaction/submit.php</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">請求範例 ↓</a>
 

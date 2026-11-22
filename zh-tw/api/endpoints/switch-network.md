@@ -7,7 +7,7 @@ description: "JSON 請求本文須包含父訂單的 trade_id、token 與 networ
 
 # 選擇網路或付款通道
 
-<span class="api-route"><b>POST</b> <code>/pay/switch-network</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">請求範例 ↓</a>
 

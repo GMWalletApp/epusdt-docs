@@ -7,7 +7,7 @@ description: "この URL を OKPay に設定します。EPUSDT はショップ�
 
 # OKPay 通知を受信
 
-<span class="api-route"><b>POST</b> <code>/payments/okpay/v1/notify</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">リクエスト例 ↓</a>
 

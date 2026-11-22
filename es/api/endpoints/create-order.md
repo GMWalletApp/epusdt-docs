@@ -7,7 +7,7 @@ description: "Firma la solicitud en tu servidor y dirige al comprador a payment_
 
 # Crear un pedido GMPay
 
-<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ejemplo de solicitud ↓</a>
 

@@ -7,7 +7,7 @@ description: "Envie os parâmetros assinados na consulta GET ou em um formulári
 
 # Criar um pedido EPay
 
-<span class="api-route"><b>GET/POST</b> <code>/payments/epay/v1/order/create-transaction/submit.php</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Exemplo de requisição ↓</a>
 

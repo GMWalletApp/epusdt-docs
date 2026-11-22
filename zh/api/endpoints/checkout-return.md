@@ -7,7 +7,7 @@ description: "已支付的 EPay 订单会携带签名参数跳回商户网站，
 
 # 返回商户网站
 
-<span class="api-route"><b>GET</b> <code>/pay/return/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">请求示例 ↓</a>
 

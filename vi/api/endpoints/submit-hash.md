@@ -7,7 +7,7 @@ description: "Gửi block_transaction_id trong JSON cho đơn on-chain đang ch�
 
 # Gửi mã băm giao dịch
 
-<span class="api-route"><b>POST</b> <code>/pay/submit-tx-hash/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

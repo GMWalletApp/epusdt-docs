@@ -7,7 +7,7 @@ description: "Consulta el trade_id de EPUSDT para actualizar el pago. Entrega el
 
 # Consultar estado del pedido
 
-<span class="api-route"><b>GET</b> <code>/pay/check-status/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ejemplo de solicitud ↓</a>
 

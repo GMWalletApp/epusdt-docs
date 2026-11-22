@@ -7,7 +7,7 @@ description: "Envía el trade_id del pedido principal, token y network en el cue
 
 # Seleccionar red o proveedor
 
-<span class="api-route"><b>POST</b> <code>/pay/switch-network</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ejemplo de solicitud ↓</a>
 

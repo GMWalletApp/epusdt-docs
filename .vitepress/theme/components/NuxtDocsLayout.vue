@@ -21,7 +21,7 @@ import { languages as siteLanguages } from "../../languages";
 import DocMotion from "./DocMotion.vue";
 import DocTools from "./DocTools.vue";
 
-const ApiExamples = defineAsyncComponent(() => import("./ApiExamples.vue"));
+const ApiEndpoint = defineAsyncComponent(() => import("./ApiEndpoint.vue"));
 const DocSearch = defineAsyncComponent(() => import("./DocSearch.vue"));
 const { localeIndex, theme, page, isDark } = useData();
 interface Nav { text: string; link: string; method?: string; route?: string }
@@ -146,10 +146,7 @@ watch(file, () => { filter.value = ""; menu.value = false; search.value = false;
                     <UButton class="lg:hidden" color="neutral" variant="ghost" icon="i-lucide-list" size="sm" :aria-label="local.contents" />
                   </UDropdownMenu>
                 </DocTools>
-                <div v-if="endpointPage" class="vp-doc api-spread">
-                  <Content class="api-article" />
-                  <ApiExamples :key="file" />
-                </div>
+                <ApiEndpoint v-if="endpointPage" :key="file" />
                 <Content v-else class="vp-doc" />
                 <nav v-if="pager.length" class="ep-pager grid sm:grid-cols-2 gap-3">
                   <UPageCard v-for="entry in pager" :key="entry.item.link" :to="entry.item.link" :icon="entry.icon"

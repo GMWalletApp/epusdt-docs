@@ -7,7 +7,7 @@ description: "Đọc số tiền, địa chỉ nhận và lựa chọn hiện t�
 
 # Đọc chi tiết thanh toán
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter-resp/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

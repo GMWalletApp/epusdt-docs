@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onUnmounted, ref, watch } from "vue";
 import { useData } from "vitepress";
-import { demoTrade, errorExamples, errorResponse, examples, requestExample, sampleResponse } from "../api-examples";
+import { examples, requestExample } from "../api-examples";
+import { useApiState } from "../api-context";
 import UButton from "@nuxt/ui/components/Button.vue";
 
 const { frontmatter, localeIndex } = useData();
@@ -16,21 +17,11 @@ const translations = {
 };
 const labels = computed(() => translations[localeIndex.value as keyof typeof translations] ?? translations.root);
 const sample = computed(() => examples[frontmatter.value.operation]);
-const base = ref("https://pay.example.com");
-const trade = ref(demoTrade);
+const {base,trade,method,epayMethod,url,responses,responseKind,response,labels: apiText} = useApiState();
 const language = ref("cURL");
-const epayMethod = ref("POST");
-const method = computed(() => sample.value.form ? epayMethod.value : frontmatter.value.method);
-const url = computed(() => {
-  try {
-    const u = new URL(base.value);
-    if (!["http:", "https:"].includes(u.protocol) || u.username || u.password || u.search || u.hash || u.pathname !== "/" || !/^[a-z0-9.:[\]-]+$/i.test(u.host)) return "";
-    const id = encodeURIComponent(trade.value).replaceAll("'", "%27");
-    return u.origin + frontmatter.value.route.replace("{trade_id}", id);
-  } catch { return ""; }
-});
+const primaryLanguages = ["cURL", "Node.js", "Python"];
+const moreLanguages = ["PHP", "Go", "Ruby", "Java", "HTTP"];
 const snippet = computed(() => url.value ? requestExample(language.value, url.value, method.value, sample.value) : "");
-const responseKind = ref("success");
 const liveLabels = {
   root: ["Send GET request", "Live response", "Enter your gateway URL to test a public query.", "Request failed. Check the URL, network and gateway CORS settings."],
   zh: ["发送 GET 请求", "实际响应", "输入自己的网关地址即可试调公开查询接口。", "请求失败，请检查网关地址、网络连接和网关的跨域设置。"],
@@ -78,7 +69,6 @@ async function runQuery() {
 const feedback = ref<{source: string; message: string}>();
 const code = ref<HTMLElement>();
 const responseCode = ref<HTMLElement>();
-const responseText = computed(() => responseKind.value === "error" ? errorResponse(frontmatter.value.operation) : sampleResponse(sample.value));
 watch([snippet, responseKind], () => { feedback.value = undefined; });
 async function copy(source: "request" | "response") {
   const el = source === "request" ? code.value : responseCode.value;
@@ -110,7 +100,10 @@ async function copy(source: "request" | "response") {
         <input v-model="trade" spellcheck="false" autocomplete="off">
       </label>
       <div class="api-languages" :aria-label="labels[0]" role="group">
-        <button v-for="item in ['cURL', 'Node.js', 'Python']" :key="item" type="button" :aria-pressed="language === item" @click="language = item">{{ item }}</button>
+        <button v-for="item in primaryLanguages" :key="item" type="button" :aria-pressed="language === item" @click="language = item">{{ item }}</button>
+        <select class="api-more" :aria-label="apiText[7]" :value="moreLanguages.includes(language) ? language : ''" @change="language = ($event.target as HTMLSelectElement).value">
+          <option disabled value="">{{ apiText[7] }}</option><option v-for="item in moreLanguages" :key="item">{{ item }}</option>
+        </select>
       </div>
       <pre v-if="snippet" tabindex="0"><code ref="code">{{ snippet }}</code></pre>
       <p v-else role="status">{{ labels[6] }}</p>
@@ -121,11 +114,11 @@ async function copy(source: "request" | "response") {
       <div class="api-copy"><span aria-live="polite">{{ feedback?.source === "request" ? feedback.message : "" }}</span><UButton :disabled="!snippet" size="xs" color="neutral" variant="outline" @click="copy('request')">{{ labels[3] }}</UButton></div>
     </div>
     <div class="api-response">
-      <div class="api-panel-heading"><strong>{{ labels[2] }}</strong><select v-if="errorExamples[frontmatter.operation]" v-model="responseKind" :aria-label="labels[2]">
-        <option value="success">HTTP {{ sample.status ?? 200 }}</option><option value="error">HTTP 400</option>
-      </select><span v-else class="api-status">HTTP {{ sample.status ?? 200 }}</span></div>
-      <small v-if="responseKind === 'success' && typeof sample.response !== 'string'">{{ labels[7] }}</small>
-      <pre tabindex="0"><code ref="responseCode">{{ responseText }}</code></pre>
+      <div class="api-panel-heading"><strong>{{ labels[2] }}</strong><select v-if="responses.length > 1" v-model="responseKind" :aria-label="labels[2]">
+        <option v-for="item in responses" :key="item.id" :value="item.id">{{ item.status }} · {{ item.id !== "success" && item.mime === "application/json" && Number(item.id) !== item.status ? item.id + " · " : "" }}{{ item.label }}</option>
+      </select><span v-else class="api-status">HTTP {{ response.status }}</span></div>
+      <small>{{ response.mime }}<template v-if="responseKind === 'success' && typeof sample.response !== 'string'"> · {{ labels[7] }}</template></small>
+      <pre tabindex="0"><code ref="responseCode">{{ response.body }}</code></pre>
       <div class="api-copy"><span aria-live="polite">{{ feedback?.source === "response" ? feedback.message : "" }}</span><UButton size="xs" color="neutral" variant="outline" @click="copy('response')">{{ labels[3] }}</UButton></div>
     </div>
     <div v-if="result" class="api-response api-live" aria-live="polite">

@@ -7,7 +7,7 @@ description: "Dùng trade_id của EPUSDT để cập nhật trạng thái. Ch�
 
 # Kiểm tra trạng thái đơn
 
-<span class="api-route"><b>GET</b> <code>/pay/check-status/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

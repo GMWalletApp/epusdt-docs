@@ -7,7 +7,7 @@ description: "在浏览器打开订单的支付链接。EPUSDT 通过 HTTP 301 �
 
 # 打开收银台
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">请求示例 ↓</a>
 

@@ -7,7 +7,7 @@ description: "Configure this URL in OKPay. The provider sends its signed payload
 
 # Receive an OKPay notification
 
-<span class="api-route"><b>POST</b> <code>/payments/okpay/v1/notify</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Request example ↓</a>
 

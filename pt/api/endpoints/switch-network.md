@@ -7,7 +7,7 @@ description: "Envie o trade_id do pedido principal, token e network no corpo JSO
 
 # Selecionar rede ou provedor
 
-<span class="api-route"><b>POST</b> <code>/pay/switch-network</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Exemplo de requisição ↓</a>
 
