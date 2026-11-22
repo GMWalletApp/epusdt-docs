@@ -10,6 +10,10 @@ const labels = {
   root: { home: "Home", docs: "Docs", menu: "Page tools", copy: "Copy page link", markdown: "Open Markdown", deploy: "Agent deployment guide", copied: "Link copied", failed: "Select and copy the link" },
   zh: { home: "首页", docs: "文档", menu: "页面工具", copy: "复制页面链接", markdown: "查看 Markdown", deploy: "Agent 部署指南", copied: "链接已复制", failed: "请选择并复制链接" },
   "zh-tw": { home: "首頁", docs: "文件", menu: "頁面工具", copy: "複製頁面連結", markdown: "查看 Markdown", deploy: "Agent 部署指南", copied: "連結已複製", failed: "請選取並複製連結" },
+  vi: { home: "Trang chủ", docs: "Tài liệu", menu: "Công cụ", copy: "Sao chép liên kết", markdown: "Mở Markdown", deploy: "Hướng dẫn triển khai bằng Agent", copied: "Đã sao chép liên kết", failed: "Chọn và sao chép liên kết" },
+  ja: { home: "ホーム", docs: "ドキュメント", menu: "ページ操作", copy: "リンクをコピー", markdown: "Markdown を開く", deploy: "エージェント導入ガイド", copied: "リンクをコピーしました", failed: "リンクを選択してコピー" },
+  es: { home: "Inicio", docs: "Documentación", menu: "Herramientas", copy: "Copiar enlace", markdown: "Abrir Markdown", deploy: "Guía de despliegue con agentes", copied: "Enlace copiado", failed: "Selecciona y copia el enlace" },
+  pt: { home: "Início", docs: "Documentação", menu: "Ferramentas", copy: "Copiar link", markdown: "Abrir Markdown", deploy: "Guia de implantação com agentes", copied: "Link copiado", failed: "Selecione e copie o link" },
 };
 const local = computed(() => labels[localeIndex.value as keyof typeof labels] ?? labels.root);
 const prefix = computed(() => localeIndex.value === "root" ? "/" : "/" + localeIndex.value + "/");
@@ -47,7 +51,7 @@ async function copyLink() {
 const items = computed(() => {
   const actions = [{ label: local.value.copy, icon: "i-lucide-link", onSelect: copyLink }];
   const links = [];
-  if (/^(?:(?:zh|zh-tw)\/)?(?:guide|api|gmpay-edge|gmshop-edge)\//.test(file.value)) {
+  if (/^(?:(?:zh|zh-tw|vi|ja|es|pt)\/)?(?:guide|api|gmpay-edge|gmshop-edge)\//.test(file.value)) {
     links.push({ label: local.value.markdown, icon: "i-lucide-file-text", to: "/agent-docs/" + file.value, target: "_blank" });
   }
   links.push({ label: local.value.deploy, icon: "i-lucide-terminal", to: "/agent-setup/prompt.md", target: "_blank" });

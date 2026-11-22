@@ -5,14 +5,36 @@ import UButton from "@nuxt/ui/components/Button.vue";
 import UModal from "@nuxt/ui/components/Modal.vue";
 import GradientASCII from "./GradientASCII.vue";
 
-const props = defineProps<{ language: "en" | "zh" | "zh-tw" }>();
+import { languages, type Language } from "../../languages";
+
+const props = defineProps<{ language: Language }>();
+const current = computed(() => languages.find(l => l.id === props.language)!);
 const guide = "https://epusdt.com/agent-setup/prompt.md";
 const translations = {
   en: { title: ["Onchain payments.", "Real-world commerce."], copy: "Copy deployment or migration prompt", shortAction: "Deploy/migrate to EPUSDT", action: "Deploy / migrate to EPUSDT", details: "Learn more", shortCopied: "Copied", copied: "Copied to clipboard", manual: "Copy the prompt", hint: "Press ⌘C or Ctrl+C. On a phone, touch and hold the text, then choose Copy.", close: "Close", instruction: "Read {url}. Inspect my target environment first, then deploy, upgrade or migrate to EPUSDT (GMPay) using Docker. Preserve existing data. For a new instance, open the setup wizard and let me complete password setup myself.", intro: "/guide/intro", nav: "Language" },
   zh: { title: ["为真实经济而建的", "链上支付基础设施。"], copy: "复制部署或迁移指令", shortAction: "部署/迁移到EPUSDT", action: "部署/迁移到EPUSDT", details: "了解详情", shortCopied: "已复制", copied: "部署指令已复制", manual: "手动复制指令", hint: "电脑按 ⌘C 或 Ctrl+C 复制；手机长按下方文字，再点「复制」。", close: "关闭", instruction: "读取 {url}。先检查我的目标环境，按现状用 Docker 新装、升级或从 bepusdt、TokenPay 迁移到 EPUSDT（GMPay），保全原有数据。新实例请打开初始化页面，由我自己完成密码设置。", intro: "/zh/guide/intro", nav: "语言" },
   "zh-tw": { title: ["為真實經濟而建的", "鏈上支付基礎設施。"], copy: "複製部署或遷移指令", shortAction: "部署/遷移到EPUSDT", action: "部署/遷移到EPUSDT", details: "瞭解詳情", shortCopied: "已複製", copied: "部署指令已複製", manual: "手動複製指令", hint: "電腦按 ⌘C 或 Ctrl+C 複製；手機長按下方文字，再點「複製」。", close: "關閉", instruction: "讀取 {url}。先檢查我的目標環境，依現況用 Docker 新裝、升級或從 bepusdt、TokenPay 遷移到 EPUSDT（GMPay），保全原有資料。新實例請開啟初始化頁面，由我自行完成密碼設定。", intro: "/zh-tw/guide/intro", nav: "語言" },
+  vi: {
+    title: ["Thanh toán on-chain.", "Thương mại đời thực."], action: "Triển khai / chuyển sang EPUSDT", shortAction: "Cài / chuyển sang EPUSDT", details: "Tìm hiểu",
+    copy: "Sao chép lệnh triển khai hoặc di chuyển", copied: "Đã sao chép lệnh", shortCopied: "Đã sao chép", manual: "Sao chép lệnh", hint: "Nhấn ⌘C hoặc Ctrl+C. Trên điện thoại, nhấn giữ văn bản rồi chọn Sao chép.", close: "Đóng", nav: "Ngôn ngữ", intro: "/vi/guide/intro",
+    instruction: "Đọc {url}. Kiểm tra môi trường trước, sau đó dùng Docker để cài mới, nâng cấp hoặc chuyển sang EPUSDT (GMPay). Bảo toàn dữ liệu hiện có. Nếu cài mới, hãy mở trang khởi tạo để tôi tự đặt mật khẩu.",
+  },
+  ja: {
+    title: ["オンチェーン決済を、", "実際の商取引に。"], action: "EPUSDT を導入・移行", shortAction: "EPUSDT を導入・移行", details: "詳しく見る",
+    copy: "導入・移行用の指示をコピー", copied: "指示をコピーしました", shortCopied: "コピー済み", manual: "指示をコピー", hint: "⌘C または Ctrl+C を押してください。スマートフォンではテキストを長押しして「コピー」を選びます。", close: "閉じる", nav: "言語", intro: "/ja/guide/intro",
+    instruction: "{url} を読み、まず対象環境を確認してください。Docker で EPUSDT（GMPay）を新規導入、アップグレード、または既存環境から移行し、既存データを保全してください。新規導入の場合は初期設定画面を開き、パスワードは私自身が設定します。",
+  },
+  es: {
+    title: ["Pagos en cadena.", "Comercio real."], action: "Instalar o migrar a EPUSDT", shortAction: "Instalar/migrar EPUSDT", details: "Ver más",
+    copy: "Copiar las instrucciones de instalación o migración", copied: "Instrucciones copiadas", shortCopied: "Copiado", manual: "Copiar las instrucciones", hint: "Pulsa ⌘C o Ctrl+C. En el móvil, mantén pulsado el texto y selecciona Copiar.", close: "Cerrar", nav: "Idioma", intro: "/es/guide/intro",
+    instruction: "Lee {url}. Revisa primero mi entorno y usa Docker para instalar o actualizar EPUSDT (GMPay), o migrar a él. Conserva los datos existentes. Si es una instalación nueva, abre el asistente de configuración para que yo establezca la contraseña.",
+  },
+  pt: {
+    title: ["Pagamentos on-chain.", "Comércio real."], action: "Instalar ou migrar para EPUSDT", shortAction: "Instalar/migrar EPUSDT", details: "Saiba mais",
+    copy: "Copiar instruções de instalação ou migração", copied: "Instruções copiadas", shortCopied: "Copiado", manual: "Copiar as instruções", hint: "Pressione ⌘C ou Ctrl+C. No celular, toque no texto e segure, depois selecione Copiar.", close: "Fechar", nav: "Idioma", intro: "/pt/guide/intro",
+    instruction: "Leia {url}. Verifique primeiro o meu ambiente e use Docker para instalar ou atualizar o EPUSDT (GMPay), ou migrar para ele. Preserve os dados existentes. Em uma instalação nova, abra o assistente de configuração para que eu defina a senha.",
+  },
 };
-const languages = [{ id: "en", label: "EN", url: "/" }, { id: "zh", label: "简", url: "/zh/" }, { id: "zh-tw", label: "繁", url: "/zh-tw/" }];
 // Static Lobe Icons (9752d96); license at /licenses/lobe-icons.txt.
 const agentPairs = [
   [["codex", "Codex"], ["claudecode-color", "Claude Code"]],
@@ -127,9 +149,15 @@ onUnmounted(() => {
       <GradientASCII shape="horizon" :speed="0.6" :glow="0.18" :flicker="0.08" :grain="0.035" :colors="['#244ff5', '#cceeff', '#86caff', '#4977fc']" />
     </div>
     <header class="ep-bar">
-      <a class="ep-brand" :href="languages.find(l => l.id === language)?.url" aria-label="EPUSDT"><img alt="" src="/logo.png" width="34" height="34">EPUSDT</a>
+      <a class="ep-brand" :href="current.prefix" aria-label="EPUSDT"><img alt="" src="/logo.png" width="34" height="34">EPUSDT</a>
       <nav class="ep-languages" :aria-label="translations[language].nav">
-        <UButton variant="ghost" color="neutral" v-for="item in languages" :key="item.id" :to="item.url" :active="item.id === language" :lang="item.id" :aria-current="item.id === language ? 'page' : undefined">{{ item.label }}</UButton>
+        <details class="ep-language-picker" :key="language" @keydown.esc="($event.currentTarget as HTMLDetailsElement).open = false">
+          <summary :aria-label="translations[language].nav + ' · ' + current.label">{{ current.label }} ▾</summary>
+          <div class="ep-language-options">
+            <a v-for="item in languages" :key="item.id" :href="item.prefix" :lang="item.tag" :hreflang="item.tag"
+              :aria-current="item.id === language ? 'page' : undefined">{{ item.label }}</a>
+          </div>
+        </details>
       </nav>
     </header>
     <section class="ep-pitch">
@@ -171,7 +199,7 @@ onUnmounted(() => {
             :aria-label="translations[language].manual" :value="promptText" />
         </template>
       </UModal>
-      <noscript><a :href="guide">Agent deployment guide ↗</a></noscript>
+      <noscript><a :href="guide">{{ translations[language].action }} ↗</a></noscript>
     </section>
   </main>
 </template>
