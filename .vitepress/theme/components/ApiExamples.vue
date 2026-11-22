@@ -17,10 +17,9 @@ const translations = {
 };
 const labels = computed(() => translations[localeIndex.value as keyof typeof translations] ?? translations.root);
 const sample = computed(() => examples[frontmatter.value.operation]);
-const {base,trade,method,epayMethod,url,responses,responseKind,response,labels: apiText} = useApiState();
+const {base,trade,method,epayMethod,url,responses,responseKind,response} = useApiState();
 const language = ref("cURL");
-const primaryLanguages = ["cURL", "Node.js", "Python"];
-const moreLanguages = ["PHP", "Go", "Ruby", "Java", "HTTP"];
+const languages = ["cURL", "Node.js", "Python", "PHP", "Go", "Ruby", "Java", "HTTP"];
 const snippet = computed(() => url.value ? requestExample(language.value, url.value, method.value, sample.value) : "");
 const liveLabels = {
   root: ["Send GET request", "Live response", "Enter your gateway URL to test a public query.", "Request failed. Check the URL, network and gateway CORS settings."],
@@ -100,10 +99,7 @@ async function copy(source: "request" | "response") {
         <input v-model="trade" spellcheck="false" autocomplete="off">
       </label>
       <div class="api-languages" :aria-label="labels[0]" role="group">
-        <button v-for="item in primaryLanguages" :key="item" type="button" :aria-pressed="language === item" @click="language = item">{{ item }}</button>
-        <select class="api-more" :aria-label="apiText[7]" :value="moreLanguages.includes(language) ? language : ''" @change="language = ($event.target as HTMLSelectElement).value">
-          <option disabled value="">{{ apiText[7] }}</option><option v-for="item in moreLanguages" :key="item">{{ item }}</option>
-        </select>
+        <button v-for="item in languages" :key="item" type="button" :aria-pressed="language === item" @click="language = item">{{ item }}</button>
       </div>
       <pre v-if="snippet" tabindex="0"><code ref="code">{{ snippet }}</code></pre>
       <p v-else role="status">{{ labels[6] }}</p>
