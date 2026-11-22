@@ -62,7 +62,8 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
 .ep-pitch h1 { margin:0 auto; color:#f7f8ff; font-size:clamp(46px,6.5vw,110px); font-weight:580; letter-spacing:-.058em; line-height:1.08; }
 .ep-pitch h1 span { display:block; }
 :lang(zh) .ep-pitch h1 { letter-spacing:-.035em; font-weight:600; line-height:1.2; font-size:clamp(36px,6.1vw,100px); }
-.ep-actions { --action-height:54px; display:flex; flex-wrap:nowrap; align-items:center; justify-content:center; gap:12px; margin-top:clamp(27px,4.8vh,54px); }
+.ep-pitch { --action-height:54px; }
+.ep-actions { display:flex; flex-wrap:nowrap; align-items:center; justify-content:center; gap:12px; margin-top:clamp(27px,4.8vh,54px); }
 .ep-short-label { display:none; }
 .ep-deploy,.ep-details { box-sizing:border-box; height:var(--action-height); display:inline-flex; align-items:center; justify-content:center; border-radius:100px; text-decoration:none; white-space:nowrap; }
 .ep-actions :is(.ep-deploy,.ep-details) { padding:0; border:0; box-shadow:none; background:transparent; cursor:pointer; }
@@ -116,7 +117,7 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
 .ep-details:hover .ep-details-face { background:#1e2941; }
 .ep-home :focus-visible { outline:3px solid #8fe8ff; outline-offset:4px; }
 .ep-status { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
-@media(max-width:600px) { .ep-pitch { padding-top:16vh; } .ep-actions { --action-height:36px; gap:8px; } .ep-deploy,.ep-details { position:relative; } .ep-deploy::after,.ep-details::after { content:""; position:absolute; inset:-5px 0; border-radius:100px; } .ep-wide-label { display:none; } .ep-short-label { display:inline; } .ep-deploy-face { gap:6px; padding:0 12px; font-size:13px; } .ep-marks { padding-right:6px; } .ep-details-face { padding:0 11px; font-size:13px; } .ep-pitch h1 { font-size:clamp(26px,8.8vw,50px); } :lang(zh) .ep-pitch h1 { font-size:clamp(26px,8.2vw,48px); } }
+@media(max-width:600px) { .ep-pitch { --action-height:36px; padding-top:16vh; } .ep-actions { gap:8px; } .ep-deploy,.ep-details { position:relative; } .ep-deploy::after,.ep-details::after { content:""; position:absolute; inset:-5px 0; border-radius:100px; } .ep-wide-label { display:none; } .ep-short-label { display:inline; } .ep-deploy-face { gap:6px; padding:0 12px; font-size:13px; } .ep-marks { padding-right:6px; } .ep-details-face { padding:0 11px; font-size:13px; } .ep-pitch h1 { font-size:clamp(26px,8.8vw,50px); } :lang(zh) .ep-pitch h1 { font-size:clamp(26px,8.2vw,48px); } }
 @media (max-width:600px) {
   .ep-pitch { padding-inline:clamp(8px, 3vw, 16px); }
   .ep-marks { --logo-size:15px; }
@@ -125,9 +126,9 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
   .ep-pitch {
     margin-top:auto;
     padding-top:24px;
-    padding-bottom:29vh;
-    /* The backdrop fills the large viewport; the actions follow the visible one. */
-    padding-bottom:max(24px, calc(100lvh - 71dvh - env(safe-area-inset-bottom, 0px)));
+    /* Center the action row at the golden section of the visible viewport. */
+    padding-bottom:calc(38.2vh - var(--action-height) / 2);
+    padding-bottom:max(24px, calc(100lvh - 61.8dvh - var(--action-height) / 2 - env(safe-area-inset-bottom, 0px)));
   }
 }
 @media(max-width:359px) { .ep-pitch { padding-inline:8px; } .ep-actions { gap:6px; } .ep-deploy-face { padding:0 9px; font-size:13px; } .ep-details-face { padding:0 9px; font-size:13px; } }
