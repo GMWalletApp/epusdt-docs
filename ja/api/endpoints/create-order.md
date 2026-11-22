@@ -7,7 +7,7 @@ description: "サーバーで署名し、購入者を payment_url に案内し�
 
 # GMPay 注文を作成
 
-<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">リクエスト例 ↓</a>
 

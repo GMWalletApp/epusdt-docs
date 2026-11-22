@@ -7,7 +7,7 @@ description: "Consulte o valor, o endereço de recebimento e a seleção atual. 
 
 # Consultar os dados do checkout
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter-resp/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Exemplo de requisição ↓</a>
 

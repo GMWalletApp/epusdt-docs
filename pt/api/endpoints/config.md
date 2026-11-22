@@ -7,7 +7,7 @@ description: "Consulte supported_assets para obter as redes e os tokens disponí
 
 # Consultar configuração
 
-<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/config</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Exemplo de requisição ↓</a>
 

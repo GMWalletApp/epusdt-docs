@@ -7,7 +7,7 @@ description: "Read the amount, receiving address and current selection. Here cre
 
 # Read checkout details
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter-resp/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Request example ↓</a>
 

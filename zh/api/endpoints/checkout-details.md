@@ -7,7 +7,7 @@ description: "读取应付金额、收款地址和当前选择。此接口的 cr
 
 # 读取收银台订单详情
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter-resp/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">请求示例 ↓</a>
 

@@ -7,7 +7,7 @@ description: "JSON 请求体必须包含父订单的 trade_id、token 和 networ
 
 # 选择网络或支付通道
 
-<span class="api-route"><b>POST</b> <code>/pay/switch-network</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">请求示例 ↓</a>
 

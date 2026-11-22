@@ -7,7 +7,7 @@ description: "Poll with the EPUSDT trade_id to update checkout. Fulfil the order
 
 # Poll order status
 
-<span class="api-route"><b>GET</b> <code>/pay/check-status/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Request example ↓</a>
 

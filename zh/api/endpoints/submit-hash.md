@@ -7,7 +7,7 @@ description: "在 JSON 请求体中提交 block_transaction_id。仅限等待付
 
 # 提交交易哈希
 
-<span class="api-route"><b>POST</b> <code>/pay/submit-tx-hash/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">请求示例 ↓</a>
 

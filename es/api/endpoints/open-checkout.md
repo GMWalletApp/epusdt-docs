@@ -7,7 +7,7 @@ description: "Abre la URL de pago en el navegador. EPUSDT redirige al comprador 
 
 # Abrir la página de pago
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ejemplo de solicitud ↓</a>
 

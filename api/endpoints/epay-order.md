@@ -7,7 +7,7 @@ description: "Send signed parameters as a GET query or POST form. With a valid M
 
 # Create an EPay order
 
-<span class="api-route"><b>GET/POST</b> <code>/payments/epay/v1/order/create-transaction/submit.php</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Request example ↓</a>
 

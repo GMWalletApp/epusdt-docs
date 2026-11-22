@@ -7,7 +7,7 @@ description: "Gửi các tham số đã ký qua truy vấn GET hoặc biểu m�
 
 # Tạo đơn EPay
 
-<span class="api-route"><b>GET/POST</b> <code>/payments/epay/v1/order/create-transaction/submit.php</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

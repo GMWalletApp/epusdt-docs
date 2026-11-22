@@ -7,7 +7,7 @@ description: "使用 EPUSDT 的 trade_id 輪詢並更新收銀台。商戶應在
 
 # 查詢訂單狀態
 
-<span class="api-route"><b>GET</b> <code>/pay/check-status/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">請求範例 ↓</a>
 

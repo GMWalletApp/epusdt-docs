@@ -7,7 +7,7 @@ description: "Ký yêu cầu trên máy chủ rồi mở payment_url cho ngườ
 
 # Tạo đơn GMPay
 
-<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

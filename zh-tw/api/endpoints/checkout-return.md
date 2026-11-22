@@ -7,7 +7,7 @@ description: "已付款的 EPay 訂單會攜帶簽章參數跳回商戶網站，
 
 # 返回商戶網站
 
-<span class="api-route"><b>GET</b> <code>/pay/return/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">請求範例 ↓</a>
 

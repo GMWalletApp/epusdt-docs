@@ -37,21 +37,6 @@ export const examples: Record<string, Sample> = {
     data: {order_id: "okpay-order-test-001", unique_id: demoTrade, pay_user_id: 1234567890,
       amount: "0.15000000", coin: "USDT", status: 1, type: "deposit"}, sign: "PROVIDER_SIGNATURE"}, response: "success" },
 };
-const notFound = {code: 10008, message: "order does not exist"};
-const duplicate = {code: 10002, message: "order already exists"};
-export const errorExamples: Record<string, {code: number; message: string}> = {
-  "create-order": duplicate, "epay-order": duplicate, "order-status": notFound,
-  "checkout-details": notFound, "checkout-return": notFound,
-  "submit-hash": {code: 10038, message: "manual payment verification failed"},
-  "switch-network": {code: 10013, message: "order is not awaiting payment"},
-  "okpay-notify": {code: 400, message: "fail"},
-};
-export function errorResponse(operation: string) {
-  const error = errorExamples[operation];
-  if (operation === "okpay-notify") return error.message;
-  return JSON.stringify({status_code: error.code, message: error.message, data: null,
-    request_id: "b1344d70-ff19-4543-b601-37abfb3b3686"}, null, 2);
-}
 export function sampleResponse(sample: Sample) {
   if (typeof sample.response === "string") return sample.response;
   return JSON.stringify({status_code: 200, message: "success", data: sample.response,
@@ -77,6 +62,34 @@ export function requestExample(language: string, url: string, method: string, sa
       form ? "body: " + JSON.stringify(body) : "body: JSON.stringify(" + body + ")");
     return `const res = await fetch(${JSON.stringify(target)}, {\n  ${options.join(",\n  ")}\n});\n` +
       (redirect ? 'console.log(res.status, res.headers.get("location"));' : "console.log(res.status, await res.text());");
+  }
+  if (language === "PHP") {
+    const literal = (text: string) => "'" + text.replaceAll("\\", "\\\\").replaceAll("'", "\\'") + "'";
+    const options = ["CURLOPT_RETURNTRANSFER => true", "CURLOPT_HEADER => true", "CURLOPT_TIMEOUT => 15",
+      "CURLOPT_CUSTOMREQUEST => " + literal(method)];
+    if (body) options.push("CURLOPT_HTTPHEADER => [" + literal("Content-Type: " + type) + "]", "CURLOPT_POSTFIELDS => " + literal(body));
+    return `<?php\n$ch = curl_init(${literal(target)});\ncurl_setopt_array($ch, [\n    ${options.join(",\n    ")}\n]);\n$response = curl_exec($ch);\nif ($response === false) {\n    throw new RuntimeException(curl_error($ch));\n}\necho $response;\n`;
+  }
+  if (language === "Ruby") {
+    return `require "net/http"\nrequire "uri"\n\nuri = URI(${JSON.stringify(target)})\nreq = Net::HTTP::${method === "GET" ? "Get" : "Post"}.new(uri)\n` +
+      (body ? `req["Content-Type"] = "${type}"\nreq.body = ${JSON.stringify(body)}\n` : "") +
+      'res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 10, read_timeout: 15) { |http| http.request(req) }\nputs res.code, res["Location"], res.body';
+  }
+  if (language === "Go") {
+    return `package main\n\nimport (\n    "fmt"\n    "io"\n    "net/http"\n    "time"\n${body ? '    "strings"\n' : ""})\n\nfunc main() {\n    client := &http.Client{Timeout: 15 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}\n    req, err := http.NewRequest("${method}", ${JSON.stringify(target)}, ${body ? "strings.NewReader(" + JSON.stringify(body) + ")" : "nil"})\n    if err != nil { panic(err) }\n` +
+      (body ? `    req.Header.Set("Content-Type", "${type}")\n` : "") +
+      '    res, err := client.Do(req)\n    if err != nil { panic(err) }\n    defer res.Body.Close()\n    data, err := io.ReadAll(res.Body)\n    if err != nil { panic(err) }\n    fmt.Println(res.Status, res.Header.Get("Location"), string(data))\n}';
+  }
+  if (language === "Java") {
+    return `import java.net.URI;\nimport java.net.http.*;\nimport java.time.Duration;\n\nclass ApiRequest {\n  public static void main(String[] args) throws Exception {\n    var request = HttpRequest.newBuilder(URI.create(${JSON.stringify(target)}))\n        .timeout(Duration.ofSeconds(15))\n` +
+      (body ? `        .header("Content-Type", "${type}")\n        .POST(HttpRequest.BodyPublishers.ofString(${JSON.stringify(body)}))\n` : "        .GET()\n") +
+      '        .build();\n    var res = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());\n    System.out.println(res.statusCode());\n    res.headers().firstValue("Location").ifPresent(System.out::println);\n    System.out.println(res.body());\n  }\n}';
+  }
+  if (language === "HTTP") {
+    const uri = new URL(target);
+    const lines = [`${method} ${uri.pathname}${uri.search} HTTP/1.1`, "Host: " + uri.host];
+    if (body) lines.push("Content-Type: " + type, "Content-Length: " + new TextEncoder().encode(body).length);
+    return lines.join("\r\n") + "\r\n\r\n" + (body ?? "");
   }
   const args = [JSON.stringify(target)];
   if (form && !query) args.push("data=" + JSON.stringify(sample.form, null, 2));

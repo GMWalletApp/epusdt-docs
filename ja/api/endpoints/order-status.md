@@ -7,7 +7,7 @@ description: "EPUSDT の trade_id で決済状況を更新します。商品の�
 
 # 注文ステータスを取得
 
-<span class="api-route"><b>GET</b> <code>/pay/check-status/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">リクエスト例 ↓</a>
 

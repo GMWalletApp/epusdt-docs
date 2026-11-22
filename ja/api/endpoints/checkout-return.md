@@ -7,7 +7,7 @@ description: "支払済みの EPay 注文は署名付きで加盟店サイトへ
 
 # 加盟店サイトに戻る
 
-<span class="api-route"><b>GET</b> <code>/pay/return/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">リクエスト例 ↓</a>
 

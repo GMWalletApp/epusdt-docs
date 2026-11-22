@@ -7,7 +7,7 @@ description: "Assine a solicitação no servidor e direcione o comprador a payme
 
 # Criar um pedido GMPay
 
-<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Exemplo de requisição ↓</a>
 

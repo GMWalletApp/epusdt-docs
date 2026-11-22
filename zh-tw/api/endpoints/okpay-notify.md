@@ -7,7 +7,7 @@ description: "在 OKPay 設定此通知網址。OKPay 傳送已簽章的通知�
 
 # 接收 OKPay 通知
 
-<span class="api-route"><b>POST</b> <code>/payments/okpay/v1/notify</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">請求範例 ↓</a>
 

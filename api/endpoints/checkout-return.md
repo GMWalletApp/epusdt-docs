@@ -7,7 +7,7 @@ description: "A paid EPay order redirects to the merchant with signed return par
 
 # Return to the merchant
 
-<span class="api-route"><b>GET</b> <code>/pay/return/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Request example ↓</a>
 

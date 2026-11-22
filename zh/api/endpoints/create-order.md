@@ -7,7 +7,7 @@ description: "在商户服务器上签名，创建订单后引导买家打开 pa
 
 # 创建 GMPay 订单
 
-<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">请求示例 ↓</a>
 

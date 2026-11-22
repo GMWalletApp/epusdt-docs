@@ -7,7 +7,7 @@ description: "Envía block_transaction_id en el cuerpo JSON para un pedido en ca
 
 # Enviar el hash de la transacción
 
-<span class="api-route"><b>POST</b> <code>/pay/submit-tx-hash/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ejemplo de solicitud ↓</a>
 

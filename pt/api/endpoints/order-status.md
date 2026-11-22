@@ -7,7 +7,7 @@ description: "Use o trade_id do EPUSDT para atualizar o checkout. Libere o pedid
 
 # Consultar status do pedido
 
-<span class="api-route"><b>GET</b> <code>/pay/check-status/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Exemplo de requisição ↓</a>
 

@@ -7,7 +7,7 @@ description: "Gửi trade_id của đơn cha, token và network trong JSON. Đơ
 
 # Chọn mạng hoặc nhà cung cấp
 
-<span class="api-route"><b>POST</b> <code>/pay/switch-network</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

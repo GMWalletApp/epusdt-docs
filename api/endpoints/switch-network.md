@@ -7,7 +7,7 @@ description: "Send the parent trade_id, token and network in the JSON body. The 
 
 # Select a network or provider
 
-<span class="api-route"><b>POST</b> <code>/pay/switch-network</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Request example ↓</a>
 

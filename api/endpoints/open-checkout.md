@@ -7,7 +7,7 @@ description: "Open the payment URL in a browser. EPUSDT redirects the buyer to /
 
 # Open hosted checkout
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Request example ↓</a>
 

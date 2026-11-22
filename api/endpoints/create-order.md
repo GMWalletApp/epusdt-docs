@@ -7,7 +7,7 @@ description: "Sign the request on your server and open payment_url for the buyer
 
 # Create a GMPay order
 
-<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Request example ↓</a>
 

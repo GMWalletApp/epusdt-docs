@@ -7,7 +7,7 @@ description: "支払額、受取アドレス、現在の選択を取得します
 
 # 決済の詳細を取得
 
-<span class="api-route"><b>GET</b> <code>/pay/checkout-counter-resp/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">リクエスト例 ↓</a>
 

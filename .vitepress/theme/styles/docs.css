@@ -87,3 +87,36 @@ html { scroll-padding-top: calc(var(--ui-header-height) + 1.5rem); }
 .api-try { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; padding: .75rem 1rem 0; }
 .api-try small { font-size: .78rem; color: var(--ui-text-muted); }
 .api-article th { white-space: nowrap; }
+
+.ep-docs-shell .api-endpoint-address { display:flex; align-items:baseline; flex-wrap:wrap; gap:.45rem; margin: .7rem 0 1.4rem; }
+.ep-docs-shell .api-article h1 { font-size:clamp(1.85rem,3vw,2.55rem); line-height:1.16; }
+.api-verb { align-self:flex-start; padding:.18rem .56rem; border-radius:999px; color:white; background:#3655ac; font:700 .76rem/1.35 ui-sans-serif,system-ui,sans-serif; }
+.api-verb[data-method="GET"] { background:#087649; }
+.ep-docs-shell .api-endpoint-address > code { padding:0; background:transparent; font:500 clamp(.82rem,1.3vw,1rem)/1.55 ui-monospace,monospace; color:var(--ui-text-highlighted); overflow-wrap:anywhere; }
+.api-origin { color:var(--ui-text-muted); }
+.api-endpoint-address mark { background:var(--ui-bg-elevated); color:inherit; border-radius:.25rem; padding:.08rem .2rem; }
+.api-endpoint-address button { display:inline-grid; place-items:center; align-self:center; position:relative; color:var(--ui-text-muted); min-width:2rem; height:2rem; cursor:pointer; border-radius:.4rem; }
+.api-endpoint-address button:is(:hover,:focus-visible) { background:var(--ui-bg-elevated); color:var(--ui-text-highlighted); }
+.api-endpoint-address button:is(:hover,:focus-visible)::after { content:attr(data-tip); position:absolute; z-index:3; top:100%; right:0; white-space:nowrap; padding:.25rem .5rem; border-radius:.35rem; color:var(--ui-bg); background:var(--ui-text-highlighted); font-size:.75rem; }
+.api-languages { flex-wrap:wrap; align-items:center; }
+.api-more { min-width:0; max-width:100%; margin-inline-start:auto; font-size:.8rem; color:var(--ui-text-highlighted); cursor:pointer; }
+.api-response .api-panel-heading { flex-wrap:wrap; }
+.api-response select { max-width:100%; min-width:0; text-overflow:ellipsis; font-size:.8rem; }
+.api-contract-list { border:1px solid var(--ui-border); border-radius:.7rem; overflow:hidden; }
+.api-contract-list > button { width:100%; display:flex; align-items:baseline; flex-wrap:wrap; gap:.5rem; text-align:start; padding:.6rem .8rem; cursor:pointer; border-top:1px solid var(--ui-border); font-size:.9rem; }
+.api-contract-list > button:first-child { border-top:0; }
+.api-contract-list > button[aria-pressed=true] { background:var(--ui-bg-elevated); }
+.api-dot { align-self:center; width:.55rem; height:.55rem; background:#16865a; border-radius:50%; }
+.api-dot.failure { background:#c34655; }
+.api-contract-detail { padding:.35rem .9rem .75rem; font-size:.85rem; }
+.api-contract-detail > small, .api-fields small { color:var(--ui-text-muted); }
+.api-contract-detail > code { display:block; overflow-wrap:anywhere; }
+.api-contract-detail summary { cursor:pointer; }
+.ep-docs-shell .vp-doc .api-fields { list-style:none; padding-left:.8rem; margin:.25rem 0; border-left:1px solid var(--ui-border); }
+.ep-docs-shell .vp-doc .api-fields li { margin:.25rem 0; }
+.ep-docs-shell .api-endpoint-address { flex-wrap:nowrap; align-items:flex-start; }
+.ep-docs-shell .api-endpoint-address > code { min-width:0; }
+.api-endpoint-address button { align-self:flex-start; flex:none; margin-top:-.2rem; }
+.api-verb { flex:none; margin-top:.1rem; }
+.ep-docs-shell .api-fields li p { margin:.15rem 0; font-size:.82rem; color:var(--ui-text-muted); }
+.api-catalog-link { display:inline-block; margin-top:.65rem; font-size:.82rem; }

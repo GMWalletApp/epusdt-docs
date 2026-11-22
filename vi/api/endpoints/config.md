@@ -7,7 +7,7 @@ description: "Đọc supported_assets để lấy các mạng và token đang kh
 
 # Đọc cấu hình thanh toán
 
-<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/config</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 

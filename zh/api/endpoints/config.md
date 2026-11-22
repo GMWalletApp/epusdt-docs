@@ -7,7 +7,7 @@ description: "读取 supported_assets，获取当前收银台可选的网络和�
 
 # 获取收银台配置
 
-<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/config</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">请求示例 ↓</a>
 

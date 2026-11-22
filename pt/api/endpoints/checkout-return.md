@@ -7,7 +7,7 @@ description: "Pedidos EPay pagos voltam à loja com parâmetros assinados. Os de
 
 # Voltar à loja
 
-<span class="api-route"><b>GET</b> <code>/pay/return/{trade_id}</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Exemplo de requisição ↓</a>
 

@@ -7,7 +7,7 @@ description: "Cấu hình URL này trong OKPay. EPUSDT dùng token cửa hàng �
 
 # Nhận thông báo OKPay
 
-<span class="api-route"><b>POST</b> <code>/payments/okpay/v1/notify</code></span>
+<ApiRoute />
 
 <a class="api-example-jump" href="#request-example">Ví dụ yêu cầu ↓</a>
 
