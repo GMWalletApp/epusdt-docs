@@ -12,8 +12,8 @@ Também **não registra** a rota de compatibilidade antiga: `POST /payments/epus
 
 | Caso de uso | Rota vigente |
 | --- | --- |
-| API JSON nativa (recomendada) | `POST /payments/gmpay/v1/order/create-transaction` |
-| Redirecionar / Fluxo no estilo EPay | `GET/POST /payments/epay/v1/order/create-transaction/submit.php` |
+| API JSON nativa (recomendada) | [`POST /payments/gmpay/v1/order/create-transaction`](/pt/api/endpoints/create-order) |
+| Redirecionar / Fluxo no estilo EPay | [`GET/POST /payments/epay/v1/order/create-transaction/submit.php`](/pt/api/endpoints/epay-order) |
 
 ## Mudanças significativas na migração {#important-migration-changes}
 

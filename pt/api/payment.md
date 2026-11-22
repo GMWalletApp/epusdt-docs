@@ -13,16 +13,16 @@ Utilize o endpoint de configuração pública para descobrir as opções de paga
 
 | Finalidade | Método | Caminho | Autenticação |
 | --- | --- | --- | --- |
-| Criar um pedido no GMPay | POST | `/payments/gmpay/v1/order/create-transaction` | HMAC-SHA256 do lojista |
-| Ver as configurações de pagamento público | GET | `/payments/gmpay/v1/config` | Público |
-| Abrir a página de pagamento | GET | `/pay/checkout-counter/{trade_id}` | Público |
-| Leia os detalhes do checkout. | GET | `/pay/checkout-counter-resp/{trade_id}` | Público |
-| Consultar periodicamente o status do pedido | GET | `/pay/check-status/{trade_id}` | Público |
-| Selecione a rede ou provedor. | POST | `/pay/switch-network` | Público |
-| Envie um hash de transferência para verificação. | POST | `/pay/submit-tx-hash/{trade_id}` | Público |
-| Retornar ao checkout | GET | `/pay/return/{trade_id}` | Redirecionamento de navegador |
-| Crie um pedido EPay. | GET ou POST | `/payments/epay/v1/order/create-transaction/submit.php` | MD5 do lojista |
-| Receber uma notificação do provedor OKPay | POST | `/payments/okpay/v1/notify` | Assinatura do OKPay |
+| [Criar um pedido GMPay](/pt/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | HMAC-SHA256 do lojista |
+| [Consultar configuração](/pt/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | Público |
+| [Abrir o checkout](/pt/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | Público |
+| [Consultar os dados do checkout](/pt/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | Público |
+| [Consultar status do pedido](/pt/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | Público |
+| [Selecionar rede ou provedor](/pt/api/endpoints/switch-network) | POST | `/pay/switch-network` | Público |
+| [Enviar o hash da transação](/pt/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | Público |
+| [Voltar à loja](/pt/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | Redirecionamento de navegador |
+| [Criar um pedido EPay](/pt/api/endpoints/epay-order) | GET ou POST | `/payments/epay/v1/order/create-transaction/submit.php` | MD5 do lojista |
+| [Receber uma notificação do OKPay](/pt/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | Assinatura do OKPay |
 
 ## The quick brown fox jumps over the lazy dog. {#response-format}
 
@@ -130,6 +130,8 @@ function epaySign(array $params, string $secretKey): string
 }
 ```
 
+<!-- #region create-fields -->
+
 | Campo | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- |
 | `pid` | String | Sim | O PID do comerciante era usado para consultar a chave de assinatura. |
@@ -144,9 +146,11 @@ function epaySign(array $params, string $secretKey): string
 | `payment_type` | String | Não | Utiliza GMPay por padrão. EPay (em qualquer formato de letra) seleciona o formato de callback de EPay e requer um PID numérico. Inclua qualquer valor não vazio na assinatura. |
 | `signature` | String | Sim | Assinatura HMAC-SHA256 de 64 caracteres em minúsculas. |
 
+<!-- #endregion create-fields -->
+
 Forneça tanto o `token` quanto a `network` para alocar um endereço imediatamente. Omita ambos para criar um marcador (status 4) contendo o valor fiat e a moeda. Fornecer apenas um é inválido. Verifique `data.supported_assets` na configuração pública antes de selecionar um par.
 
-### Please provide the English text you would like me to translate. {#response}
+### Resposta {#response}
 
 ```json
 {
@@ -322,6 +326,8 @@ O processo de checkout retorna `payment_type` em letras minúsculas (`gmpay` ou 
 }
 ```
 
+<!-- #region order-states -->
+
 | Status | Significado |
 | --- | --- |
 | 1 | Aguardando pagamento |
@@ -330,6 +336,8 @@ O processo de checkout retorna `payment_type` em letras minúsculas (`gmpay` ou 
 | 4 | Aguardando a seleção de uma rede, ativo ou fornecedor. |
 | 5 | Foi observada uma transferência correspondente, e está sendo confirmada. |
 | 6 | Duas rodadas de verificação rigorosa não foram suficientes. É necessária uma revisão manual. |
+
+<!-- #endregion order-states -->
 
 No nível 5, continue monitorando e exibir "Confirmando" para que o comprador saiba que a transferência foi visualizada. Por padrão, EPUSDT verifica a profundidade de confirmação necessária e verifica a transação com dois nós independentes antes de creditá-la. Aguardar a profundidade não consome nenhuma tentativa. Os tentos de verificação e os primeiros IDs de nós persistem após reinicializações. No nível 6, a verificação automática e as chamadas de retorno de sucesso são pausadas. Um administrador pode inspecionar `review_transaction_hash` e rever a transação após investigar.
 
@@ -404,6 +412,8 @@ Envie uma consulta GET ou um formulário POST para `/payments/epay/v1/order/crea
 /pay/checkout-counter/{trade_id}
 ```
 
+<!-- #region epay-fields -->
+
 | Campo | Localização | Tipo | Obrigatório | Descrição |
 | --- | --- | --- | --- | --- |
 | `pid` | Consulta ou formulário | String | Sim | ID do comerciante PID. Utilize um PID numérico para as chamadas de retorno. |
@@ -418,6 +428,8 @@ Envie uma consulta GET ou um formulário POST para `/payments/epay/v1/order/crea
 | `currency` | Consulta ou formulário | String | Não | Substitui a moeda padrão do EPay. |
 | `sign` | Consulta ou formulário | String | Sim | Assinatura EPay MD5. |
 | `sign_type` | Consulta ou formulário | String | Não | Normalmente, `MD5`. |
+
+<!-- #endregion epay-fields -->
 
 Inclua no cálculo MD5 todos os parâmetros recebidos que tenham valor, inclusive campos de plugins como `sitename`. Exclua apenas `sign` e `sign_type`. O exemplo abaixo mostra a entrada canônica com a chave secreta de demonstração, seguida da assinatura.
 

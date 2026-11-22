@@ -21,9 +21,10 @@ import { languages as siteLanguages } from "../../languages";
 import DocMotion from "./DocMotion.vue";
 import DocTools from "./DocTools.vue";
 
+const ApiExamples = defineAsyncComponent(() => import("./ApiExamples.vue"));
 const DocSearch = defineAsyncComponent(() => import("./DocSearch.vue"));
 const { localeIndex, theme, page, isDark } = useData();
-interface Nav { text: string; link: string }
+interface Nav { text: string; link: string; method?: string; route?: string }
 interface Group { text: string; items: Nav[] }
 const languages = [
   { key: "root", locale: en, docs: "Docs", search: "Search docs", contents: "On this page", skip: "Skip to content", mode: "Switch theme", language: "Language", prev: "Previous", next: "Next", missing: "Page not found" },
@@ -56,9 +57,22 @@ const navigation = computed(() => (theme.value.nav as Nav[] || []).slice(1).map(
   ...linkItem(item), icon: ["i-lucide-book-open", "i-lucide-code-xml", "i-lucide-layers", "i-lucide-store", "i-lucide-heart"][i],
   active: path.value === item.link || (path.value !== local.value.prefix + "guide/sponsor" && !!section.value && item.link.startsWith(section.value) && !item.link.endsWith("/sponsor")),
 })));
-const side = computed(() => groups.value.map(group => [
-  { label: group.text, type: "label" as const }, ...group.items.map(linkItem),
-]));
+const endpointPage = computed(() => !!page.value.frontmatter.operation);
+const apiSection = computed(() => groups.value.some(g => g.items.some(item => item.method)));
+const filter = ref("");
+const filterLabels: Record<string, string> = {
+  root: "Filter endpoints", zh: "筛选接口", "zh-tw": "篩選介面", vi: "Lọc API",
+  ja: "API を絞り込む", es: "Filtrar endpoints", pt: "Filtrar endpoints",
+};
+const filterLabel = computed(() => filterLabels[local.value.key]);
+const side = computed(() => {
+  const term = filter.value.trim().toLowerCase();
+  return groups.value.map(group => [
+    { label: group.text, type: "label" as const },
+    ...group.items.filter(item => !term || [item.text, item.method, item.route].join(" ").toLowerCase().includes(term))
+      .map(item => ({ ...linkItem(item), badge: item.method })),
+  ]);
+});
 const allPages = computed(() => Object.values(sections.value).flatMap(groups => groups.flatMap(g => g.items.map(linkItem))));
 const pager = computed(() => {
   const list = groups.value.flatMap(g => g.items);
@@ -80,7 +94,7 @@ function shortcut(event: KeyboardEvent) {
 }
 onMounted(() => window.addEventListener("keydown", shortcut));
 onUnmounted(() => window.removeEventListener("keydown", shortcut));
-watch(file, () => { menu.value = false; search.value = false; });
+watch(file, () => { filter.value = ""; menu.value = false; search.value = false; });
 </script>
 
 <template>
@@ -108,14 +122,16 @@ watch(file, () => { menu.value = false; search.value = false; });
         <template #body>
           <UNavigationMenu orientation="vertical" :items="navigation" />
           <USeparator class="my-4" />
-          <UNavigationMenu orientation="vertical" :items="side" />
+          <input v-if="apiSection" v-model="filter" class="api-filter" type="search" :aria-label="filterLabel" :placeholder="filterLabel">
+              <UNavigationMenu orientation="vertical" :items="side" :ui="{ linkLabel: 'whitespace-normal' }" />
         </template>
       </UHeader>
       <UContainer>
         <UPage :ui="{ center: 'min-w-0' }">
           <template #left>
             <UPageAside class="ep-sidebar self-start">
-              <UNavigationMenu orientation="vertical" :items="side" />
+              <input v-if="apiSection" v-model="filter" class="api-filter" type="search" :aria-label="filterLabel" :placeholder="filterLabel">
+              <UNavigationMenu orientation="vertical" :items="side" :ui="{ linkLabel: 'whitespace-normal' }" />
             </UPageAside>
           </template>
           <main id="VPContent" tabindex="-1">
@@ -130,7 +146,11 @@ watch(file, () => { menu.value = false; search.value = false; });
                     <UButton class="lg:hidden" color="neutral" variant="ghost" icon="i-lucide-list" size="sm" :aria-label="local.contents" />
                   </UDropdownMenu>
                 </DocTools>
-                <Content class="vp-doc" />
+                <div v-if="endpointPage" class="vp-doc api-spread">
+                  <Content class="api-article" />
+                  <ApiExamples :key="file" />
+                </div>
+                <Content v-else class="vp-doc" />
                 <nav v-if="pager.length" class="ep-pager grid sm:grid-cols-2 gap-3">
                   <UPageCard v-for="entry in pager" :key="entry.item.link" :to="entry.item.link" :icon="entry.icon"
                     :title="entry.item.text" :description="entry.label" variant="outline" :ui="{ container: 'p-4 sm:p-5 gap-2' }" />
@@ -138,7 +158,7 @@ watch(file, () => { menu.value = false; search.value = false; });
               </template>
             </UPageBody>
           </main>
-          <template #right>
+          <template v-if="!endpointPage" #right>
             <UPageAside class="self-start ep-outline">
               <template v-if="outline.length">
                 <h2 class="text-sm font-semibold text-highlighted mb-3">{{ local.contents }}</h2>

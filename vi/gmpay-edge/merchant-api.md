@@ -23,17 +23,13 @@ Yêu cầu GMPay phải chứa `pid` dạng số và `signature` HMAC-SHA256 vi�
 
 ## Tạo ra trật tự {#create-order}
 
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
+<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
 
 Việc sử dụng lại một `order_id` hiện có không tạo ra một đơn hàng thứ hai. Bỏ cả `token` và `network` sẽ tạo ra một đơn hàng có thể chọn; GMPay Edge không tự động mặc định thành TRON.
 
 ## Yêu cầu về đơn hàng {#query-order}
 
-```text
-GET /payments/gmpay/v1/order/query
-```
+<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/order/query</code></span>
 
 Chỉ cung cấp một trong hai trường `trade_id` hoặc `order_id`, rồi ký yêu cầu bằng chính thông tin xác thực đã tạo đơn hàng. Mỗi thông tin xác thực chỉ có thể truy vấn các đơn hàng do nó tạo.
 

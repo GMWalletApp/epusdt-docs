@@ -11,16 +11,16 @@ title: "支付 API 路徑與 HTTP 方法速查"
 
 | 場景 | 方法 | 路徑 | 是否需要簽名 |
 | --- | --- | --- | --- |
-| 建立 GMPay 交易 | POST | `/payments/gmpay/v1/order/create-transaction` | 是 |
-| 獲取公開支付配置 | GET | `/payments/gmpay/v1/config` | 否 |
-| 收銀臺頁面 | GET | `/pay/checkout-counter/{trade_id}` | 否 |
-| 收銀臺初始化資料 | GET | `/pay/checkout-counter-resp/{trade_id}` | 否 |
-| 查詢支付狀態 | GET | `/pay/check-status/{trade_id}` | 否 |
-| 切換支付網路/通道 | POST | `/pay/switch-network` | 否 |
-| EPay 相容建立交易 | GET/POST | `/payments/epay/v1/order/create-transaction/submit.php` | 是 |
-| 提交交易雜湊核驗 | POST | `/pay/submit-tx-hash/{trade_id}` | 否，提交 `block_transaction_id` |
-| 收銀臺返回商戶 | GET | `/pay/return/{trade_id}` | 否，返回 HTTP 302 |
-| OkPay 平臺回撥 | POST | `/payments/okpay/v1/notify` | OkPay 簽名 |
+| [建立 GMPay 訂單](/zh-tw/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | 是 |
+| [取得收銀台設定](/zh-tw/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | 否 |
+| [開啟收銀台](/zh-tw/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | 否 |
+| [讀取收銀台訂單明細](/zh-tw/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | 否 |
+| [查詢訂單狀態](/zh-tw/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | 否 |
+| [選擇網路或付款通道](/zh-tw/api/endpoints/switch-network) | POST | `/pay/switch-network` | 否 |
+| [建立易支付訂單](/zh-tw/api/endpoints/epay-order) | GET/POST | `/payments/epay/v1/order/create-transaction/submit.php` | 是 |
+| [提交交易雜湊](/zh-tw/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | 否，提交 `block_transaction_id` |
+| [返回商戶網站](/zh-tw/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | 否，返回 HTTP 302 |
+| [接收 OKPay 通知](/zh-tw/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | OkPay 簽名 |
 
 ## 管理 API
 

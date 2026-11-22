@@ -11,16 +11,16 @@ See [Merchant API](/api/payment) for signing examples, order states and callback
 
 | Purpose | Method | Path | Authentication |
 | --- | --- | --- | --- |
-| Create a GMPay order | POST | `/payments/gmpay/v1/order/create-transaction` | Merchant HMAC-SHA256 |
-| Read public checkout settings | GET | `/payments/gmpay/v1/config` | Public |
-| Open checkout | GET | `/pay/checkout-counter/{trade_id}` | Public |
-| Read checkout details | GET | `/pay/checkout-counter-resp/{trade_id}` | Public |
-| Poll order status | GET | `/pay/check-status/{trade_id}` | Public |
-| Select network or provider | POST | `/pay/switch-network` | Public |
-| Submit a transfer hash for verification | POST | `/pay/submit-tx-hash/{trade_id}` | Public |
-| Return from checkout | GET | `/pay/return/{trade_id}` | Browser redirect |
-| Create an EPay order | GET or POST | `/payments/epay/v1/order/create-transaction/submit.php` | Merchant MD5 |
-| Receive an OKPay provider notification | POST | `/payments/okpay/v1/notify` | OKPay signature |
+| [Create a GMPay order](/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | Merchant HMAC-SHA256 |
+| [Read checkout configuration](/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | Public |
+| [Open hosted checkout](/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | Public |
+| [Read checkout details](/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | Public |
+| [Poll order status](/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | Public |
+| [Select a network or provider](/api/endpoints/switch-network) | POST | `/pay/switch-network` | Public |
+| [Submit a transaction hash](/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | Public |
+| [Return to the merchant](/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | Browser redirect |
+| [Create an EPay order](/api/endpoints/epay-order) | GET or POST | `/payments/epay/v1/order/create-transaction/submit.php` | Merchant MD5 |
+| [Receive an OKPay notification](/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | OKPay signature |
 
 ## Admin API surface
 

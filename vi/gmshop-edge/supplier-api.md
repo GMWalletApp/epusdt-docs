@@ -36,16 +36,18 @@ Tính toán HMAC-SHA256 trên payload đó bằng API secret đã phát hành. M
 
 ## Các điểm cuối API {#endpoints}
 
-- `POST /api/v1/supplier/ping`
-- `GET /api/v1/supplier/categories`
-- `GET /api/v1/supplier/products`
-- `GET /api/v1/supplier/products/{productId}`
-- `POST /api/v1/supplier/orders`
-- `GET /api/v1/supplier/orders/{orderId}`
-- `POST /api/v1/supplier/orders/{orderId}/cancel`
-- `GET /api/v1/supplier/payment-channels`
-- `POST /api/v1/supplier/topups`
-- `GET /api/v1/supplier/topups/{id}`
+| Thao tác | HTTP | Đường dẫn |
+| --- | --- | --- |
+| Kiểm tra thông tin xác thực | POST | `/api/v1/supplier/ping` |
+| Liệt kê danh mục | GET | `/api/v1/supplier/categories` |
+| Liệt kê sản phẩm | GET | `/api/v1/supplier/products` |
+| Xem sản phẩm | GET | `/api/v1/supplier/products/{productId}` |
+| Tạo đơn mua | POST | `/api/v1/supplier/orders` |
+| Tra cứu đơn mua | GET | `/api/v1/supplier/orders/{orderId}` |
+| Hủy đơn mua | POST | `/api/v1/supplier/orders/{orderId}/cancel` |
+| Liệt kê kênh thanh toán | GET | `/api/v1/supplier/payment-channels` |
+| Tạo yêu cầu nạp tiền | POST | `/api/v1/supplier/topups` |
+| Tra cứu lần nạp tiền | GET | `/api/v1/supplier/topups/{id}` |
 
 Việc tạo đơn hàng và các thao tác nạp tiền là vô trùng (idempotent). Khi thử lại một yêu cầu không chắc chắn, hãy duy trì tính vô trùng tương tự; đừng tạo một đơn hàng mới chỉ vì khách hàng hết thời gian.
 

@@ -11,16 +11,16 @@ title: "支払い API エンドポイントの参照"
 
 | 用途 | メソッド | パス | 認証 |
 | --- | --- | --- | --- |
-| GMPay の注文を作成 | POST | `/payments/gmpay/v1/order/create-transaction` | 加盟店の HMAC-SHA256 署名 |
-| 公開のチェックアウト設定を確認してください。 | GET | `/payments/gmpay/v1/config` | 公開 |
-| 決済画面を開く | GET | `/pay/checkout-counter/{trade_id}` | 公開 |
-| チェックアウトの詳細を確認してください。 | GET | `/pay/checkout-counter-resp/{trade_id}` | 公開 |
-| 注文ステータスを定期取得 | GET | `/pay/check-status/{trade_id}` | 公開 |
-| ネットワークまたはプロバイダを選択してください。 | POST | `/pay/switch-network` | 公開 |
-| 検証のため、転送ハッシュを提出してください。 | POST | `/pay/submit-tx-hash/{trade_id}` | 公開 |
-| チェックアウトから戻る | GET | `/pay/return/{trade_id}` | ブラウザのリダイレクト |
-| EPayでの注文を作成してください。 | GET または POST | `/payments/epay/v1/order/create-transaction/submit.php` | 加盟店の MD5 署名 |
-| OKPayのプロバイダーからの通知を受け取る | POST | `/payments/okpay/v1/notify` | OKPay の署名 |
+| [GMPay 注文を作成](/ja/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | 加盟店の HMAC-SHA256 署名 |
+| [決済設定を取得](/ja/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | 公開 |
+| [決済画面を開く](/ja/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | 公開 |
+| [決済の詳細を取得](/ja/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | 公開 |
+| [注文ステータスを取得](/ja/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | 公開 |
+| [ネットワークまたは決済事業者を選択](/ja/api/endpoints/switch-network) | POST | `/pay/switch-network` | 公開 |
+| [取引ハッシュを送信](/ja/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | 公開 |
+| [加盟店サイトに戻る](/ja/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | ブラウザのリダイレクト |
+| [EPay 注文を作成](/ja/api/endpoints/epay-order) | GET または POST | `/payments/epay/v1/order/create-transaction/submit.php` | 加盟店の MD5 署名 |
+| [OKPay 通知を受信](/ja/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | OKPay の署名 |
 
 ## Admin API の表面 {#admin-api-surface}
 

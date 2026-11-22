@@ -36,16 +36,18 @@ Compute HMAC-SHA256 over that payload with the issued API secret. The server acc
 
 ## Endpoints
 
-- `POST /api/v1/supplier/ping`
-- `GET /api/v1/supplier/categories`
-- `GET /api/v1/supplier/products`
-- `GET /api/v1/supplier/products/{productId}`
-- `POST /api/v1/supplier/orders`
-- `GET /api/v1/supplier/orders/{orderId}`
-- `POST /api/v1/supplier/orders/{orderId}/cancel`
-- `GET /api/v1/supplier/payment-channels`
-- `POST /api/v1/supplier/topups`
-- `GET /api/v1/supplier/topups/{id}`
+| Operation | HTTP | Path |
+| --- | --- | --- |
+| Test credentials | POST | `/api/v1/supplier/ping` |
+| List categories | GET | `/api/v1/supplier/categories` |
+| List products | GET | `/api/v1/supplier/products` |
+| Read a product | GET | `/api/v1/supplier/products/{productId}` |
+| Create an order | POST | `/api/v1/supplier/orders` |
+| Read an order | GET | `/api/v1/supplier/orders/{orderId}` |
+| Cancel an order | POST | `/api/v1/supplier/orders/{orderId}/cancel` |
+| List payment channels | GET | `/api/v1/supplier/payment-channels` |
+| Create a top-up | POST | `/api/v1/supplier/topups` |
+| Read a top-up | GET | `/api/v1/supplier/topups/{id}` |
 
 Order creation and top-up operations are idempotent. Keep the same idempotency reference when retrying an uncertain request; do not create a new supplier order merely because the client timed out.
 

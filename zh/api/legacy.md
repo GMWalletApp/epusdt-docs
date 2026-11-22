@@ -12,8 +12,8 @@ description: "核对已停用的 EPUSDT API 路径及其替代接口，更新旧
 
 | 使用场景 | 当前可用路由 |
 | --- | --- |
-| 原生 JSON API（推荐） | `POST /payments/gmpay/v1/order/create-transaction` |
-| 跳转式 / EPay 风格流程 | `GET / POST /payments/epay/v1/order/create-transaction/submit.php` |
+| 原生 JSON API（推荐） | [`POST /payments/gmpay/v1/order/create-transaction`](/zh/api/endpoints/create-order) |
+| 跳转式 / EPay 风格流程 | [`GET / POST /payments/epay/v1/order/create-transaction/submit.php`](/zh/api/endpoints/epay-order) |
 
 ## 迁移时请注意
 

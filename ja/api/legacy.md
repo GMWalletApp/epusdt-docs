@@ -12,8 +12,8 @@ description: "廃止された EPUSDT API のエンドポイントと、移行先
 
 | 用途 | 現在のエンドポイント |
 | --- | --- |
-| ネイティブ JSON API（推奨） | `POST /payments/gmpay/v1/order/create-transaction` |
-| EPay形式のフロー | `GET/POST /payments/epay/v1/order/create-transaction/submit.php` |
+| ネイティブ JSON API（推奨） | [`POST /payments/gmpay/v1/order/create-transaction`](/ja/api/endpoints/create-order) |
+| EPay形式のフロー | [`GET/POST /payments/epay/v1/order/create-transaction/submit.php`](/ja/api/endpoints/epay-order) |
 
 ## 重要な移住の変化 {#important-migration-changes}
 

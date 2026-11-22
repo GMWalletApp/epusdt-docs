@@ -23,17 +23,13 @@ To sign a request:
 
 ## Create order
 
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
+<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
 
 Reusing an existing `order_id` does not create a second order. Omitting both `token` and `network` creates a selectable order; GMPay Edge does not silently default it to TRON.
 
 ## Query order
 
-```text
-GET /payments/gmpay/v1/order/query
-```
+<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/order/query</code></span>
 
 Provide exactly one of `trade_id` or `order_id`, then sign the request with the same credential. A credential can query only orders it created.
 

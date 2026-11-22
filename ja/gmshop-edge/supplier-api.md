@@ -36,16 +36,18 @@ SHA256_HEX_OF_RAW_BODY
 
 ## エンドポイント一覧 {#endpoints}
 
-- `POST /api/v1/supplier/ping`
-- `GET /api/v1/supplier/categories`
-- `GET /api/v1/supplier/products`
-- `GET /api/v1/supplier/products/{productId}`
-- `POST /api/v1/supplier/orders`
-- `GET /api/v1/supplier/orders/{orderId}`
-- `POST /api/v1/supplier/orders/{orderId}/cancel`
-- `GET /api/v1/supplier/payment-channels`
-- `POST /api/v1/supplier/topups`
-- `GET /api/v1/supplier/topups/{id}`
+| 操作 | HTTP | パス |
+| --- | --- | --- |
+| 認証情報を確認 | POST | `/api/v1/supplier/ping` |
+| カテゴリ一覧 | GET | `/api/v1/supplier/categories` |
+| 商品一覧 | GET | `/api/v1/supplier/products` |
+| 商品詳細 | GET | `/api/v1/supplier/products/{productId}` |
+| 仕入れ注文を作成 | POST | `/api/v1/supplier/orders` |
+| 仕入れ注文を取得 | GET | `/api/v1/supplier/orders/{orderId}` |
+| 仕入れ注文をキャンセル | POST | `/api/v1/supplier/orders/{orderId}/cancel` |
+| 決済チャネル一覧 | GET | `/api/v1/supplier/payment-channels` |
+| チャージを申請 | POST | `/api/v1/supplier/topups` |
+| チャージ状況を取得 | GET | `/api/v1/supplier/topups/{id}` |
 
 注文の作成および残高の補充は、同一性を持ちます。 不確実なリクエストを再試行する場合、同一性を維持してください。 クライアントがタイムアウトした場合、単に新しいサプライヤーの注文を作成することは避けてください。
 

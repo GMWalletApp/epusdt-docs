@@ -23,17 +23,13 @@ Para firmar una solicitud:
 
 ## Establecer orden. {#create-order}
 
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
+<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
 
 Reutilizar un `order_id` existente no crea un segundo pedido. Omitir tanto el `token` como la `network` crea un pedido seleccionable; GMPay Edge no lo establece silenciosamente en TRON.
 
 ## Solicitud de orden {#query-order}
 
-```text
-GET /payments/gmpay/v1/order/query
-```
+<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/order/query</code></span>
 
 Indica exactamente uno de los dos campos, `trade_id` u `order_id`, y firma la solicitud con la misma credencial. Cada credencial solo puede consultar los pedidos que creó.
 
