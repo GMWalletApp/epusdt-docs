@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch } from "vue";
 import { useData } from "vitepress";
-import { en, zh_cn, zh_tw } from "@nuxt/ui/locale";
+import { en, zh_cn, zh_tw, vi, ja, es, pt_br } from "@nuxt/ui/locale";
 import UApp from "@nuxt/ui/components/App.vue";
 import UBadge from "@nuxt/ui/components/Badge.vue";
 import UButton from "@nuxt/ui/components/Button.vue";
@@ -17,6 +17,7 @@ import UPageAside from "@nuxt/ui/components/PageAside.vue";
 import UPageBody from "@nuxt/ui/components/PageBody.vue";
 import UPageCard from "@nuxt/ui/components/PageCard.vue";
 import USeparator from "@nuxt/ui/components/Separator.vue";
+import { languages as siteLanguages } from "../../languages";
 import DocMotion from "./DocMotion.vue";
 import DocTools from "./DocTools.vue";
 
@@ -25,18 +26,28 @@ const { localeIndex, theme, page, isDark } = useData();
 interface Nav { text: string; link: string }
 interface Group { text: string; items: Nav[] }
 const languages = [
-  { key: "root", label: "English", prefix: "/", locale: en, docs: "Docs", search: "Search docs", contents: "On this page", skip: "Skip to content", mode: "Switch theme", language: "Language", prev: "Previous", next: "Next", missing: "Page not found" },
-  { key: "zh", label: "简体中文", prefix: "/zh/", locale: zh_cn, docs: "文档", search: "搜索文档", contents: "本页目录", skip: "跳到正文", mode: "切换外观", language: "切换语言", prev: "上一篇", next: "下一篇", missing: "找不到此页面" },
-  { key: "zh-tw", label: "繁體中文", prefix: "/zh-tw/", locale: zh_tw, docs: "文件", search: "搜尋文件", contents: "本頁目錄", skip: "跳到內文", mode: "切換外觀", language: "切換語言", prev: "上一篇", next: "下一篇", missing: "找不到此頁面" },
-];
+  { key: "root", locale: en, docs: "Docs", search: "Search docs", contents: "On this page", skip: "Skip to content", mode: "Switch theme", language: "Language", prev: "Previous", next: "Next", missing: "Page not found" },
+  { key: "zh", locale: zh_cn, docs: "文档", search: "搜索文档", contents: "本页目录", skip: "跳到正文", mode: "切换外观", language: "切换语言", prev: "上一篇", next: "下一篇", missing: "找不到此页面" },
+  { key: "zh-tw", locale: zh_tw, docs: "文件", search: "搜尋文件", contents: "本頁目錄", skip: "跳到內文", mode: "切換外觀", language: "切換語言", prev: "上一篇", next: "下一篇", missing: "找不到此頁面" },
+  { key: "vi", locale: vi, docs: "Tài liệu", search: "Tìm tài liệu", contents: "Trên trang này", skip: "Đến nội dung", mode: "Đổi giao diện", language: "Ngôn ngữ", prev: "Trước", next: "Tiếp", missing: "Không tìm thấy trang" },
+  { key: "ja", locale: ja, docs: "ドキュメント", search: "ドキュメントを検索", contents: "このページの目次", skip: "本文へ移動", mode: "テーマを切り替える", language: "言語", prev: "前へ", next: "次へ", missing: "ページが見つかりません" },
+  { key: "es", locale: es, docs: "Documentación", search: "Buscar en la documentación", contents: "En esta página", skip: "Ir al contenido", mode: "Cambiar tema", language: "Idioma", prev: "Anterior", next: "Siguiente", missing: "Página no encontrada" },
+  { key: "pt", locale: pt_br, docs: "Documentação", search: "Pesquisar na documentação", contents: "Nesta página", skip: "Ir para o conteúdo", mode: "Alterar tema", language: "Idioma", prev: "Anterior", next: "Próximo", missing: "Página não encontrada" },
+].map(item => {
+  const lang = siteLanguages.find(l => l.id === (item.key === "root" ? "en" : item.key))!;
+  return { ...item, label: lang.label, prefix: lang.prefix };
+});
 const local = computed(() => languages.find(l => l.key === localeIndex.value) ?? languages[0]);
 const file = computed(() => page.value.relativePath || "");
 const path = computed(() => "/" + file.value.replace(/(^|\/)index\.md$/, "$1").replace(/\.md$/, ""));
-const switches = computed(() => languages.map(l => ({
-  label: l.label, icon: l.key === local.value.key ? "i-lucide-check" : undefined,
-  to: /^README/.test(file.value) ? "/README" + ({ root: "", zh: ".zh-CN", "zh-tw": ".zh-TW" }[l.key] || "") :
-    l.prefix + (page.value.isNotFound ? "" : path.value.slice(local.value.prefix.length)),
-})));
+const switches = computed(() => {
+  const paths = page.value.frontmatter.languagePaths as Record<string, string> | undefined;
+  const readmes: Record<string, string> = { root: "/README", zh: "/README.zh-CN", "zh-tw": "/README.zh-TW" };
+  return languages.map(l => ({
+    label: l.label, icon: l.key === local.value.key ? "i-lucide-check" : undefined,
+    to: (/^README/.test(file.value) ? readmes[l.key] : paths?.[l.key === "root" ? "en" : l.key]) ?? l.prefix,
+  }));
+});
 const sections = computed(() => (theme.value.sidebar ?? {}) as Record<string, Group[]>);
 const section = computed(() => Object.keys(sections.value).find(key => path.value.startsWith(key)));
 const groups = computed(() => sections.value[section.value || ""] ?? []);

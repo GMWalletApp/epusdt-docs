@@ -2,6 +2,7 @@
 import { computed, ref, shallowRef, watch } from "vue";
 import { useData, useRouter } from "vitepress";
 import searchIndexes from "@localSearchIndex";
+import { tokenize } from "../../search";
 import MiniSearch from "minisearch";
 import UModal from "@nuxt/ui/components/Modal.vue";
 import UCommandPalette from "@nuxt/ui/components/CommandPalette.vue";
@@ -23,7 +24,7 @@ watch([open, localeIndex], async ([visible, locale], _, cleanup) => {
   try {
     const json = (await searchIndexes[locale]?.())?.default;
     if (current && json) index.value = MiniSearch.loadJSON(json, {
-      fields: ["title", "titles", "text"], storeFields: ["title", "titles"],
+      tokenize, fields: ["title", "titles", "text"], storeFields: ["title", "titles"],
       searchOptions: { prefix: true, fuzzy: 0.2, boost: { title: 4, text: 2 } },
     });
   } finally {

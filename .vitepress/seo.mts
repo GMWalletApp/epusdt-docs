@@ -1,12 +1,7 @@
+import { languages } from "./languages";
 import type { HeadConfig, PageData, TransformPageContext, UserConfig } from "vitepress";
 
 export const origin = "https://epusdt.com";
-
-const languages = [
-  { prefix: "", tag: "en", openGraph: "en_US" },
-  { prefix: "zh/", tag: "zh-Hans", openGraph: "zh_CN" },
-  { prefix: "zh-tw/", tag: "zh-Hant", openGraph: "zh_TW" },
-];
 
 export const sitemap: NonNullable<UserConfig["sitemap"]> = {
   hostname: origin,
@@ -36,8 +31,8 @@ function pageUrl(file: string) {
 export function addPageMetadata(page: PageData, { siteConfig }: TransformPageContext) {
   const file = page.relativePath;
   const head: HeadConfig[] = [...(page.frontmatter.head ?? [])];
-  const locale = languages.find(lang => lang.prefix && file.startsWith(lang.prefix)) ?? languages[0];
-  const topic = file.slice(locale.prefix.length);
+  const locale = languages.find(lang => lang.id !== "en" && file.startsWith(lang.prefix.slice(1))) ?? languages[0];
+  const topic = file.slice(locale.prefix.length - 1);
   const home = topic === "index.md";
   // Manage both variants so client-side navigation restores the document viewport.
   const viewport = "width=device-width,initial-scale=1" + (home ? ",viewport-fit=cover" : "");
@@ -47,7 +42,7 @@ export function addPageMetadata(page: PageData, { siteConfig }: TransformPageCon
     return { frontmatter: { ...page.frontmatter, head } };
   }
   const url = pageUrl(file);
-  const translations = languages.filter(lang => siteConfig.pages.includes(lang.prefix + topic));
+  const translations = languages.filter(lang => siteConfig.pages.includes(lang.prefix.slice(1) + topic));
   const website = { "@id": origin + "/#website" };
   head.push(["link", { rel: "canonical", href: url }]);
   head.push(["link", { rel: "alternate", type: "text/markdown", href: origin + "/agent-docs/" + file }]);
@@ -55,7 +50,7 @@ export function addPageMetadata(page: PageData, { siteConfig }: TransformPageCon
     head.push(["link", { rel: "help", type: "text/markdown", href: origin + "/agent-setup/prompt.md" }]);
   }
   for (const lang of translations) {
-    head.push(["link", { rel: "alternate", hreflang: lang.tag, href: pageUrl(lang.prefix + topic) }]);
+    head.push(["link", { rel: "alternate", hreflang: lang.tag, href: pageUrl(lang.prefix.slice(1) + topic) }]);
   }
   if (translations.includes(languages[0])) {
     head.push(["link", { rel: "alternate", hreflang: "x-default", href: pageUrl(topic) }]);
@@ -87,5 +82,8 @@ export function addPageMetadata(page: PageData, { siteConfig }: TransformPageCon
     });
   }
   head.push(["script", { type: "application/ld+json" }, JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")]);
-  return { frontmatter: { ...page.frontmatter, head } };
+  const languagePaths = Object.fromEntries(translations.map(lang => [
+    lang.id, pageUrl(lang.prefix.slice(1) + topic).slice(origin.length),
+  ]));
+  return { frontmatter: { ...page.frontmatter, languagePaths, head } };
 }

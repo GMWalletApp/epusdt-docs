@@ -1,3 +1,5 @@
+import { tokenize } from "./search";
+import { docsLocale, englishNavigation } from "./navigation.mts";
 import { defineConfig } from "vitepress";
 import ui from "@nuxt/ui/vite";
 
@@ -37,87 +39,14 @@ export default defineConfig({
   ],
 
   locales: {
+    vi: docsLocale("vi"),
+    ja: docsLocale("ja"),
+    es: docsLocale("es"),
+    pt: docsLocale("pt"),
     root: {
       label: "English",
       lang: "en-US",
-      themeConfig: {
-        nav: [
-          { text: "Home", link: "/" },
-          { text: "Guide", link: "/guide/intro" },
-          { text: "API", link: "/api/reference" },
-          { text: "GMPay Edge", link: "/gmpay-edge/" },
-          { text: "GMShop Edge", link: "/gmshop-edge/" },
-          { text: "Sponsor", link: "/guide/sponsor" },
-        ],
-        sidebar: {
-          "/guide/": [
-            {
-              text: "Guide",
-              items: [
-                { text: "Introduction", link: "/guide/intro" },
-                { text: "Release Notes", link: "/guide/changelog" },
-                { text: "FAQ", link: "/guide/faq" },
-                { text: "Sponsor", link: "/guide/sponsor" },
-              ],
-            },
-            {
-              text: "Installation",
-              items: [
-                { text: "Tutorial", link: "/guide/installation/tutorial" },
-                { text: "epctl Binary Installer", link: "/guide/installation/epctl" },
-                { text: "Docker (Recommended)", link: "/guide/installation/docker" },
-                { text: "aaPanel", link: "/guide/installation/aapanel" },
-                { text: "Manual", link: "/guide/installation/manual" },
-              ],
-            },
-            {
-              text: "Integration",
-              items: [
-                { text: "GMPay (Recommended)", link: "/guide/integration/gmpay" },
-                { text: "EPay (Redirect)", link: "/guide/integration/epay" },
-                { text: "Legacy Migration", link: "/guide/integration/epusdt" },
-              ],
-            },
-          ],
-          "/api/": [
-            {
-              text: "API Reference",
-              items: [
-                { text: "Overview", link: "/api/reference" },
-                { text: "Payment API", link: "/api/payment" },
-                { text: "API Migration", link: "/api/legacy" },
-              ],
-            },
-          ],
-          "/gmpay-edge/": [
-            {
-              text: "GMPay Edge",
-              items: [
-                { text: "Overview", link: "/gmpay-edge/" },
-                { text: "Architecture", link: "/gmpay-edge/architecture" },
-                { text: "Deployment", link: "/gmpay-edge/deployment" },
-                { text: "Bun Data Operations", link: "/gmpay-edge/node-data-operations" },
-                { text: "Merchant API", link: "/gmpay-edge/merchant-api" },
-                { text: "Payment Integrations", link: "/gmpay-edge/payment-integrations" },
-              ],
-            },
-          ],
-          "/gmshop-edge/": [
-            {
-              text: "GMShop Edge",
-              items: [
-                { text: "Overview", link: "/gmshop-edge/" },
-                { text: "Architecture", link: "/gmshop-edge/architecture" },
-                { text: "Deployment", link: "/gmshop-edge/deployment" },
-                { text: "Bun Data Operations", link: "/gmshop-edge/node-data-operations" },
-                { text: "Native Supplier API", link: "/gmshop-edge/supplier-api" },
-                { text: "Commerce and Fulfillment", link: "/gmshop-edge/commerce-fulfillment" },
-                { text: "Checkout and Providers", link: "/gmshop-edge/checkout-providers" },
-              ],
-            },
-          ],
-        },
-      },
+      themeConfig: englishNavigation,
     },
     zh: {
       label: "简体中文",
@@ -307,7 +236,7 @@ export default defineConfig({
     logo: "/logo.png",
     search: {
       provider: "local",
-      options: { locales: {
+      options: { miniSearch: { options: { tokenize } }, locales: {
         zh: { translations: { button: { buttonText: "搜索文档", buttonAriaLabel: "搜索文档" }, modal: { noResultsText: "未找到相关文档", resetButtonTitle: "清除搜索", footer: { selectText: "选择", navigateText: "切换", closeText: "关闭" } } } },
         "zh-tw": { translations: { button: { buttonText: "搜尋文件", buttonAriaLabel: "搜尋文件" }, modal: { noResultsText: "找不到相關文件", resetButtonTitle: "清除搜尋", footer: { selectText: "選取", navigateText: "切換", closeText: "關閉" } } } },
       } },
