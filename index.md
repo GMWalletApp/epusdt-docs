@@ -1,6 +1,7 @@
 ---
 description: "Deploy EPUSDT (GMPay) to accept USDT and USDC in your own wallet. Explore supported networks, install with Docker Compose, and integrate checkout with GMPay or EPay."
-title: "Self-hosted USDT and USDC payment gateway"
+title: "EPUSDT - Self-hosted USDT and USDC payment gateway"
+titleTemplate: false
 layout: false
 ---
 
