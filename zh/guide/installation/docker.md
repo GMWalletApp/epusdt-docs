@@ -46,3 +46,24 @@ v2.1.1 起仅支持 SQLite。升级前备份配置、业务库、运行库和扫
 ```sh
 docker compose --profile scanner up -d
 ```
+
+使用独立扫描服务时，在 EPUSDT 进程环境或启动用的 `.env` 填写以下设置，重启后生效。留空 `CHAINSCANNER_URL` 即使用内置扫描器。
+
+| 配置 | 用途 |
+| --- | --- |
+| `CHAINSCANNER_URL` | 服务的 HTTP(S) 源站，例如同机部署的 `http://127.0.0.1:9081`。容器间使用可达的服务名。 |
+| `CHAINSCANNER_TOKEN` | 独立服务分配给 EPUSDT 的消费者令牌。各业务使用不同令牌。 |
+| `CHAINSCANNER_ADMIN_TOKEN` | 启用后台节点管理和黑名单所需的独立管理员令牌。 |
+| `CHAINSCANNER_TRANSPORT` | 默认 `ws` 推送，也支持 `grpc` 双向流和 `http` 长轮询。gRPC 需要 HTTP/2 或内网 h2c。 |
+
+后台接口使用 EPUSDT 管理员 JWT。公共前缀为 `/admin/api/v1/chainscanner`，服务器按路由选用相应的 ChainScanner 令牌。
+
+| 用途 | 方法和相对路径 |
+| --- | --- |
+| 普通节点、兜底节点 | `GET /admin/nodes`、`POST /admin/nodes`、`POST /admin/nodes/fallback`、`DELETE /admin/nodes/{id}` |
+| 首页各链追块延迟 | `GET /admin/progress`（使用扫描器管理员令牌） |
+| 手动复测扫描节点 | `POST /admin/nodes/{id}/test`、`POST /admin/nodes/test?network=solana` |
+| RPC 地址黑名单 | `GET /admin/blacklist`、`PUT /admin/blacklist/{rule}`、`DELETE /admin/blacklist/{rule}`。例如 `keyword:acme`、`exact:rpc.example.org` |
+| 连续进度、普通与严格交易查询 | `GET /heights/{network}`、`GET /transactions/{network}/{hash}`、`GET /transactions/{network}/{hash}/strict` |
+
+可为每条链配置两家独立服务商提供的兜底节点，用于补扫和严格核验。[ChainScanner API](https://github.com/GMWalletApp/epusdt/blob/master/chainscanner/docs/api/zh-CN.md) · [上游仓库](https://github.com/GMWalletApp/ChainScanner) · [本项目使用的版本](https://github.com/GMWalletApp/epusdt/blob/master/chainscanner.rev)

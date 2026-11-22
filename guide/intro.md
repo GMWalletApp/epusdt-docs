@@ -19,26 +19,30 @@ To deploy with Codex, Claude Code, Cursor or OpenCode, give your agent the [depl
 
 Checkout offers a direct-payment asset when its network and asset are enabled and a receiving address is configured. These are the defaults on a fresh installation. Read `data.supported_assets` from `GET /payments/gmpay/v1/config` for the options on your gateway.
 
-| Network | API network ID | Default assets |
-| --- | --- | --- |
-| TRON | `tron` | TRX, USDT |
-| Ethereum | `ethereum` | USDT, USDC |
-| BNB Smart Chain | `binance` | USDT, USDC |
-| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
-| Solana | `solana` | SOL, USDT, USDC |
-| TON | `ton` | TON, USDT |
-| Plasma | `plasma` | USDT |
-| Aptos | `aptos` | USDT, USDC |
-| Sui | `sui` | SUI, USDC |
-| Arbitrum One | `arbitrum` | ETH, USDC |
-| Base | `base` | ETH, USDC |
-| OP Mainnet | `optimism` | ETH, USDC |
-| Avalanche C-Chain | `avalanche` | AVAX, USDC |
-| HyperEVM | `hyperevm` | HYPE, USDC |
-| Monad | `monad` | MON, USDC |
-| Arc | `arc` | USDC |
+A dash marks a native asset with no contract. Use the address on the payment order as the recipient. The identifiers below are for verifying the asset.
+
+<div class="asset-directory">
+
+| Network (API ID) | Token | Contract / asset ID | Decimals |
+| --- | --- | --- | ---: |
+<!--@include: @/.vitepress/data/asset-rows.md-->
+
+</div>
 
 Arc accepts native and ERC-20 USDC. On Polygon, USDC and USDC.e are separate assets.
+
+### A7A5 (TRC-20 / ERC-20) {#a7a5}
+
+To accept A7A5 (pegged to the Russian ruble), enable it separately on TRON or Ethereum and add a receiving wallet on that network. In fixed-rate mode, add an `a7a5` quote to each billing currency you accept. The value is A7A5 per unit of billing currency.
+
+For builds that include A7A5, the following fields select the asset in a GMPay order. An existing deployment may require an upgrade.
+
+| GMPay `network` | GMPay `token` | EPay `type` |
+| --- | --- | --- |
+| `tron` | `A7A5` | `a7a5.tron` |
+| `ethereum` | `A7A5` | `a7a5.ethereum` |
+
+[TRONSCAN](https://tronscan.org/#/token20/TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ) · [Etherscan](https://etherscan.io/token/0x6fA0BE17e4beA2fCfA22ef89BF8ac9aab0AB0fc9)
 
 ### Hosted payment methods
 

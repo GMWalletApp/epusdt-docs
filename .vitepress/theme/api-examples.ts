@@ -23,7 +23,20 @@ interface Sample {
   status?: number;
 }
 export const examples: Record<string, Sample> = {
-  config: { response: { supported_assets: [{network: "tron", display_name: "TRON", tokens: ["TRX", "USDT"]}] } },
+  config: {
+    response: {
+      supported_assets: [{
+        network: "tron",
+        display_name: "TRON",
+        tokens: ["A7A5", "TRX", "USDT"],
+        token_details: {
+          A7A5: { contract_address: "TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ", decimals: 6 },
+          TRX: { contract_address: "", decimals: 6 },
+          USDT: { contract_address: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", decimals: 6 },
+        },
+      }],
+    },
+  },
   "create-order": { body: create, response: { trade_id: demoTrade, order_id: order, status: 1,
     expiration_time: 1779530812, payment_url: "https://pay.example.com/pay/checkout-counter/" + demoTrade } },
   "open-checkout": { status: 301, response: "Location: /cashier/" + demoTrade },

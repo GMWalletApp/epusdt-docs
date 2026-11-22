@@ -13,6 +13,8 @@ description: "supported_assets から利用可能なネットワークとトー�
 
 `supported_assets` から利用可能なネットワークとトークンを取得します。パラメータや加盟店署名は不要です。
 
+対応バージョンでは、`token_details` をシンボルで引くと資産 ID と小数桁数を確認できます。旧版は `tokens` のみを返します。 [収録済みのコントラクト一覧](../../guide/intro#networks)
+
 ## 関連資料
 
 - [GMPay 注文を作成](./create-order)

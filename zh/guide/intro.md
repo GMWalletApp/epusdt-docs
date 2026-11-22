@@ -19,26 +19,30 @@ EPUSDT 是可自行部署的支付网关。商户创建订单，买家在收银�
 
 下表列出新安装的默认网络和币种。启用链和币种并配置收款地址后，收银台才会显示对应选项。可通过 `GET /payments/gmpay/v1/config` 的 `data.supported_assets` 获取当前网关的实际列表。
 
-| 网络 | API 网络 ID | 默认币种 |
-| --- | --- | --- |
-| TRON | `tron` | TRX, USDT |
-| Ethereum | `ethereum` | USDT, USDC |
-| BNB Smart Chain | `binance` | USDT, USDC |
-| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
-| Solana | `solana` | SOL, USDT, USDC |
-| TON | `ton` | TON, USDT |
-| Plasma | `plasma` | USDT |
-| Aptos | `aptos` | USDT, USDC |
-| Sui | `sui` | SUI, USDC |
-| Arbitrum One | `arbitrum` | ETH, USDC |
-| Base | `base` | ETH, USDC |
-| OP Mainnet | `optimism` | ETH, USDC |
-| Avalanche C-Chain | `avalanche` | AVAX, USDC |
-| HyperEVM | `hyperevm` | HYPE, USDC |
-| Monad | `monad` | MON, USDC |
-| Arc | `arc` | USDC |
+横线表示无需合约地址的原生币。买家应向订单给出的收款地址转账，下表地址仅用于核对币种。
+
+<div class="asset-directory">
+
+| 网络（API 标识） | 币种 | 合约地址 / 资产标识 | 小数位 |
+| --- | --- | --- | ---: |
+<!--@include: @/.vitepress/data/asset-rows.md-->
+
+</div>
 
 Arc 支持原生和 ERC-20 两种 USDC。Polygon 的 USDC 和 USDC.e 是两种独立资产。
+
+### A7A5 (TRC-20 / ERC-20) {#a7a5}
+
+A7A5 与俄罗斯卢布挂钩。商户须在 TRON 或 Ethereum 上分别启用 A7A5，并配置该网络的收款钱包。使用固定汇率时，为每种计价货币添加 `a7a5` 报价，数值表示每单位计价货币可兑换的 A7A5 数量。
+
+包含 A7A5 的网关版本可通过以下字段创建 GMPay 订单；旧版实例可能需要先升级。
+
+| GMPay `network` | GMPay `token` | EPay `type` |
+| --- | --- | --- |
+| `tron` | `A7A5` | `a7a5.tron` |
+| `ethereum` | `A7A5` | `a7a5.ethereum` |
+
+[TRONSCAN](https://tronscan.org/#/token20/TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ) · [Etherscan](https://etherscan.io/token/0x6fA0BE17e4beA2fCfA22ef89BF8ac9aab0AB0fc9)
 
 ### 托管支付方式
 

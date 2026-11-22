@@ -13,6 +13,8 @@ description: "读取 supported_assets，获取当前收银台可选的网络和�
 
 读取 `supported_assets`，获取当前收银台可选的网络和币种。无需提交参数或商户签名。
 
+支持合约信息的网关可按币种符号从 `token_details` 读取完整资产标识和小数位。旧版仅返回 `tokens`。 [内置币种合约表](../../guide/intro#networks)
+
 ## 相关文档
 
 - [创建 GMPay 订单](./create-order)

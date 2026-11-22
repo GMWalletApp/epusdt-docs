@@ -19,26 +19,30 @@ EPUSDT — платёжный шлюз, который продавец разм
 
 Актив доступен для прямой оплаты, когда включены его сеть и сам актив, а также настроен адрес получателя. В таблице приведены значения для новой установки. Доступные на вашем шлюзе варианты перечислены в `data.supported_assets` ответа `GET /payments/gmpay/v1/config`.
 
-| Сеть | Идентификатор сети в API | Активы по умолчанию |
-| --- | --- | --- |
-| TRON | `tron` | TRX, USDT |
-| Ethereum | `ethereum` | USDT, USDC |
-| BNB Smart Chain | `binance` | USDT, USDC |
-| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
-| Solana | `solana` | SOL, USDT, USDC |
-| TON | `ton` | TON, USDT |
-| Plasma | `plasma` | USDT |
-| Aptos | `aptos` | USDT, USDC |
-| Sui | `sui` | SUI, USDC |
-| Arbitrum One | `arbitrum` | ETH, USDC |
-| Base | `base` | ETH, USDC |
-| OP Mainnet | `optimism` | ETH, USDC |
-| Avalanche C-Chain | `avalanche` | AVAX, USDC |
-| HyperEVM | `hyperevm` | HYPE, USDC |
-| Monad | `monad` | MON, USDC |
-| Arc | `arc` | USDC |
+Прочерк означает нативный актив без контракта. Средства отправляют на адрес получателя из заказа. Адреса в таблице служат для идентификации активов.
+
+<div class="asset-directory">
+
+| Сеть (ID в API) | Токен | Адрес контракта / ID актива | Десятичные знаки |
+| --- | --- | --- | ---: |
+<!--@include: @/.vitepress/data/asset-rows.md-->
+
+</div>
 
 В сети Arc принимаются нативный USDC и USDC стандарта ERC-20. В Polygon USDC и USDC.e считаются разными активами.
+
+### A7A5 (TRC-20 / ERC-20) {#a7a5}
+
+Курс A7A5 привязан к российскому рублю. Включите A7A5 отдельно для каждой нужной сети (TRON или Ethereum) и добавьте кошелёк для приёма платежей. При фиксированном курсе укажите котировку `a7a5` для каждой валюты счёта. Значение задаёт количество A7A5 за единицу этой валюты.
+
+В версиях с поддержкой A7A5 токен выбирают в заказе GMPay с помощью этих полей. Для прежних установок может потребоваться обновление.
+
+| GMPay `network` | GMPay `token` | EPay `type` |
+| --- | --- | --- |
+| `tron` | `A7A5` | `a7a5.tron` |
+| `ethereum` | `A7A5` | `a7a5.ethereum` |
+
+[TRONSCAN](https://tronscan.org/#/token20/TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ) · [Etherscan](https://etherscan.io/token/0x6fA0BE17e4beA2fCfA22ef89BF8ac9aab0AB0fc9)
 
 ### Оплата через внешние сервисы {#hosted-payment-methods}
 

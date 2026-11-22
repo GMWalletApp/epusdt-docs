@@ -19,26 +19,30 @@ Para implantar com Codex, Claude Code, Cursor ou OpenCode, forneça ao agente o 
 
 O checkout oferece um recurso de pagamento direto quando sua rede e o ativo estão habilitados, e um endereço de recebimento é configurado. Estas são as configurações padrão em uma instalação inicial. Consulte `data.supported_assets` a partir de `GET /payments/gmpay/v1/config` para as opções do seu gateway.
 
-| Rede | ID da rede API | Ativos padrão |
-| --- | --- | --- |
-| TRON | `tron` | TRX, USDT |
-| Ethereum | `ethereum` | USDT, USDC |
-| BNB Smart Chain | `binance` | USDT, USDC |
-| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
-| Solana | `solana` | SOL, USDT, USDC |
-| TON | `ton` | TON, USDT |
-| Plasma | `plasma` | USDT |
-| Aptos | `aptos` | USDT, USDC |
-| Sui | `sui` | SUI, USDC |
-| Arbitrum One | `arbitrum` | ETH, USDC |
-| Base | `base` | ETH, USDC |
-| OP Mainnet | `optimism` | ETH, USDC |
-| Avalanche C-Chain | `avalanche` | AVAX, USDC |
-| HyperEVM | `hyperevm` | HYPE, USDC |
-| Monad | `monad` | MON, USDC |
-| Arc | `arc` | USDC |
+O travessão indica um ativo nativo sem contrato. O comprador deve enviar o pagamento ao endereço informado no pedido. Os identificadores na tabela servem para conferir o ativo.
+
+<div class="asset-directory">
+
+| Rede (ID na API) | Token | Contrato / ID do ativo | Casas decimais |
+| --- | --- | --- | ---: |
+<!--@include: @/.vitepress/data/asset-rows.md-->
+
+</div>
 
 Arc aceita USDC nativo e USDC ERC-20. Na Polygon, o USDC e o USDC.e são ativos distintos.
+
+### A7A5 (TRC-20 / ERC-20) {#a7a5}
+
+O A7A5 é atrelado ao rublo russo. Ative o A7A5 separadamente em cada rede que pretende usar (TRON ou Ethereum) e adicione uma carteira de recebimento nessa rede. Se usar câmbio fixo, adicione uma cotação `a7a5` para cada moeda de cobrança. O valor indica quantos A7A5 correspondem a uma unidade dessa moeda.
+
+Nas versões com A7A5, use estes campos para selecionar o ativo em um pedido GMPay. Instalações anteriores podem precisar de uma atualização.
+
+| GMPay `network` | GMPay `token` | EPay `type` |
+| --- | --- | --- |
+| `tron` | `A7A5` | `a7a5.tron` |
+| `ethereum` | `A7A5` | `a7a5.ethereum` |
+
+[TRONSCAN](https://tronscan.org/#/token20/TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ) · [Etherscan](https://etherscan.io/token/0x6fA0BE17e4beA2fCfA22ef89BF8ac9aab0AB0fc9)
 
 ### Métodos de pagamento hospedados {#hosted-payment-methods}
 

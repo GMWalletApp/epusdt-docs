@@ -120,3 +120,5 @@ html { scroll-padding-top: calc(var(--ui-header-height) + 1.5rem); }
 .api-verb { flex:none; margin-top:.1rem; }
 .ep-docs-shell .api-fields li p { margin:.15rem 0; font-size:.82rem; color:var(--ui-text-muted); }
 .api-catalog-link { display:inline-block; margin-top:.65rem; font-size:.82rem; }
+
+.ep-docs-shell .asset-directory td:nth-child(3) code { white-space: normal; overflow-wrap: anywhere; }

@@ -19,26 +19,30 @@ Codex, Claude Code, Cursor 또는 OpenCode로 배포하려면 에이전트에 [�
 
 온체인 직접 결제 자산은 해당 네트워크와 자산이 활성화되어 있고 수신 주소가 등록된 경우에만 결제 화면에 표시됩니다. 아래는 신규 설치의 기본 목록입니다. 현재 게이트웨이에서 이용 가능한 옵션은 `GET /payments/gmpay/v1/config` 응답의 `data.supported_assets`에서 확인하세요.
 
-| 네트워크 | API 네트워크 ID | 기본 자산 |
-| --- | --- | --- |
-| TRON | `tron` | TRX, USDT |
-| Ethereum | `ethereum` | USDT, USDC |
-| BNB Smart Chain | `binance` | USDT, USDC |
-| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
-| Solana | `solana` | SOL, USDT, USDC |
-| TON | `ton` | TON, USDT |
-| Plasma | `plasma` | USDT |
-| Aptos | `aptos` | USDT, USDC |
-| Sui | `sui` | SUI, USDC |
-| Arbitrum One | `arbitrum` | ETH, USDC |
-| Base | `base` | ETH, USDC |
-| OP Mainnet | `optimism` | ETH, USDC |
-| Avalanche C-Chain | `avalanche` | AVAX, USDC |
-| HyperEVM | `hyperevm` | HYPE, USDC |
-| Monad | `monad` | MON, USDC |
-| Arc | `arc` | USDC |
+대시는 컨트랙트 주소가 없는 네이티브 자산을 뜻합니다. 구매자는 주문에 표시된 수신 주소로 송금해야 합니다. 아래 주소는 자산 확인용입니다.
+
+<div class="asset-directory">
+
+| 네트워크(API ID) | 토큰 | 컨트랙트 주소 / 자산 ID | 소수 자릿수 |
+| --- | --- | --- | ---: |
+<!--@include: @/.vitepress/data/asset-rows.md-->
+
+</div>
 
 Arc는 네이티브 USDC와 ERC-20 USDC를 모두 지원합니다. Polygon에서 USDC와 USDC.e는 별도의 자산입니다.
+
+### A7A5 (TRC-20 / ERC-20) {#a7a5}
+
+A7A5는 러시아 루블에 연동됩니다. 사용할 네트워크(TRON 또는 Ethereum)마다 A7A5를 활성화하고 수신 지갑을 등록하세요. 고정 환율을 사용한다면 결제 기준 통화별로 `a7a5` 환율을 추가하세요. 값은 기준 통화 1단위당 A7A5 수량입니다.
+
+A7A5 지원 버전에서는 GMPay 주문에 아래 필드를 지정하세요. 이전 버전은 업그레이드가 필요할 수 있습니다.
+
+| GMPay `network` | GMPay `token` | EPay `type` |
+| --- | --- | --- |
+| `tron` | `A7A5` | `a7a5.tron` |
+| `ethereum` | `A7A5` | `a7a5.ethereum` |
+
+[TRONSCAN](https://tronscan.org/#/token20/TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ) · [Etherscan](https://etherscan.io/token/0x6fA0BE17e4beA2fCfA22ef89BF8ac9aab0AB0fc9)
 
 ### 외부 서비스 결제 수단 {#hosted-payment-methods}
 
