@@ -3,6 +3,7 @@ import { computed, ref, onUnmounted } from "vue";
 import { useRouter } from "vitepress";
 import UButton from "@nuxt/ui/components/Button.vue";
 import UModal from "@nuxt/ui/components/Modal.vue";
+import MerchantStory from "./MerchantStory.vue";
 import GradientASCII from "./GradientASCII.vue";
 
 import { languages, type Language } from "../../languages";
@@ -144,7 +145,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="VPHome ep-home">
+  <main>
+  <div class="VPHome ep-home">
     <div class="ep-atmosphere" aria-hidden="true">
       <GradientASCII shape="horizon" :speed="0.6" :glow="0.18" :flicker="0.08" :grain="0.035" :colors="['#244ff5', '#cceeff', '#86caff', '#4977fc']" />
     </div>
@@ -201,5 +203,7 @@ onUnmounted(() => {
       </UModal>
       <noscript><a :href="guide">{{ translations[language].action }} ↗</a></noscript>
     </section>
+  </div>
+  <MerchantStory :language="language" :prefix="current.prefix" />
   </main>
 </template>
