@@ -220,10 +220,10 @@ vec4 tone(float t) {
 }
 
 void main() {
-  // Reflect the horizon field without rotating the glyph atlas.
-  vec2 p = (vec2(vUv.x, 1.0 - vUv.y) - 0.5) * vec2(uAspect, 1.0);
+  vec2 p = (vUv - 0.5) * vec2(uAspect, 1.0);
   float time = uTime;
-  vec2 q = p / uScale;
+  // Reflect only the scenery. Trails and waves use the pointer's canvas coordinates.
+  vec2 q = vec2(p.x, -p.y) / uScale;
   vec2 warp = vec2(
     noise(q * 1.6 + uSeed + vec2(0.0, time * 0.3)),
     noise(q * 1.6 + uSeed.yx + vec2(4.3, -time * 0.24))
@@ -246,12 +246,14 @@ void main() {
     vec2 d = p - point.xy;
     scramble = max(scramble, point.z * exp(-dot(d, d) / (uRadius * uRadius)));
   }
+  float wave = 0.0;
   for (int i = 0; i < 4; i++) {
     vec4 c = uClicks[i];
     if (c.w <= 0.0) continue;
     float d = length(p - c.xy);
     if (uClickEffect == 1) {
-      scramble = max(scramble, exp(-pow((d - c.z * 0.75) / 0.06, 2.0)) * c.w);
+      float ring = (d - c.z * 0.75) / 0.06;
+      wave = max(wave, exp(-ring * ring) * c.w);
     } else if (uClickEffect == 2) {
       float size = 0.08 + 0.22 * (1.0 - exp(-c.z * 5.0));
       scramble = max(scramble, (1.0 - smoothstep(size * 0.6, size, d)) * c.w);
@@ -263,7 +265,7 @@ void main() {
   float alpha = mixed.a * reveal;
   float dither = (hash12(gl_FragCoord.xy + uFrame * 13.7) - 0.5) / 255.0;
   outColor = clamp(vec4(color * alpha + dither, alpha + dither), 0.0, 1.0);
-  outAux = vec4(reveal, scramble, 0.0, 1.0);
+  outAux = vec4(reveal, max(scramble, wave), wave, 1.0);
 }`;
 
 const GLYPHS = `
@@ -314,13 +316,15 @@ vec4 glyphAt(vec2 px) {
     if (hash12(cell * 3.7 + frame * 5.3) < decode * 1.25) index = 1.0 + floor(hash12(cell + frame * 1.37) * (uCount - 1.0));
   }
   float present = step(pick, uDensity * mix(1.0, 0.3 + tone * 1.1, 0.55));
-  float cutoff = smoothstep(0.03, 0.1, value);
+  // A tap can light up glyphs even in the black part of the horizon.
+  float wave = aux.b * (1.0 - uLight);
+  float cutoff = max(smoothstep(0.03, 0.1, value), wave);
   float focus = step(hash12(cell * 0.71 + 9.2 + uSeedValue), uDepth);
   float coverage = sampleGlyph(index, local, coord, focus * 1.2);
   float alpha = uOpacity * present * cutoff * coverage * mix(1.0, 0.35 + 0.65 * level, 0.55) * (1.0 - focus * 0.5);
   if (uLight < 0.5) {
-    vec3 light = field.rgb * 0.55 + vec3(0.03) * field.a;
-    return vec4(light * alpha, 0.6 * field.a * alpha);
+    vec3 light = field.rgb * 0.55 + vec3(0.03) * field.a + vec3(0.25, 0.55, 0.9) * wave;
+    return vec4(light * alpha, max(0.6 * field.a, wave) * alpha);
   }
   vec3 ink = visible * 0.8;
   return vec4(ink * alpha, alpha);
