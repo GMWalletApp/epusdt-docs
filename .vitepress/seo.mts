@@ -52,7 +52,6 @@ export function addPageMetadata(page: PageData, { siteConfig }: TransformPageCon
   head.push(["link", { rel: "canonical", href: url }]);
   head.push(["link", { rel: "alternate", type: "text/markdown", href: origin + "/agent-docs/" + file }]);
   if (home) {
-    head.push(["link", { rel: "stylesheet", href: "/styles/agent-home.css" }]);
     head.push(["link", { rel: "help", type: "text/markdown", href: origin + "/agent-setup/prompt.md" }]);
   }
   for (const lang of translations) {
