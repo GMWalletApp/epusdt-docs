@@ -101,7 +101,7 @@ async function copy(source: "request" | "response") {
       <div class="api-languages" :aria-label="labels[0]" role="group">
         <button v-for="item in languages" :key="item" type="button" :aria-pressed="language === item" @click="language = item">{{ item }}</button>
       </div>
-      <pre v-if="snippet" tabindex="0"><code ref="code">{{ snippet }}</code></pre>
+      <pre v-if="snippet" tabindex="0"><code :key="language + method" ref="code">{{ snippet }}</code></pre>
       <p v-else role="status">{{ labels[6] }}</p>
       <div v-if="publicQuery" class="api-try">
         <small v-if="!canSend">{{ liveText[2] }}</small>
@@ -114,7 +114,7 @@ async function copy(source: "request" | "response") {
         <option v-for="item in responses" :key="item.id" :value="item.id">{{ item.status }} · {{ item.id !== "success" && item.mime === "application/json" && Number(item.id) !== item.status ? item.id + " · " : "" }}{{ item.label }}</option>
       </select><span v-else class="api-status">HTTP {{ response.status }}</span></div>
       <small>{{ response.mime }}<template v-if="responseKind === 'success' && typeof sample.response !== 'string'"> · {{ labels[7] }}</template></small>
-      <pre tabindex="0"><code ref="responseCode">{{ response.body }}</code></pre>
+      <pre tabindex="0"><code :key="responseKind" ref="responseCode">{{ response.body }}</code></pre>
       <div class="api-copy"><span aria-live="polite">{{ feedback?.source === "response" ? feedback.message : "" }}</span><UButton size="xs" color="neutral" variant="outline" @click="copy('response')">{{ labels[3] }}</UButton></div>
     </div>
     <div v-if="result" class="api-response api-live" aria-live="polite">

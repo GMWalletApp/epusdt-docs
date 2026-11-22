@@ -104,7 +104,7 @@ html { scroll-padding-top: calc(var(--ui-header-height) + 1.5rem); }
 .api-contract-list { border:1px solid var(--ui-border); border-radius:.7rem; overflow:hidden; }
 .api-contract-list > button { width:100%; display:flex; align-items:baseline; flex-wrap:wrap; gap:.5rem; text-align:start; padding:.6rem .8rem; cursor:pointer; border-top:1px solid var(--ui-border); font-size:.9rem; }
 .api-contract-list > button:first-child { border-top:0; }
-.api-contract-list > button[aria-pressed=true] { background:var(--ui-bg-elevated); }
+.api-contract-list > button[aria-expanded=true] { background:var(--ui-bg-elevated); }
 .api-dot { align-self:center; width:.55rem; height:.55rem; background:#16865a; border-radius:50%; }
 .api-dot.failure { background:#c34655; }
 .api-contract-detail { padding:.35rem .9rem .75rem; font-size:.85rem; }
@@ -118,4 +118,52 @@ html { scroll-padding-top: calc(var(--ui-header-height) + 1.5rem); }
 .api-endpoint-address button { align-self:flex-start; flex:none; margin-top:-.2rem; }
 .api-verb { flex:none; margin-top:.1rem; }
 .ep-docs-shell .api-fields li p { margin:.15rem 0; font-size:.82rem; color:var(--ui-text-muted); }
+.api-disclosure { display: grid; grid-template-rows: 1fr; opacity: 1; }
+.api-disclosure[inert] { grid-template-rows: 0fr; opacity: 0; }
+.api-disclosure-clip { min-height: 0; overflow: hidden; }
+.api-disclosure-icon { width: 1rem; height: 1rem; flex: none; align-self: center; margin-inline-start: auto; }
+.api-contract-list > button[aria-expanded=true] .api-disclosure-icon { transform: rotate(90deg); }
+
+.api-contract-list > button:focus-visible, .api-languages button:focus-visible {
+  outline: 2px solid var(--ui-primary); outline-offset: -2px;
+}
+
+@media (hover: hover) {
+  .api-contract-list > button[aria-expanded=false]:hover, .api-languages button[aria-pressed=false]:hover { background-color: var(--ui-bg-muted); }
+  .ep-docs-shell .ep-pager > :hover { border-color: var(--ui-border-accented); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .api-disclosure { transition: grid-template-rows 240ms cubic-bezier(.22, 1, .36, 1), opacity 180ms ease-out; }
+  .api-disclosure-icon { transition: transform 200ms ease-out; }
+  .api-contract-list > button, .api-languages button,
+  .ep-docs-shell :is(.ep-doc-tools, header, .api-copy, .api-try, .api-endpoint-address) button {
+    transition: background-color 140ms, color 140ms, transform 140ms ease-out;
+  }
+  .api-languages button:active, .ep-docs-shell :is(.ep-doc-tools, header, .api-copy, .api-try, .api-endpoint-address) button:enabled:active {
+    transform: scale(.96);
+  }
+  .ep-docs-shell :is(.ep-sidebar, .ep-outline, .ep-crumbs) a {
+    transition: color 160ms, background-color 160ms;
+  }
+  .ep-docs-shell .ep-pager > * { transition: transform 180ms ease-out, border-color 180ms; }
+  @media (hover: hover) {
+    .ep-docs-shell .ep-pager > :hover { transform: translateY(-2px); }
+  }
+  .ep-docs-shell .api-examples pre code { display: block; animation: ep-doc-reveal 190ms ease-out; }
+  .api-copy > span:not(:empty), .api-live, .ep-copy-field { animation: ep-doc-reveal 190ms ease-out; }
+  @supports (interpolate-size: allow-keywords) and selector(details::details-content) {
+    .api-contract-detail details { interpolate-size: allow-keywords; }
+    .api-contract-detail details::details-content {
+      block-size: 0; overflow: clip;
+      transition: block-size 200ms ease-out, content-visibility 200ms allow-discrete;
+    }
+    .api-contract-detail details[open]::details-content { block-size: auto; }
+  }
+}
+@keyframes ep-doc-reveal {
+  from { opacity: .45; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .api-catalog-link { display:inline-block; margin-top:.65rem; font-size:.82rem; }
