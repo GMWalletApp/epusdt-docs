@@ -38,12 +38,6 @@ html:has(.ep-home), body:has(.ep-home) { background-color:#000; }
 .ep-language-options a:is([aria-current],:hover,:focus-visible) { background:#30323b; color:#fff; }
 .ep-pitch { text-align:center; padding:clamp(60px,12vh,150px) 20px clamp(160px,25vh,300px); }
 @media (hover:none) and (pointer:coarse), (max-width:600px) {
-  html:has(.ep-home), body:has(.ep-home) {
-    height:100vh;
-    height:100dvh;
-    overflow:hidden;
-    overscroll-behavior:none;
-  }
   .ep-home {
     height:100vh;
     height:100dvh;

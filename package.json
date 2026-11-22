@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "@nuxt/ui": "4.13.0",
+    "@vueuse/core": "14.4.0",
+    "cobe": "2.0.1",
     "motion-v": "2.13.0",
     "tailwindcss": "4.3.5",
     "vitepress": "^1.6.4",
