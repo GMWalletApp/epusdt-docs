@@ -19,6 +19,8 @@ const labels = {
   vi: ["Phản hồi","Thành công","Chuyển hướng","Thông báo bị từ chối","Trường phản hồi","Sao chép URL API","Đã sao chép","Ngôn ngữ khác","Chọn và sao chép"],
   ja: ["レスポンス","成功","リダイレクト","通知の検証に失敗","レスポンスのフィールド","API URL をコピー","コピーしました","その他の言語","選択してコピー"],
   es: ["Respuestas","Éxito","Redirección","Notificación rechazada","Campos de respuesta","Copiar URL del endpoint","Copiado","Más lenguajes","Selecciona y copia"],
+  ko: ["응답", "성공", "리디렉션", "알림 거부됨", "응답 필드", "API 주소 복사", "복사됨", "다른 언어", "선택하여 복사"],
+  ru: ["Ответы", "Успех", "Перенаправление", "Уведомление отклонено", "Поля ответа", "Скопировать URL запроса", "Скопировано", "Другие языки", "Выделите и скопируйте"],
   pt: ["Respostas","Sucesso","Redirecionamento","Notificação rejeitada","Campos da resposta","Copiar URL do endpoint","Copiado","Mais linguagens","Selecione e copie"],
 };
 export function apiLabels(locale: string) { return labels[locale as keyof typeof labels] ?? labels.root; }

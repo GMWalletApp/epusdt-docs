@@ -6,6 +6,8 @@ export const languages = [
   { id: "ja", label: "日本語", tag: "ja", prefix: "/ja/", openGraph: "ja_JP" },
   { id: "es", label: "Español", tag: "es", prefix: "/es/", openGraph: "es_ES" },
   { id: "pt", label: "Português", tag: "pt-BR", prefix: "/pt/", openGraph: "pt_BR" },
+  { id: "ko", label: "한국어", tag: "ko", prefix: "/ko/", openGraph: "ko_KR" },
+  { id: "ru", label: "Русский", tag: "ru", prefix: "/ru/", openGraph: "ru_RU" },
 ] as const;
 
 export type Language = typeof languages[number]["id"];

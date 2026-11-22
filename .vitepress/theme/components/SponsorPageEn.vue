@@ -33,6 +33,8 @@ const translations = {
     developers: "Desarrolladores",
     qr: "Código QR para donaciones",
   },
+  ko: { intro: "EPUSDT가 프로젝트에 도움이 되었다면 암호화폐 기부로 개발을 후원할 수 있습니다.", wallet: "지갑 주소", copied: "복사됨", developers: "개발자", qr: "후원용 QR 코드" },
+  ru: { intro: "Если EPUSDT пригодился вашему проекту, вы можете поддержать разработку пожертвованием в криптовалюте.", wallet: "Адрес кошелька", copied: "Скопировано", developers: "Разработчики", qr: "QR-код для пожертвования" },
   pt: {
     intro: "Se o EPUSDT é útil para o seu projeto, você pode apoiar o desenvolvimento com uma doação em criptomoedas.",
     wallet: "Endereço da carteira",

@@ -13,6 +13,8 @@ const translations = {
   vi: ["Ví dụ yêu cầu", "URL cổng thanh toán", "Ví dụ phản hồi", "Sao chép", "Đã sao chép", "Chọn và sao chép", "Nhập địa chỉ HTTP hoặc HTTPS", "Một số trường phản hồi"],
   ja: ["リクエスト例", "ゲートウェイ URL", "レスポンス例", "コピー", "コピーしました", "選択してコピー", "HTTP または HTTPS のオリジンを入力してください", "レスポンスの抜粋"],
   es: ["Ejemplo de solicitud", "URL de la pasarela", "Ejemplo de respuesta", "Copiar", "Copiado", "Selecciona y copia", "Introduce un origen HTTP o HTTPS", "Campos de respuesta seleccionados"],
+  ko: ["요청 예시", "게이트웨이 URL", "응답 예시", "복사", "복사됨", "선택하여 복사", "HTTP 또는 HTTPS 주소를 입력하세요", "주요 응답 필드"],
+  ru: ["Пример запроса", "URL шлюза", "Пример ответа", "Копировать", "Скопировано", "Выделите и скопируйте", "Введите HTTP- или HTTPS-адрес шлюза", "Основные поля ответа"],
   pt: ["Exemplo de requisição", "URL do gateway", "Exemplo de resposta", "Copiar", "Copiado", "Selecione e copie", "Insira uma origem HTTP ou HTTPS", "Campos selecionados da resposta"],
 };
 const labels = computed(() => translations[localeIndex.value as keyof typeof translations] ?? translations.root);
@@ -29,6 +31,8 @@ const liveLabels = {
   vi: ["Gửi yêu cầu GET", "Phản hồi thực tế", "Nhập URL cổng của bạn để thử truy vấn công khai.", "Không thể gửi yêu cầu. Hãy kiểm tra URL, mạng và cấu hình CORS."],
   ja: ["GET リクエストを送信", "実際のレスポンス", "自分のゲートウェイ URL を入力すると公開 API を試せます。", "通信に失敗しました。URL、ネットワーク、ゲートウェイの CORS 設定を確認してください。"],
   es: ["Enviar solicitud GET", "Respuesta real", "Introduce la URL de tu pasarela para probar la consulta pública.", "Error de conexión. Revisa la URL, la red y la configuración CORS."],
+  ko: ["GET 요청 보내기", "실제 응답", "공개 API를 테스트하려면 게이트웨이 URL을 입력하세요.", "요청에 실패했습니다. URL, 네트워크 및 게이트웨이 CORS 설정을 확인하세요."],
+  ru: ["Отправить GET-запрос", "Ответ сервера", "Введите URL своего шлюза для проверки публичного запроса.", "Запрос не выполнен. Проверьте URL, сеть и настройки CORS шлюза."],
   pt: ["Enviar requisição GET", "Resposta real", "Insira a URL do seu gateway para testar a consulta pública.", "Falha na requisição. Verifique a URL, a rede e a configuração de CORS."],
 };
 const liveText = computed(() => liveLabels[localeIndex.value as keyof typeof liveLabels] ?? liveLabels.root);
