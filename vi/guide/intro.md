@@ -19,26 +19,30 @@ EPUSDT là một cổng thanh toán được quản lý độc lập. Khi một 
 
 Việc thanh toán cung cấp một tài sản thanh toán trực tiếp khi mạng lưới và tài sản của nó được kích hoạt, và khi một địa chỉ nhận được đã được cấu hình. Đây là cài đặt mặc định trong cài đặt mới. Hãy đọc `data.supported_assets` từ `GET /payments/gmpay/v1/config` để biết các tùy chọn cho cổng thanh toán của bạn.
 
-| Mạng | ID mạng API | Tài sản mặc định |
-| --- | --- | --- |
-| TRON | `tron` | TRX, USDT |
-| Ethereum | `ethereum` | USDT, USDC |
-| BNB Smart Chain | `binance` | USDT, USDC |
-| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
-| Solana | `solana` | SOL, USDT, USDC |
-| TON | `ton` | TON, USDT |
-| Plasma | `plasma` | USDT |
-| Aptos | `aptos` | USDT, USDC |
-| Sui | `sui` | SUI, USDC |
-| Arbitrum One | `arbitrum` | ETH, USDC |
-| Base | `base` | ETH, USDC |
-| OP Mainnet | `optimism` | ETH, USDC |
-| Avalanche C-Chain | `avalanche` | AVAX, USDC |
-| HyperEVM | `hyperevm` | HYPE, USDC |
-| Monad | `monad` | MON, USDC |
-| Arc | `arc` | USDC |
+Dấu gạch ngang biểu thị đồng gốc không có hợp đồng. Người mua chuyển tiền đến địa chỉ nhận ghi trong đơn hàng. Các địa chỉ bên dưới chỉ dùng để xác định tài sản.
+
+<div class="asset-directory">
+
+| Mạng (ID trong API) | Token | Địa chỉ hợp đồng / ID tài sản | Số chữ số thập phân |
+| --- | --- | --- | ---: |
+<!--@include: @/.vitepress/data/asset-rows.md-->
+
+</div>
 
 Arc chấp nhận cả USDC gốc và USDC ERC-20. Trên Polygon, USDC và USDC.e là các tài sản riêng biệt.
+
+### A7A5 (TRC-20 / ERC-20) {#a7a5}
+
+A7A5 được neo theo đồng rúp Nga. Hãy bật A7A5 riêng trên từng mạng cần dùng (TRON hoặc Ethereum) và thêm ví nhận tiền của mạng đó. Nếu dùng tỷ giá cố định, hãy thêm tỷ giá `a7a5` cho từng đồng tiền lập hóa đơn. Giá trị này là số A7A5 cho một đơn vị tiền lập hóa đơn.
+
+Trên phiên bản hỗ trợ A7A5, hãy dùng các trường sau để chọn tài sản trong đơn hàng GMPay. Bản cài đặt cũ có thể cần nâng cấp.
+
+| GMPay `network` | GMPay `token` | EPay `type` |
+| --- | --- | --- |
+| `tron` | `A7A5` | `a7a5.tron` |
+| `ethereum` | `A7A5` | `a7a5.ethereum` |
+
+[TRONSCAN](https://tronscan.org/#/token20/TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ) · [Etherscan](https://etherscan.io/token/0x6fA0BE17e4beA2fCfA22ef89BF8ac9aab0AB0fc9)
 
 ### Phương thức thanh toán được tích hợp {#hosted-payment-methods}
 

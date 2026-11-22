@@ -19,26 +19,30 @@ EPUSDT 是可自行部署的支付閘道器。商戶建立訂單，買家在收�
 
 下表列出新安裝的預設網路和幣種。啟用鏈和幣種並配置收款地址後，收銀臺才會顯示對應選項。可通過 `GET /payments/gmpay/v1/config` 的 `data.supported_assets` 獲取當前閘道器的實際列表。
 
-| 網路 | API 網路 ID | 預設幣種 |
-| --- | --- | --- |
-| TRON | `tron` | TRX, USDT |
-| Ethereum | `ethereum` | USDT, USDC |
-| BNB Smart Chain | `binance` | USDT, USDC |
-| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
-| Solana | `solana` | SOL, USDT, USDC |
-| TON | `ton` | TON, USDT |
-| Plasma | `plasma` | USDT |
-| Aptos | `aptos` | USDT, USDC |
-| Sui | `sui` | SUI, USDC |
-| Arbitrum One | `arbitrum` | ETH, USDC |
-| Base | `base` | ETH, USDC |
-| OP Mainnet | `optimism` | ETH, USDC |
-| Avalanche C-Chain | `avalanche` | AVAX, USDC |
-| HyperEVM | `hyperevm` | HYPE, USDC |
-| Monad | `monad` | MON, USDC |
-| Arc | `arc` | USDC |
+橫線代表無需合約地址的原生幣。買家應向訂單提供的收款地址轉帳，下表地址僅供核對幣種。
+
+<div class="asset-directory">
+
+| 網路（API 識別碼） | 幣種 | 合約地址 / 資產識別碼 | 小數位數 |
+| --- | --- | --- | ---: |
+<!--@include: @/.vitepress/data/asset-rows.md-->
+
+</div>
 
 Arc 支援原生和 ERC-20 兩種 USDC。Polygon 的 USDC 和 USDC.e 是兩種獨立資產。
+
+### A7A5 (TRC-20 / ERC-20) {#a7a5}
+
+A7A5 與俄羅斯盧布掛鉤。商戶須在 TRON 或 Ethereum 上分別啟用 A7A5，並設定該網路的收款錢包。使用固定匯率時，請為每種計價貨幣新增 `a7a5` 報價；數值表示每單位計價貨幣可兌換的 A7A5 數量。
+
+支援 A7A5 的版本可用以下欄位建立 GMPay 訂單；舊版執行個體可能需要先升級。
+
+| GMPay `network` | GMPay `token` | EPay `type` |
+| --- | --- | --- |
+| `tron` | `A7A5` | `a7a5.tron` |
+| `ethereum` | `A7A5` | `a7a5.ethereum` |
+
+[TRONSCAN](https://tronscan.org/#/token20/TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ) · [Etherscan](https://etherscan.io/token/0x6fA0BE17e4beA2fCfA22ef89BF8ac9aab0AB0fc9)
 
 ### 託管支付方式
 

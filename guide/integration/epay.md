@@ -105,3 +105,15 @@ When the created order carries `payment_type = Epay`, the worker later calls you
 The callback `type` reuses the stored request type. That means it returns either `alipay` or the accepted selector such as `usdt.tron`. If the request omitted `type`, outbound callbacks fall back to `alipay` for compatibility.
 
 Do not verify those callbacks with an old standalone `epay_key`.
+
+## Platforms with EPay integrations
+
+- **AI Distribution** — [OneAPI](https://github.com/songquanpeng/one-api), [Sub2API](https://github.com/Wei-Shaw/sub2api), [NewAPI](https://github.com/QuantumNous/new-api)
+
+- **Card/Voucher Platforms** — [Dujiaoka](https://dujiao-next.com/), [ACG Faka](https://github.com/lizhipay/acg-faka)
+
+- **Proxy Panels** — [V2Board](https://github.com/v2board/v2board), [XBoard](https://github.com/cedar2025/Xboard), [xiaoV2board](https://github.com/wyx2685/v2board/), [SSPanel](https://github.com/anankke/sspanel-uim)
+
+- **Website Ecosystem** — [WordPress](https://wordpress.com/), [WHMCS](https://www.whmcs.com/)
+
+- **Epay-Compatible Flow** — Works with platforms already using Epay-style payment interfaces

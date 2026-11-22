@@ -109,3 +109,15 @@ EPay submit.php 的解析优先级是：
 回调中的 `type` 会沿用订单保存的请求类型，也就是 `alipay` 或已接受的 `usdt.tron` 这类选择器；如果建单时没有传 `type`，出站回调会为兼容性回退到 `alipay`。
 
 不要再用旧文件里独立的 `epay_key` 去验这类回调。
+
+## 可接入的平台
+
+- **AI 分发** — [OneAPI](https://github.com/songquanpeng/one-api)、[Sub2API](https://github.com/Wei-Shaw/sub2api)、[NewAPI](https://github.com/QuantumNous/new-api)
+
+- **发卡系统** — [独角数卡（Dujiaoka）](https://dujiao-next.com/)、[异次元发卡](https://github.com/lizhipay/acg-faka)
+
+- **代理面板** — [V2Board](https://github.com/v2board/v2board)、[XBoard](https://github.com/cedar2025/Xboard)、[xiaoV2board](https://github.com/wyx2685/v2board/)、[SSPanel](https://github.com/anankke/sspanel-uim)
+
+- **建站生态** — [WordPress](https://wordpress.com/)、[WHMCS](https://www.whmcs.com/)
+
+- **Epay 兼容** — 兼容各类支持 Epay 易支付接口的平台

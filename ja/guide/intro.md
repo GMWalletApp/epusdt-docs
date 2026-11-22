@@ -19,26 +19,30 @@ Codex、Claude Code、Cursor、OpenCode でデプロイする場合は、エー�
 
 チェックアウトは、ネットワークとアセットが有効になり、受信アドレスが設定されている場合に、直接支払いのアセットを提供します。これは、新規インストール時のデフォルト設定です。ゲートウェイのオプションについては、`GET /payments/gmpay/v1/config` から `data.supported_assets` を参照してください。
 
-| ネットワーク | APIネットワークID | デフォルトアセット |
-| --- | --- | --- |
-| TRON | `tron` | TRX, USDT |
-| Ethereum | `ethereum` | USDT, USDC |
-| BNB Smart Chain | `binance` | USDT, USDC |
-| Polygon PoS | `polygon` | USDT, USDC, USDC.e |
-| Solana | `solana` | SOL, USDT, USDC |
-| TON | `ton` | TON, USDT |
-| Plasma | `plasma` | USDT |
-| Aptos | `aptos` | USDT, USDC |
-| Sui | `sui` | SUI, USDC |
-| Arbitrum One | `arbitrum` | ETH, USDC |
-| Base | `base` | ETH, USDC |
-| OP Mainnet | `optimism` | ETH, USDC |
-| Avalanche C-Chain | `avalanche` | AVAX, USDC |
-| HyperEVM | `hyperevm` | HYPE, USDC |
-| Monad | `monad` | MON, USDC |
-| Arc | `arc` | USDC |
+ダッシュはコントラクトを持たないネイティブ資産を示します。送金先は注文に表示された受取アドレスです。表のアドレスは資産の照合に使用してください。
+
+<div class="asset-directory">
+
+| ネットワーク（API ID） | トークン | コントラクトアドレス / 資産 ID | 小数桁数 |
+| --- | --- | --- | ---: |
+<!--@include: @/.vitepress/data/asset-rows.md-->
+
+</div>
 
 Arcは、ネイティブおよびERC-20のUSDCを受け付けます。Polygonでは、USDCとUSDC.eはそれぞれ別の資産です。
+
+### A7A5 (TRC-20 / ERC-20) {#a7a5}
+
+A7A5 はロシアルーブルに連動します。利用するネットワーク（TRON または Ethereum）ごとに A7A5 を有効にし、受取ウォレットを登録します。固定レートを使う場合は、請求通貨ごとに `a7a5` のレートを設定してください。値は請求通貨 1 単位に相当する A7A5 の数量です。
+
+A7A5 対応版では、GMPay 注文で以下のフィールドを指定します。旧版はアップグレードが必要な場合があります。
+
+| GMPay `network` | GMPay `token` | EPay `type` |
+| --- | --- | --- |
+| `tron` | `A7A5` | `a7a5.tron` |
+| `ethereum` | `A7A5` | `a7a5.ethereum` |
+
+[TRONSCAN](https://tronscan.org/#/token20/TLeVfrdym8RoJreJ23dAGyfJDygRtiWKBZ) · [Etherscan](https://etherscan.io/token/0x6fA0BE17e4beA2fCfA22ef89BF8ac9aab0AB0fc9)
 
 ### ホスト型決済 {#hosted-payment-methods}
 

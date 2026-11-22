@@ -13,6 +13,8 @@ description: "Đọc supported_assets để lấy các mạng và token đang kh
 
 Đọc `supported_assets` để lấy các mạng và `token` đang khả dụng. Không cần tham số hoặc chữ ký của người bán.
 
+Trên các phiên bản hỗ trợ thông tin hợp đồng, tra ký hiệu token trong `token_details` để lấy ID tài sản và số chữ số thập phân. Phiên bản cũ chỉ trả về `tokens`. [Danh sách hợp đồng tích hợp](../../guide/intro#networks)
+
 ## Tài liệu liên quan
 
 - [Tạo đơn GMPay](./create-order)
