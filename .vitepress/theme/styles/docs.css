@@ -70,8 +70,9 @@ html { scroll-padding-top: calc(var(--ui-header-height) + 1.5rem); }
 .api-panel-heading strong { color: var(--ui-text-highlighted); font-size: .925rem; }
 .api-input { display: grid; gap: .3rem; margin: 0 1rem .7rem; font-size: .8rem; color: var(--ui-text-muted); }
 .api-input input { width: 100%; min-width: 0; font: .875rem/1.5 ui-monospace, monospace; }
-.api-languages { display: flex; gap: .35rem; padding: .25rem 1rem .75rem; }
-.api-languages button { font-size: .8rem; padding: .2rem .55rem; border-radius: .4rem; cursor: pointer; }
+.api-languages { display: flex; align-items: center; gap: .35rem; padding: .25rem 1rem .75rem;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-padding-inline: 1rem; scrollbar-width: thin; }
+.api-languages button { flex: none; white-space: nowrap; font-size: .8rem; padding: .2rem .55rem; border-radius: .4rem; cursor: pointer; }
 .api-languages button[aria-pressed=true] { color: var(--ui-primary); background: var(--ui-bg-accented); font-weight: 650; }
 .ep-docs-shell .vp-doc .api-examples pre { margin: 0; padding: 1rem; max-height: 22rem; overflow: auto; background: #101523; color: #e0eaff; border-radius: 0; }
 .ep-docs-shell .vp-doc .api-examples pre code { white-space: pre; font: .78rem/1.65 ui-monospace, monospace; background: transparent; color: inherit; padding: 0; }
@@ -98,8 +99,6 @@ html { scroll-padding-top: calc(var(--ui-header-height) + 1.5rem); }
 .api-endpoint-address button { display:inline-grid; place-items:center; align-self:center; position:relative; color:var(--ui-text-muted); min-width:2rem; height:2rem; cursor:pointer; border-radius:.4rem; }
 .api-endpoint-address button:is(:hover,:focus-visible) { background:var(--ui-bg-elevated); color:var(--ui-text-highlighted); }
 .api-endpoint-address button:is(:hover,:focus-visible)::after { content:attr(data-tip); position:absolute; z-index:3; top:100%; right:0; white-space:nowrap; padding:.25rem .5rem; border-radius:.35rem; color:var(--ui-bg); background:var(--ui-text-highlighted); font-size:.75rem; }
-.api-languages { flex-wrap:wrap; align-items:center; }
-.api-more { min-width:0; max-width:100%; margin-inline-start:auto; font-size:.8rem; color:var(--ui-text-highlighted); cursor:pointer; }
 .api-response .api-panel-heading { flex-wrap:wrap; }
 .api-response select { max-width:100%; min-width:0; text-overflow:ellipsis; font-size:.8rem; }
 .api-contract-list { border:1px solid var(--ui-border); border-radius:.7rem; overflow:hidden; }
