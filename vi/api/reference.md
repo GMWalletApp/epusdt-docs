@@ -11,16 +11,16 @@ Xem [API của Thương nhân](/vi/api/payment) để tham khảo các ví dụ,
 
 | Mục đích | Phương thức | Đường dẫn | Xác thực |
 | --- | --- | --- | --- |
-| Tạo đơn hàng GMPay | POST | `/payments/gmpay/v1/order/create-transaction` | HMAC-SHA256 của người bán |
-| Xem cài đặt thanh toán công khai | GET | `/payments/gmpay/v1/config` | Công khai |
-| Mở trang thanh toán | GET | `/pay/checkout-counter/{trade_id}` | Công khai |
-| Xem chi tiết thanh toán | GET | `/pay/checkout-counter-resp/{trade_id}` | Công khai |
-| Truy vấn trạng thái đơn hàng | GET | `/pay/check-status/{trade_id}` | Công khai |
-| Chọn mạng hoặc nhà cung cấp | POST | `/pay/switch-network` | Công khai |
-| Cung cấp hash của chuyển khoản để xác minh. | POST | `/pay/submit-tx-hash/{trade_id}` | Công khai |
-| Trở về | GET | `/pay/return/{trade_id}` | Chuyển hướng trình duyệt |
-| Tạo đơn EPay | GET hoặc POST | `/payments/epay/v1/order/create-transaction/submit.php` | MD5 của người bán |
-| Nhận thông báo từ nhà cung cấp OKPay | POST | `/payments/okpay/v1/notify` | Chữ ký OKPay |
+| [Tạo đơn GMPay](/vi/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | HMAC-SHA256 của người bán |
+| [Đọc cấu hình thanh toán](/vi/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | Công khai |
+| [Mở trang thanh toán](/vi/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | Công khai |
+| [Đọc chi tiết thanh toán](/vi/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | Công khai |
+| [Kiểm tra trạng thái đơn](/vi/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | Công khai |
+| [Chọn mạng hoặc nhà cung cấp](/vi/api/endpoints/switch-network) | POST | `/pay/switch-network` | Công khai |
+| [Gửi mã băm giao dịch](/vi/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | Công khai |
+| [Quay về trang người bán](/vi/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | Chuyển hướng trình duyệt |
+| [Tạo đơn EPay](/vi/api/endpoints/epay-order) | GET hoặc POST | `/payments/epay/v1/order/create-transaction/submit.php` | MD5 của người bán |
+| [Nhận thông báo OKPay](/vi/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | Chữ ký OKPay |
 
 ## Giao diện API quản trị {#admin-api-surface}
 

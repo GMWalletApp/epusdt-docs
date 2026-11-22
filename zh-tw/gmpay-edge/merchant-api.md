@@ -23,17 +23,13 @@ GMPay 請求包含數字 `pid`，以及小寫 HMAC-SHA256 `signature`。
 
 ## 建立訂單
 
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
+<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
 
 重複提交既有 `order_id` 不會建立第二筆訂單。同時省略 `token` 與 `network` 時會建立可選擇支付方式的訂單；GMPay Edge 不會靜默預設為 TRON。
 
 ## 查詢訂單
 
-```text
-GET /payments/gmpay/v1/order/query
-```
+<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/order/query</code></span>
 
 請提供 `trade_id` 或 `order_id` 其中之一，並使用同一憑證簽名。憑證只能查詢自己建立的訂單。
 

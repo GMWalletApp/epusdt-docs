@@ -12,8 +12,8 @@ It also **does not register** the old compatibility route `POST /payments/epusdt
 
 | Use case | Current live route |
 | --- | --- |
-| Native JSON API (recommended) | `POST /payments/gmpay/v1/order/create-transaction` |
-| Redirect / EPay-style flow | `GET/POST /payments/epay/v1/order/create-transaction/submit.php` |
+| Native JSON API (recommended) | [`POST /payments/gmpay/v1/order/create-transaction`](/api/endpoints/create-order) |
+| Redirect / EPay-style flow | [`GET/POST /payments/epay/v1/order/create-transaction/submit.php`](/api/endpoints/epay-order) |
 
 ## Important migration changes
 

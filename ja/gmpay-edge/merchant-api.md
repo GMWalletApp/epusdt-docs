@@ -23,17 +23,13 @@ GMPay リクエストには数値の `pid` と、小文字の16進数で表し�
 
 ## 秩序を築く {#create-order}
 
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
+<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
 
 既存の `order_id` を再利用しても、別の注文は作成されません。`token` と `network` の両方を省略すると、選択可能な注文が作成されます。GMPay Edge は、黙って TRON にデフォルトしないように設計されています。
 
 ## クエリ順 {#query-order}
 
-```text
-GET /payments/gmpay/v1/order/query
-```
+<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/order/query</code></span>
 
 `trade_id` と `order_id` のどちらか一方だけを指定し、注文を作成した認証情報でリクエストに署名します。照会できるのは、その認証情報で作成した注文だけです。
 

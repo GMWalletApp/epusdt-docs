@@ -13,18 +13,18 @@ title: "商用決済API、署名とコールバック"
 
 | 用途 | メソッド | パス | 認証 |
 | --- | --- | --- | --- |
-| GMPay の注文を作成 | POST | `/payments/gmpay/v1/order/create-transaction` | 加盟店の HMAC-SHA256 署名 |
-| 公開のチェックアウト設定を確認してください。 | GET | `/payments/gmpay/v1/config` | 公開 |
-| 決済画面を開く | GET | `/pay/checkout-counter/{trade_id}` | 公開 |
-| チェックアウトの詳細を確認してください。 | GET | `/pay/checkout-counter-resp/{trade_id}` | 公開 |
-| 注文ステータスを定期取得 | GET | `/pay/check-status/{trade_id}` | 公開 |
-| ネットワークまたはプロバイダを選択してください。 | POST | `/pay/switch-network` | 公開 |
-| 検証のため、転送ハッシュを提出してください。 | POST | `/pay/submit-tx-hash/{trade_id}` | 公開 |
-| チェックアウトから戻る | GET | `/pay/return/{trade_id}` | ブラウザのリダイレクト |
-| EPayでの注文を作成してください。 | GET または POST | `/payments/epay/v1/order/create-transaction/submit.php` | 加盟店の MD5 署名 |
-| OKPayのプロバイダーからの通知を受け取る | POST | `/payments/okpay/v1/notify` | OKPay の署名 |
+| [GMPay 注文を作成](/ja/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | 加盟店の HMAC-SHA256 署名 |
+| [決済設定を取得](/ja/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | 公開 |
+| [決済画面を開く](/ja/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | 公開 |
+| [決済の詳細を取得](/ja/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | 公開 |
+| [注文ステータスを取得](/ja/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | 公開 |
+| [ネットワークまたは決済事業者を選択](/ja/api/endpoints/switch-network) | POST | `/pay/switch-network` | 公開 |
+| [取引ハッシュを送信](/ja/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | 公開 |
+| [加盟店サイトに戻る](/ja/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | ブラウザのリダイレクト |
+| [EPay 注文を作成](/ja/api/endpoints/epay-order) | GET または POST | `/payments/epay/v1/order/create-transaction/submit.php` | 加盟店の MD5 署名 |
+| [OKPay 通知を受信](/ja/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | OKPay の署名 |
 
-## Please provide the English text you would like me to translate. I’m ready when you are. {#response-format}
+## レスポンス形式 {#response-format}
 
 JSON エンドポイントは、`status_code` (成功時は 200)、`message`、`data` (オブジェクトまたは null)、およびサーバーが生成した `request_id` を返します。 無効な署名は HTTP 401 を返します。 ビジネスエラーは、通常 HTTP 400 を返し、アプリケーションエラーコードを伴います。
 
@@ -130,6 +130,8 @@ function epaySign(array $params, string $secretKey): string
 }
 ```
 
+<!-- #region create-fields -->
+
 | フィールド | 型 | 必須 | 説明 |
 | --- | --- | --- | --- |
 | `pid` | 文字列 | はい | 商人のPIDは、以前は署名鍵を検索するために使用されていました。 |
@@ -144,9 +146,11 @@ function epaySign(array $params, string $secretKey): string
 | `payment_type` | 文字列 | いいえ | GMPay がデフォルトです。EPay (大文字・小文字区別なし) は、EPay のコールバック形式を選択し、数値の PID を必要とします。署名には、空でない値を含める必要があります。 |
 | `signature` | 文字列 | はい | 64文字の小文字の HMAC-SHA256署名。 |
 
+<!-- #endregion create-fields -->
+
 `token` と `network` の両方を渡すことで、すぐにアドレスを割り当てられます。両方を省略すると、(ステータス 4) で金額と通貨を含むプレースホルダーを作成します。どちらか一方だけ渡すことは無効です。ペアを選択する前に、`data.supported_assets` を公開設定で確認してください。
 
-### Please provide the English text you would like me to translate. {#response}
+### レスポンス {#response}
 
 ```json
 {
@@ -322,6 +326,8 @@ function epaySign(array $params, string $secretKey): string
 }
 ```
 
+<!-- #region order-states -->
+
 | ステータス | 意味 |
 | --- | --- |
 | 1 | 支払い待ち |
@@ -330,6 +336,8 @@ function epaySign(array $params, string $secretKey): string
 | 4 | ネットワーク、資産、またはプロバイダーの選定を待っています。 |
 | 5 | マッチングが確認されました。 |
 | 6 | 二回の厳格な確認が失敗しました。手動での確認が必要です。 |
+
+<!-- #endregion order-states -->
 
 ステータス5では、継続的に確認状況を通知し、「確認中」と表示することで、購入者が取引が確認されたことを認識できるようにします。通常、EPUSDTは必要な確認深度をチェックし、2つの独立したノードで取引を検証してから資金を反映します。確認深度を待つことは、試行回数を消費しません。検証の試行と、最初のノードIDは再起動しても保持されます。ステータス6では、自動検証と成功時の通知が停止します。管理者は`review_transaction_hash`を調査し、調査後に取引を再確認できます。
 
@@ -404,6 +412,8 @@ TON では、標準形式の `ton:<receive_raw>:<lt>:<hash>`、`lt:hash`、ま�
 /pay/checkout-counter/{trade_id}
 ```
 
+<!-- #region epay-fields -->
+
 | フィールド | 場所 | 型 | 必須 | 説明 |
 | --- | --- | --- | --- | --- |
 | `pid` | クエリ／フォーム | 文字列 | はい | 商人のPID。コールバックには数値のPIDを使用してください。 |
@@ -418,6 +428,8 @@ TON では、標準形式の `ton:<receive_raw>:<lt>:<hash>`、`lt:hash`、ま�
 | `currency` | クエリ／フォーム | 文字列 | いいえ | EPayの通貨設定を上書きします。 |
 | `sign` | クエリ／フォーム | 文字列 | はい | EPay MD5 署名 |
 | `sign_type` | クエリ／フォーム | 文字列 | いいえ | 通常、`MD5`。 |
+
+<!-- #endregion epay-fields -->
 
 MD5 の計算には `sign` と `sign_type` を除くすべての空でない受信パラメーターを含めます。`sitename` などのプラグイン固有のフィールドも対象です。以下はデモ用の秘密鍵を含む署名対象の文字列と、その署名の例です。
 

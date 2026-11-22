@@ -1,3 +1,4 @@
+import { endpointNavigation } from "./api-navigation.mts";
 import { tokenize } from "./search";
 import { docsLocale, englishNavigation } from "./navigation.mts";
 import { defineConfig } from "vitepress";
@@ -5,7 +6,7 @@ import ui from "@nuxt/ui/vite";
 
 import { addPageMetadata, origin, sitemap } from "./seo.mts";
 
-export default defineConfig({
+const config = defineConfig({
   markdown: { headers: { level: [2] } },
   vite: {
     plugins: [ui({
@@ -252,3 +253,12 @@ export default defineConfig({
     ],
   },
 });
+
+
+// Each localized directory table supplies the endpoint names and order used in navigation.
+for (const [locale, entry] of Object.entries(config.locales!)) {
+  const prefix = locale === "root" ? "/" : "/" + locale + "/";
+  const groups = entry.themeConfig?.sidebar?.[prefix + "api/"];
+  if (groups) groups[0].items.push(...endpointNavigation(prefix));
+}
+export default config;

@@ -36,16 +36,18 @@ NONCE
 
 ## 接口
 
-- `POST /api/v1/supplier/ping`
-- `GET /api/v1/supplier/categories`
-- `GET /api/v1/supplier/products`
-- `GET /api/v1/supplier/products/{productId}`
-- `POST /api/v1/supplier/orders`
-- `GET /api/v1/supplier/orders/{orderId}`
-- `POST /api/v1/supplier/orders/{orderId}/cancel`
-- `GET /api/v1/supplier/payment-channels`
-- `POST /api/v1/supplier/topups`
-- `GET /api/v1/supplier/topups/{id}`
+| 用途 | HTTP | 路径 |
+| --- | --- | --- |
+| 测试凭据 | POST | `/api/v1/supplier/ping` |
+| 查询商品分类 | GET | `/api/v1/supplier/categories` |
+| 查询商品列表 | GET | `/api/v1/supplier/products` |
+| 查看商品详情 | GET | `/api/v1/supplier/products/{productId}` |
+| 创建采购订单 | POST | `/api/v1/supplier/orders` |
+| 查询采购订单 | GET | `/api/v1/supplier/orders/{orderId}` |
+| 取消采购订单 | POST | `/api/v1/supplier/orders/{orderId}/cancel` |
+| 查询支付通道 | GET | `/api/v1/supplier/payment-channels` |
+| 创建充值订单 | POST | `/api/v1/supplier/topups` |
+| 查询充值订单 | GET | `/api/v1/supplier/topups/{id}` |
 
 创建订单和充值操作具有幂等性。重试状态不确定的请求时必须沿用同一个幂等引用，不能仅因客户端超时就创建新的供应商订单。
 

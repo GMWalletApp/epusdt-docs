@@ -11,16 +11,16 @@ Consulte [API de Varejo](/pt/api/payment) para exemplos de assinatura, estados d
 
 | Finalidade | Método | Caminho | Autenticação |
 | --- | --- | --- | --- |
-| Criar um pedido no GMPay | POST | `/payments/gmpay/v1/order/create-transaction` | HMAC-SHA256 do lojista |
-| Ver as configurações de pagamento público | GET | `/payments/gmpay/v1/config` | Público |
-| Abrir a página de pagamento | GET | `/pay/checkout-counter/{trade_id}` | Público |
-| Leia os detalhes do checkout. | GET | `/pay/checkout-counter-resp/{trade_id}` | Público |
-| Consultar periodicamente o status do pedido | GET | `/pay/check-status/{trade_id}` | Público |
-| Selecione a rede ou provedor. | POST | `/pay/switch-network` | Público |
-| Envie um hash de transferência para verificação. | POST | `/pay/submit-tx-hash/{trade_id}` | Público |
-| Retornar ao checkout | GET | `/pay/return/{trade_id}` | Redirecionamento de navegador |
-| Crie um pedido EPay. | GET ou POST | `/payments/epay/v1/order/create-transaction/submit.php` | MD5 do lojista |
-| Receber uma notificação do provedor OKPay | POST | `/payments/okpay/v1/notify` | Assinatura do OKPay |
+| [Criar um pedido GMPay](/pt/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | HMAC-SHA256 do lojista |
+| [Consultar configuração](/pt/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | Público |
+| [Abrir o checkout](/pt/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | Público |
+| [Consultar os dados do checkout](/pt/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | Público |
+| [Consultar status do pedido](/pt/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | Público |
+| [Selecionar rede ou provedor](/pt/api/endpoints/switch-network) | POST | `/pay/switch-network` | Público |
+| [Enviar o hash da transação](/pt/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | Público |
+| [Voltar à loja](/pt/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | Redirecionamento de navegador |
+| [Criar um pedido EPay](/pt/api/endpoints/epay-order) | GET ou POST | `/payments/epay/v1/order/create-transaction/submit.php` | MD5 do lojista |
+| [Receber uma notificação do OKPay](/pt/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | Assinatura do OKPay |
 
 ## Interface da API de administração {#admin-api-surface}
 

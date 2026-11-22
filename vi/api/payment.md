@@ -13,16 +13,16 @@ Sử dụng điểm cuối cấu hình công khai để khám phá các tùy ch�
 
 | Mục đích | Phương thức | Đường dẫn | Xác thực |
 | --- | --- | --- | --- |
-| Tạo đơn hàng GMPay | POST | `/payments/gmpay/v1/order/create-transaction` | HMAC-SHA256 của người bán |
-| Xem cài đặt thanh toán công khai | GET | `/payments/gmpay/v1/config` | Công khai |
-| Mở trang thanh toán | GET | `/pay/checkout-counter/{trade_id}` | Công khai |
-| Xem chi tiết thanh toán | GET | `/pay/checkout-counter-resp/{trade_id}` | Công khai |
-| Truy vấn trạng thái đơn hàng | GET | `/pay/check-status/{trade_id}` | Công khai |
-| Chọn mạng hoặc nhà cung cấp | POST | `/pay/switch-network` | Công khai |
-| Cung cấp hash của chuyển khoản để xác minh. | POST | `/pay/submit-tx-hash/{trade_id}` | Công khai |
-| Trở về | GET | `/pay/return/{trade_id}` | Chuyển hướng trình duyệt |
-| Tạo đơn EPay | GET hoặc POST | `/payments/epay/v1/order/create-transaction/submit.php` | MD5 của người bán |
-| Nhận thông báo từ nhà cung cấp OKPay | POST | `/payments/okpay/v1/notify` | Chữ ký OKPay |
+| [Tạo đơn GMPay](/vi/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | HMAC-SHA256 của người bán |
+| [Đọc cấu hình thanh toán](/vi/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | Công khai |
+| [Mở trang thanh toán](/vi/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | Công khai |
+| [Đọc chi tiết thanh toán](/vi/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | Công khai |
+| [Kiểm tra trạng thái đơn](/vi/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | Công khai |
+| [Chọn mạng hoặc nhà cung cấp](/vi/api/endpoints/switch-network) | POST | `/pay/switch-network` | Công khai |
+| [Gửi mã băm giao dịch](/vi/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | Công khai |
+| [Quay về trang người bán](/vi/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | Chuyển hướng trình duyệt |
+| [Tạo đơn EPay](/vi/api/endpoints/epay-order) | GET hoặc POST | `/payments/epay/v1/order/create-transaction/submit.php` | MD5 của người bán |
+| [Nhận thông báo OKPay](/vi/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | Chữ ký OKPay |
 
 ## The quick brown fox jumps over the lazy dog. {#response-format}
 
@@ -130,6 +130,8 @@ function epaySign(array $params, string $secretKey): string
 }
 ```
 
+<!-- #region create-fields -->
+
 | Trường | Kiểu | Bắt buộc | Mô tả |
 | --- | --- | --- | --- |
 | `pid` | Chuỗi | Có | Trước đây, Merchant PID đã sử dụng để tìm kiếm khóa ký. |
@@ -144,9 +146,11 @@ function epaySign(array $params, string $secretKey): string
 | `payment_type` | Chuỗi | Không | Mặc định sử dụng GMPay. EPay (không phân biệt chữ hoa/chữ thường) chọn định dạng callback của EPay và yêu cầu một PID số. Bao gồm bất kỳ giá trị nào không rỗng trong chữ ký. |
 | `signature` | Chuỗi | Có | Chữ ký HMAC-SHA256 với độ dài 64 ký tự (thường là chữ). |
 
+<!-- #endregion create-fields -->
+
 Cung cấp cả `token` và `network` để phân bổ địa chỉ ngay lập tức. Bỏ cả hai để tạo một giá trị thay thế (trạng thái 4) chứa số tiền fiat và đơn vị tiền tệ. Cung cấp chỉ một trong hai là không hợp lệ. Kiểm tra `data.supported_assets` trong cấu hình công khai trước khi chọn một cặp.
 
-### Please provide the English text you would like me to translate. {#response}
+### Phản hồi {#response}
 
 ```json
 {
@@ -322,6 +326,8 @@ Việc thanh toán trả về `payment_type` ở dạng chữ thường (`gmpay`
 }
 ```
 
+<!-- #region order-states -->
+
 | Trạng thái | Ý nghĩa |
 | --- | --- |
 | 1 | Chờ thanh toán |
@@ -330,6 +336,8 @@ Việc thanh toán trả về `payment_type` ở dạng chữ thường (`gmpay`
 | 4 | Đang chờ lựa chọn mạng, tài sản hoặc nhà cung cấp. |
 | 5 | Một giao dịch phù hợp đã được ghi nhận và đang được xác nhận. |
 | 6 | Hai vòng kiểm tra nghiêm ngặt đều không thành công. Cần phải xem xét thủ công. |
+
+<!-- #endregion order-states -->
 
 Ở trạng thái 5, tiếp tục truy vấn và hiển thị “Đang xác nhận” để người mua biết hệ thống đã ghi nhận giao dịch. Theo mặc định, EPUSDT chờ đủ số khối xác nhận và kiểm tra giao dịch qua hai nút độc lập trước khi ghi nhận thanh toán. Thời gian chờ đủ số khối không tính là một lần thử. Các lần xác minh và nhóm ID nút đầu tiên được lưu qua các lần khởi động lại. Ở trạng thái 6, hệ thống tạm dừng xác minh tự động và callback thành công. Quản trị viên có thể xem `review_transaction_hash`, điều tra rồi kiểm tra lại giao dịch.
 
@@ -404,6 +412,8 @@ Gửi một truy vấn GET hoặc một biểu mẫu POST đến `/payments/epay
 /pay/checkout-counter/{trade_id}
 ```
 
+<!-- #region epay-fields -->
+
 | Trường | Địa điểm | Kiểu | Bắt buộc | Mô tả |
 | --- | --- | --- | --- | --- |
 | `pid` | Chuỗi truy vấn hoặc biểu mẫu | Chuỗi | Có | ID của người bán hàng. Sử dụng PID số cho các phản hồi. |
@@ -418,6 +428,8 @@ Gửi một truy vấn GET hoặc một biểu mẫu POST đến `/payments/epay
 | `currency` | Chuỗi truy vấn hoặc biểu mẫu | Chuỗi | Không | Làm thế để thay đổi cài đặt tiền tệ mặc định của EPay. |
 | `sign` | Chuỗi truy vấn hoặc biểu mẫu | Chuỗi | Có | Chữ ký MD5 của EPay. |
 | `sign_type` | Chuỗi truy vấn hoặc biểu mẫu | Chuỗi | Không | Thông thường, `MD5`. |
+
+<!-- #endregion epay-fields -->
 
 Tính toán MD5 bao gồm tất cả các tham số đầu vào không rỗng (bao gồm các trường plugin như `sitename`), ngoại trừ `sign` và `sign_type`. Ví dụ về đầu vào chuẩn bao gồm bí mật minh họa, tiếp theo là chữ ký của nó.
 

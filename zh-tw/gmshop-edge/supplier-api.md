@@ -36,16 +36,18 @@ NONCE
 
 ## 介面
 
-- `POST /api/v1/supplier/ping`
-- `GET /api/v1/supplier/categories`
-- `GET /api/v1/supplier/products`
-- `GET /api/v1/supplier/products/{productId}`
-- `POST /api/v1/supplier/orders`
-- `GET /api/v1/supplier/orders/{orderId}`
-- `POST /api/v1/supplier/orders/{orderId}/cancel`
-- `GET /api/v1/supplier/payment-channels`
-- `POST /api/v1/supplier/topups`
-- `GET /api/v1/supplier/topups/{id}`
+| 用途 | HTTP | 路徑 |
+| --- | --- | --- |
+| 測試憑證 | POST | `/api/v1/supplier/ping` |
+| 查詢商品分類 | GET | `/api/v1/supplier/categories` |
+| 查詢商品清單 | GET | `/api/v1/supplier/products` |
+| 查看商品明細 | GET | `/api/v1/supplier/products/{productId}` |
+| 建立採購訂單 | POST | `/api/v1/supplier/orders` |
+| 查詢採購訂單 | GET | `/api/v1/supplier/orders/{orderId}` |
+| 取消採購訂單 | POST | `/api/v1/supplier/orders/{orderId}/cancel` |
+| 查詢付款通道 | GET | `/api/v1/supplier/payment-channels` |
+| 建立儲值訂單 | POST | `/api/v1/supplier/topups` |
+| 查詢儲值訂單 | GET | `/api/v1/supplier/topups/{id}` |
 
 建立訂單和充值操作具有冪等性。重試狀態不確定的請求時必須沿用同一個冪等引用，不能僅因客戶端超時就建立新的供應商訂單。
 

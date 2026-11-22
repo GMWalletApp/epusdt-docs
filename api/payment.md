@@ -13,16 +13,16 @@ Use the public configuration endpoint to discover payment options, create an ord
 
 | Purpose | Method | Path | Authentication |
 | --- | --- | --- | --- |
-| Create a GMPay order | POST | `/payments/gmpay/v1/order/create-transaction` | Merchant HMAC-SHA256 |
-| Read public checkout settings | GET | `/payments/gmpay/v1/config` | Public |
-| Open checkout | GET | `/pay/checkout-counter/{trade_id}` | Public |
-| Read checkout details | GET | `/pay/checkout-counter-resp/{trade_id}` | Public |
-| Poll order status | GET | `/pay/check-status/{trade_id}` | Public |
-| Select network or provider | POST | `/pay/switch-network` | Public |
-| Submit a transfer hash for verification | POST | `/pay/submit-tx-hash/{trade_id}` | Public |
-| Return from checkout | GET | `/pay/return/{trade_id}` | Browser redirect |
-| Create an EPay order | GET or POST | `/payments/epay/v1/order/create-transaction/submit.php` | Merchant MD5 |
-| Receive an OKPay provider notification | POST | `/payments/okpay/v1/notify` | OKPay signature |
+| [Create a GMPay order](/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | Merchant HMAC-SHA256 |
+| [Read checkout configuration](/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | Public |
+| [Open hosted checkout](/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | Public |
+| [Read checkout details](/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | Public |
+| [Poll order status](/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | Public |
+| [Select a network or provider](/api/endpoints/switch-network) | POST | `/pay/switch-network` | Public |
+| [Submit a transaction hash](/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | Public |
+| [Return to the merchant](/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | Browser redirect |
+| [Create an EPay order](/api/endpoints/epay-order) | GET or POST | `/payments/epay/v1/order/create-transaction/submit.php` | Merchant MD5 |
+| [Receive an OKPay notification](/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | OKPay signature |
 
 ## Response format
 
@@ -130,6 +130,8 @@ function epaySign(array $params, string $secretKey): string
 }
 ```
 
+<!-- #region create-fields -->
+
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
 | `pid` | string | Yes | Merchant PID used to look up the signing key. |
@@ -143,6 +145,8 @@ function epaySign(array $params, string $secretKey): string
 | `name` | string | No | Product or order name. |
 | `payment_type` | string | No | Defaults to GMPay. EPay (case-insensitive) selects EPay callback format and requires a numeric PID. Include any nonempty value in the signature. |
 | `signature` | string | Yes | 64-character lowercase HMAC-SHA256 signature. |
+
+<!-- #endregion create-fields -->
 
 Pass both `token` and `network` to allocate an address immediately. Omit both to create a placeholder (status 4) containing the fiat amount and currency. Passing only one is invalid. Check `data.supported_assets` in public config before selecting a pair.
 
@@ -322,6 +326,8 @@ Checkout returns `payment_type` in lowercase (`gmpay` or `epay`), which selects 
 }
 ```
 
+<!-- #region order-states -->
+
 | Status | Meaning |
 | --- | --- |
 | 1 | Awaiting payment |
@@ -330,6 +336,8 @@ Checkout returns `payment_type` in lowercase (`gmpay` or `epay`), which selects 
 | 4 | Awaiting a network, asset or provider selection |
 | 5 | A matching transfer has been observed and is confirming |
 | 6 | Two rounds of strict verification failed. Manual review is required |
+
+<!-- #endregion order-states -->
 
 At status 5, continue polling and show “Confirming” so the buyer knows the transfer was seen. By default EPUSDT checks the required confirmation depth and verifies the transaction with two independent nodes before crediting it. Waiting for depth does not consume an attempt. Verification attempts and the first set of node IDs persist across restarts. At status 6, automatic verification and success callbacks pause. An administrator can inspect `review_transaction_hash` and recheck the transaction after investigating.
 
@@ -404,6 +412,8 @@ Send a GET query or a POST form to `/payments/epay/v1/order/create-transaction/s
 /pay/checkout-counter/{trade_id}
 ```
 
+<!-- #region epay-fields -->
+
 | Field | Location | Type | Required | Description |
 | --- | --- | --- | --- | --- |
 | `pid` | query/form | string | Yes | Merchant PID. Use a numeric PID for callbacks. |
@@ -418,6 +428,8 @@ Send a GET query or a POST form to `/payments/epay/v1/order/create-transaction/s
 | `currency` | query/form | string | No | Overrides the EPay currency default. |
 | `sign` | query/form | string | Yes | EPay MD5 signature. |
 | `sign_type` | query/form | string | No | Typically `MD5`. |
+
+<!-- #endregion epay-fields -->
 
 Include every nonempty incoming parameter (including plugin fields such as `sitename`) except `sign` and `sign_type` in the MD5 calculation. Example canonical input including the demonstration secret, followed by its signature:
 

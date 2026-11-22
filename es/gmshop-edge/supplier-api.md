@@ -36,16 +36,18 @@ Calcular el HMAC-SHA256 sobre ese payload utilizando el secreto API emitido. El 
 
 ## Endpoints {#endpoints}
 
-- `POST /api/v1/supplier/ping`
-- `GET /api/v1/supplier/categories`
-- `GET /api/v1/supplier/products`
-- `GET /api/v1/supplier/products/{productId}`
-- `POST /api/v1/supplier/orders`
-- `GET /api/v1/supplier/orders/{orderId}`
-- `POST /api/v1/supplier/orders/{orderId}/cancel`
-- `GET /api/v1/supplier/payment-channels`
-- `POST /api/v1/supplier/topups`
-- `GET /api/v1/supplier/topups/{id}`
+| Operación | HTTP | Ruta |
+| --- | --- | --- |
+| Comprobar credenciales | POST | `/api/v1/supplier/ping` |
+| Listar categorías | GET | `/api/v1/supplier/categories` |
+| Listar productos | GET | `/api/v1/supplier/products` |
+| Consultar un producto | GET | `/api/v1/supplier/products/{productId}` |
+| Crear un pedido | POST | `/api/v1/supplier/orders` |
+| Consultar un pedido | GET | `/api/v1/supplier/orders/{orderId}` |
+| Cancelar un pedido | POST | `/api/v1/supplier/orders/{orderId}/cancel` |
+| Listar canales de pago | GET | `/api/v1/supplier/payment-channels` |
+| Crear una recarga | POST | `/api/v1/supplier/topups` |
+| Consultar una recarga | GET | `/api/v1/supplier/topups/{id}` |
 
 La creación de pedidos y las operaciones de recarga son idempotentes. Al reintentar una solicitud incierta, mantenga la misma referencia de idempotencia; no cree un nuevo pedido de proveedor simplemente porque el cliente expiró.
 

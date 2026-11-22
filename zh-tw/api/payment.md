@@ -17,16 +17,16 @@ title: "商戶支付 API、請求簽章與非同步回呼"
 
 | 場景 | 方法 | 路徑 | 是否需要簽名 |
 | --- | --- | --- | --- |
-| 建立 GMPay 交易 | POST | `/payments/gmpay/v1/order/create-transaction` | 是 |
-| 獲取公開支付配置 | GET | `/payments/gmpay/v1/config` | 否 |
-| 收銀臺頁面 | GET | `/pay/checkout-counter/{trade_id}` | 否 |
-| 收銀臺初始化資料 | GET | `/pay/checkout-counter-resp/{trade_id}` | 否 |
-| 查詢支付狀態 | GET | `/pay/check-status/{trade_id}` | 否 |
-| 切換支付網路/通道 | POST | `/pay/switch-network` | 否 |
-| EPay 相容建立交易 | GET/POST | `/payments/epay/v1/order/create-transaction/submit.php` | 是 |
-| 提交交易雜湊核驗 | POST | `/pay/submit-tx-hash/{trade_id}` | 否，提交 `block_transaction_id` |
-| 收銀臺返回商戶 | GET | `/pay/return/{trade_id}` | 否，返回 HTTP 302 |
-| OkPay 平臺回撥 | POST | `/payments/okpay/v1/notify` | OkPay 簽名 |
+| [建立 GMPay 訂單](/zh-tw/api/endpoints/create-order) | POST | `/payments/gmpay/v1/order/create-transaction` | 是 |
+| [取得收銀台設定](/zh-tw/api/endpoints/config) | GET | `/payments/gmpay/v1/config` | 否 |
+| [開啟收銀台](/zh-tw/api/endpoints/open-checkout) | GET | `/pay/checkout-counter/{trade_id}` | 否 |
+| [讀取收銀台訂單明細](/zh-tw/api/endpoints/checkout-details) | GET | `/pay/checkout-counter-resp/{trade_id}` | 否 |
+| [查詢訂單狀態](/zh-tw/api/endpoints/order-status) | GET | `/pay/check-status/{trade_id}` | 否 |
+| [選擇網路或付款通道](/zh-tw/api/endpoints/switch-network) | POST | `/pay/switch-network` | 否 |
+| [建立易支付訂單](/zh-tw/api/endpoints/epay-order) | GET/POST | `/payments/epay/v1/order/create-transaction/submit.php` | 是 |
+| [提交交易雜湊](/zh-tw/api/endpoints/submit-hash) | POST | `/pay/submit-tx-hash/{trade_id}` | 否，提交 `block_transaction_id` |
+| [返回商戶網站](/zh-tw/api/endpoints/checkout-return) | GET | `/pay/return/{trade_id}` | 否，返回 HTTP 302 |
+| [接收 OKPay 通知](/zh-tw/api/endpoints/okpay-notify) | POST | `/payments/okpay/v1/notify` | OkPay 簽名 |
 
 ## 統一響應格式
 
@@ -176,6 +176,8 @@ function epaySign(array $params, string $secretKey): string
 
 ### 請求引數
 
+<!-- #region create-fields -->
+
 | 欄位 | 型別 | 必填 | 說明 |
 | --- | --- | --- | --- |
 | `pid` | string | 是 | 商戶 PID，用於查詢 API Key，並參與簽名。 |
@@ -189,6 +191,8 @@ function epaySign(array $params, string $secretKey): string
 | `name` | string | 否 | 商品/訂單名稱。 |
 | `payment_type` | string | 否 | GMPay 相容欄位，不要求必須傳；如果傳了非空值，必須參與 GMPay `signature` 計算。普通 GMPay 不傳時後臺會存為 `Gmpay`；傳 `Epay`（大小寫不敏感）會統一存為 `Epay` 並使用 EPay 回撥格式，且 PID 必須是數字。 |
 | `signature` | string | 是 | 64 位小寫十六進位制 GMPay HMAC-SHA256 簽名。 |
+
+<!-- #endregion create-fields -->
 
 `token` 和 `network` 必須同傳或同缺。兩者同缺時只建立包含 `amount/currency` 的佔位訂單，狀態為 `4`，不會分配錢包、不會計算鏈上支付金額，也不會鎖定交易金額；後續由收銀臺呼叫 `/pay/switch-network` 選擇具體鏈和幣種或 OkPay。只缺其中一個會返回引數錯誤。
 
@@ -404,6 +408,8 @@ function epaySign(array $params, string $secretKey): string
 
 訂單狀態：
 
+<!-- #region order-states -->
+
 | 值 | 說明 |
 | --- | --- |
 | `1` | 等待支付 |
@@ -412,6 +418,8 @@ function epaySign(array $params, string $secretKey): string
 | `4` | 等待選擇支付網路/幣種 |
 | `5` | 已發現匹配的鏈上轉賬，正在確認 |
 | `6` | 兩輪嚴格核驗未通過，等待管理員複核 |
+
+<!-- #endregion order-states -->
 
 收到狀態 `5` 後，收銀臺應顯示“確認中”，繼續輪詢，無需使用者再次付款。預設開啟嚴格核驗。EPUSDT 持久化候選交易，達到鏈配置的確認深度後，呼叫 ChainScanner 的嚴格雜湊查詢。兩個節點返回一致結果且轉賬與訂單匹配後，訂單才進入狀態 `2` 並觸發到賬回撥。首次失敗後再查一輪。嘗試次數和首輪節點標識儲存在資料庫中；兩輪失敗後進入狀態 `6`，停止自動查詢。管理員可在訂單詳情中檢視 `review_transaction_hash`，修復節點或核對交易後，通過原有後臺補單介面重新嚴格核驗。等待區塊確認深度不佔用嘗試次數。
 
@@ -489,6 +497,8 @@ function epaySign(array $params, string $secretKey): string
 
 ### 請求引數
 
+<!-- #region epay-fields -->
+
 | 欄位 | 位置 | 型別 | 必填 | 說明 |
 | --- | --- | --- | --- | --- |
 | `pid` | query/form | string | 是 | 商戶 PID。建議使用數字 PID；EPay 回撥會按數字 PID 輸出。 |
@@ -503,6 +513,8 @@ function epaySign(array $params, string $secretKey): string
 | `currency` | query/form | string | 否 | 可選法幣幣種。優先順序高於後臺 `epay.default_currency`；傳了就必須參與 EPay 簽名。 |
 | `sign` | query/form | string | 是 | EPay 簽名。 |
 | `sign_type` | query/form | string | 否 | 通常為 `MD5`。 |
+
+<!-- #endregion epay-fields -->
 
 簽名規則：
 

@@ -23,17 +23,13 @@ Para assinar um pedido:
 
 ## Crie ordem. {#create-order}
 
-```text
-POST /payments/gmpay/v1/order/create-transaction
-```
+<span class="api-route"><b>POST</b> <code>/payments/gmpay/v1/order/create-transaction</code></span>
 
 Reutilizar um `order_id` existente não cria um segundo pedido. Excluir tanto o `token` quanto o `network` cria um pedido selecionável; o GMPay Edge não define silenciosamente para a TRON.
 
 ## Consulta de pedido {#query-order}
 
-```text
-GET /payments/gmpay/v1/order/query
-```
+<span class="api-route"><b>GET</b> <code>/payments/gmpay/v1/order/query</code></span>
 
 Informe apenas um dos campos, `trade_id` ou `order_id`, e assine a requisição com a mesma credencial. Cada credencial só pode consultar os pedidos que criou.
 

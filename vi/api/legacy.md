@@ -12,8 +12,8 @@ Nó cũng **không nhận diện** đường dẫn tương thích cũ: `POST /pa
 
 | Trường hợp sử dụng | Đường dẫn hiện hành |
 | --- | --- |
-| API JSON gốc (khuyên dùng) | `POST /payments/gmpay/v1/order/create-transaction` |
-| Chuyển hướng / Luồng thanh toán theo phong cách EPay | `GET/POST /payments/epay/v1/order/create-transaction/submit.php` |
+| API JSON gốc (khuyên dùng) | [`POST /payments/gmpay/v1/order/create-transaction`](/vi/api/endpoints/create-order) |
+| Chuyển hướng / Luồng thanh toán theo phong cách EPay | [`GET/POST /payments/epay/v1/order/create-transaction/submit.php`](/vi/api/endpoints/epay-order) |
 
 ## Các thay đổi quan trọng liên quan đến di cư {#important-migration-changes}
 
