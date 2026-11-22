@@ -124,7 +124,7 @@ onUnmounted(() => {
 <template>
   <main class="VPHome ep-home">
     <div class="ep-atmosphere" aria-hidden="true">
-      <GradientASCII shape="horizon" :cell-size="14" :speed="0.6" :dpr="1" :glow="0.18" :flicker="0.08" :grain="0.035" :colors="['#244ff5', '#cceeff', '#86caff', '#4977fc']" />
+      <GradientASCII shape="horizon" :speed="0.6" :glow="0.18" :flicker="0.08" :grain="0.035" :colors="['#244ff5', '#cceeff', '#86caff', '#4977fc']" />
     </div>
     <header class="ep-bar">
       <a class="ep-brand" :href="languages.find(l => l.id === language)?.url" aria-label="EPUSDT"><img alt="" src="/logo.png" width="34" height="34">EPUSDT</a>
