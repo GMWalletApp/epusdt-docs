@@ -25,4 +25,4 @@ Cloudflare Workers Builds 監聽本儲存庫的 `main` 分支。推送或合併 
 
 ## 授權
 
-[AGPL-3.0](LICENSE)
+[AGPL-3.0](https://github.com/GMWalletApp/epusdt-docs/blob/main/LICENSE)

@@ -19,6 +19,7 @@ const config = defineConfig({
         "lucide:search", "lucide:menu", "lucide:x", "lucide:languages", "lucide:sun", "lucide:moon",
         "lucide:chevron-down", "lucide:arrow-left", "lucide:arrow-right", "lucide:list",
         "lucide:book-open", "lucide:code-xml", "lucide:layers", "lucide:store", "lucide:heart",
+        "lucide:wallet", "lucide:wallet-cards", "lucide:workflow",
         "lucide:send", "lucide:external-link", "lucide:arrow-up-right",
       ] } },
       ui: { colors: { primary: "blue", neutral: "neutral" } },

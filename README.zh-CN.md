@@ -25,4 +25,4 @@ Cloudflare Workers Builds 监听本仓库的 `main` 分支。推送或合并 PR 
 
 ## 许可
 
-[AGPL-3.0](LICENSE)
+[AGPL-3.0](https://github.com/GMWalletApp/epusdt-docs/blob/main/LICENSE)

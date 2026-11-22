@@ -201,7 +201,8 @@ onUnmounted(() => {
             :aria-label="translations[language].manual" :value="promptText" />
         </template>
       </UModal>
-      <noscript><a :href="guide">{{ translations[language].action }} ↗</a></noscript>
+      <!-- With scripting enabled, the HTML parser exposes noscript content as text. -->
+      <noscript data-allow-mismatch="children"><a :href="guide">{{ translations[language].action }} ↗</a></noscript>
     </section>
   </div>
   <MerchantStory :language="language" :prefix="current.prefix" />

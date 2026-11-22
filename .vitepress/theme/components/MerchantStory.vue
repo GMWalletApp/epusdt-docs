@@ -1,93 +1,111 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { motion, useScroll, useTransform } from "motion-v";
-import { merchantCopy } from "./merchantCopy";
+import { computed } from "vue";
+import UIcon from "@nuxt/ui/components/Icon.vue";
 import type { Language } from "../../languages";
+import { merchantCopy } from "./merchantCopy";
 import PaymentCircuit from "./PaymentCircuit.vue";
 import MarketGlobe from "./MarketGlobe.vue";
 
 const props = defineProps<{ language: Language; prefix: string }>();
 const copy = computed(() => merchantCopy[props.language]);
-const feeSection = ref<HTMLElement>();
-const { scrollYProgress } = useScroll({ target: feeSection, offset: ["start end", "end start"] });
-const checkoutY = useTransform(scrollYProgress, [0, 1], [20, -20]);
-const checkoutAngle = useTransform(scrollYProgress, [0, 1], [2, -2]);
-const guides = ["guide/integration/epay", "guide/integration/gmpay", "api/payment#create"];
+const source = "https://github.com/GMWalletApp/epusdt";
+const integrations = [
+  { icon: "i-lucide-store", path: "guide/integration/epay" },
+  { icon: "i-lucide-code-xml", path: "guide/integration/gmpay" },
+  { icon: "i-lucide-layers", path: "api/payment#create" },
+];
 </script>
 
 <template>
   <div class="merchant-story">
-    <section class="merchant-ownership" aria-labelledby="merchant-ownership-title">
-      <div class="merchant-shell ownership-layout">
-        <div class="ownership-copy">
-          <h2 id="merchant-ownership-title"><span v-for="line in copy.title.split('\n')" :key="line">{{ line }}</span></h2>
-          <p class="merchant-body">{{ copy.intro }}</p>
-          <a class="merchant-source" href="https://github.com/GMWalletApp/epusdt">{{ copy.source }}</a>
-        </div>
-        <PaymentCircuit :buyer="copy.buyer" :merchant="copy.merchant" :notice="copy.notice" :observes="copy.observes" :automation="copy.automation" />
+    <section id="checkout" class="merchant-shell ownership-layout" aria-labelledby="merchant-ownership-title">
+      <div class="ownership-copy">
+        <h2 id="merchant-ownership-title">
+          <span v-for="line in copy.title.split('\n')" :key="line">{{ line }}</span>
+        </h2>
+        <p class="merchant-body">{{ copy.intro }}</p>
+        <a class="text-link" :href="source">{{ copy.source }}</a>
+        <PaymentCircuit :buyer="copy.buyer" :merchant="copy.merchant" :notice="copy.notice"
+          :observes="copy.observes" :automation="copy.automation" />
       </div>
-    </section>
-    <section ref="feeSection" class="merchant-fees" aria-labelledby="merchant-fee-title">
-      <div class="merchant-shell fee-layout">
-        <div class="fee-copy">
-          <p class="merchant-caption">{{ copy.fee }}</p>
-          <div class="fee-number">0<span>%</span></div>
-          <h2 id="merchant-fee-title">{{ copy.feeTitle }}</h2>
-          <p class="merchant-body">{{ copy.feeText }}</p>
-        </div>
+
+      <figure class="checkout-figure">
         <div class="checkout-stage">
-          <motion.figure class="checkout-preview" :style="{ y: checkoutY, rotate: checkoutAngle }">
-            <a href="/screenshots/pay1.jpeg" :aria-label="copy.checkout">
-              <img src="/screenshots/pay1.jpeg" width="1206" height="2622" loading="lazy" decoding="async" :alt="copy.checkout" />
-            </a>
-          </motion.figure>
+          <a class="checkout-phone" href="/screenshots/pay1.jpeg">
+            <img src="/screenshots/pay1.jpeg" width="1206" height="2622" loading="lazy" decoding="async" :alt="copy.checkout">
+          </a>
+          <div class="fee-receipt">
+            <span class="receipt-brand" aria-hidden="true">EPUSDT</span>
+            <span class="receipt-label">{{ copy.fee }}</span>
+            <strong class="receipt-number">0<span>%</span></strong>
+            <span class="receipt-barcode" aria-hidden="true"></span>
+          </div>
         </div>
-      </div>
+        <figcaption><strong id="merchant-fee-title">{{ copy.feeTitle }}</strong> {{ copy.feeText }}</figcaption>
+      </figure>
     </section>
+
     <section class="merchant-markets" aria-labelledby="merchant-markets-title">
       <div class="merchant-shell">
-        <p class="merchant-caption">{{ copy.markets }}</p>
-        <h2 id="merchant-markets-title">{{ copy.walletTitle }}</h2>
+        <div class="market-intro">
+          <h2 id="merchant-markets-title">{{ copy.walletTitle }}</h2>
+          <p class="merchant-body">{{ copy.walletText }}</p>
+        </div>
         <div class="market-layout">
           <MarketGlobe :regions="copy.regions" />
-          <div class="market-copy">
-            <p class="merchant-body">{{ copy.walletText }}</p>
+          <div class="market-networks">
             <dl class="asset-ledger">
-              <div><dt>USDT</dt><dd>TRON · Ethereum</dd></div>
-              <div><dt>USDC</dt><dd>Ethereum · Solana</dd></div>
-              <div><dt><a href="https://github.com/GMWalletApp/epusdt/pull/143">A7A5</a></dt><dd>TRON · Ethereum</dd></div>
+              <div><dt><span aria-hidden="true">₮</span>USDT</dt><dd>TRON · Ethereum</dd></div>
+              <div><dt><span aria-hidden="true">$</span>USDC</dt><dd>Ethereum · Solana</dd></div>
+              <div><dt><span aria-hidden="true">₽</span><a :href="source + '/pull/143'">A7A5</a></dt><dd>TRON · Ethereum</dd></div>
             </dl>
-            <a class="market-networks" :href="prefix+'guide/intro#networks'">{{ copy.networks }}</a>
+            <a class="text-link" :href="prefix + 'guide/intro#networks'">{{ copy.networks }}</a>
           </div>
         </div>
         <div class="system-notes">
           <article>
-            <div class="system-mark finality-mark" aria-hidden="true"><i></i><i></i><i></i></div>
-            <h3>{{ copy.finality }}</h3><p>{{ copy.finalityText }}</p>
+            <UIcon class="note-icon" name="i-lucide-check" aria-hidden="true" />
+            <div><h3>{{ copy.finality }}</h3><p>{{ copy.finalityText }}</p></div>
           </article>
           <article>
-            <div class="system-mark finality-mark" aria-hidden="true"><i></i><i></i></div>
-            <h3>{{ copy.engineering }}</h3><p>{{ copy.engineeringText }}</p>
+            <UIcon class="note-icon" name="i-lucide-layers" aria-hidden="true" />
+            <div><h3>{{ copy.engineering }}</h3><p>{{ copy.engineeringText }}</p></div>
           </article>
         </div>
       </div>
     </section>
+
     <section class="merchant-commerce" aria-labelledby="merchant-commerce-title">
       <div class="merchant-shell commerce-layout">
         <div>
           <h2 id="merchant-commerce-title">{{ copy.commerceTitle }}</h2>
           <p class="merchant-body">{{ copy.commerceText }}</p>
-          <a class="merchant-install" :href="prefix + 'guide/installation/docker'">{{ copy.install }}</a>
+          <a class="merchant-install" :href="prefix + 'guide/installation/docker'">
+            <UIcon name="i-lucide-terminal" aria-hidden="true" />{{ copy.install }}
+          </a>
         </div>
         <div class="commerce-sectors">
           <details v-for="(sector, index) in copy.sectors" :key="language + index" name="merchant-sector" :open="index === 0">
-            <summary>{{ sector.label }}<span class="sector-toggle" aria-hidden="true"></span></summary>
-            <div class="sector-detail"><p>{{ sector.detail }}</p><a :href="prefix + guides[index]">{{ copy.integration }}</a></div>
+            <summary>
+              <UIcon class="sector-icon" :name="integrations[index].icon" aria-hidden="true" />
+              {{ sector.label }}
+              <UIcon class="sector-toggle" name="i-lucide-chevron-down" aria-hidden="true" />
+            </summary>
+            <div class="sector-detail">
+              <p>{{ sector.detail }}</p>
+              <a class="text-link" :href="prefix + integrations[index].path">{{ copy.integration }}</a>
+            </div>
           </details>
         </div>
       </div>
     </section>
+    <footer class="merchant-footer">
+      <div class="merchant-shell">
+        <a class="footer-brand" :href="prefix"><img src="/logo.png" width="26" height="26" alt="">EPUSDT</a>
+        <a class="text-link" :href="source">GitHub</a>
+      </div>
+    </footer>
   </div>
 </template>
 
-<style src="../styles/merchant-story.css"></style>
+<style scoped src="../styles/merchant-story.css"></style>

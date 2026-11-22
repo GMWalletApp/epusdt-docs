@@ -9,7 +9,7 @@ const tail = computed(() => props.reverse ? "85%;-35%" : "-35%;85%");
 </script>
 <template>
   <g fill="none" stroke-linecap="round">
-    <path :d="path"  :stroke="signal ? '#ab8cde' : '#739bf1'" :stroke-dasharray="signal ? '4 6' : undefined" :marker-end="'url(#'+marker+')'" stroke-width="2" />
+    <path :d="path"  :stroke="signal ? '#6685c0' : '#214ded'" :stroke-dasharray="signal ? '4 6' : undefined" :marker-end="'url(#'+marker+')'" stroke-width="2" />
     <path v-if="active" :d="path" :stroke="'url(#'+id+')'" stroke-width="2.5" />
     <defs>
       <linearGradient :id="id" gradientUnits="userSpaceOnUse" x1="-10%" x2="-35%" y1="0" y2="0">

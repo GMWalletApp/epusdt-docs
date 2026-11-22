@@ -25,4 +25,4 @@ To check a release, open the **epusdt-docs** Worker in Cloudflare, find the buil
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[AGPL-3.0](https://github.com/GMWalletApp/epusdt-docs/blob/main/LICENSE)
