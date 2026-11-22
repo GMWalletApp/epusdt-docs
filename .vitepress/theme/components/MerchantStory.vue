@@ -10,8 +10,8 @@ const props = defineProps<{ language: Language; prefix: string }>();
 const copy = computed(() => merchantCopy[props.language]);
 const feeSection = ref<HTMLElement>();
 const { scrollYProgress } = useScroll({ target: feeSection, offset: ["start end", "end start"] });
-const receiptY = useTransform(scrollYProgress, [0, 1], [20, -20]);
-const receiptAngle = useTransform(scrollYProgress, [0, 1], [4, -3]);
+const checkoutY = useTransform(scrollYProgress, [0, 1], [20, -20]);
+const checkoutAngle = useTransform(scrollYProgress, [0, 1], [2, -2]);
 const guides = ["guide/integration/epay", "guide/integration/gmpay", "api/payment#create"];
 </script>
 
@@ -35,19 +35,12 @@ const guides = ["guide/integration/epay", "guide/integration/gmpay", "api/paymen
           <h2 id="merchant-fee-title">{{ copy.feeTitle }}</h2>
           <p class="merchant-body">{{ copy.feeText }}</p>
         </div>
-        <div class="receipt-stage">
-          <motion.div class="receipt-carrier" :style="{ y: receiptY, rotate: receiptAngle }">
-            <figure class="merchant-receipt">
-              <figcaption><img src="/logo.png" width="30" height="30" alt="" loading="lazy" />EPUSDT</figcaption>
-              <p class="receipt-caption">{{ copy.receipt }}</p>
-              <dl>
-                <div><dt>{{ copy.paid }}</dt><dd>100.00 <small>USDT</small></dd></div>
-                <div><dt>{{ copy.cut }}</dt><dd>0.00 <small>USDT</small></dd></div>
-                <div class="receipt-total"><dt>{{ copy.received }}</dt><dd>100.00 <small>USDT</small></dd></div>
-              </dl>
-              <div class="receipt-barcode" aria-hidden="true"></div>
-            </figure>
-          </motion.div>
+        <div class="checkout-stage">
+          <motion.figure class="checkout-preview" :style="{ y: checkoutY, rotate: checkoutAngle }">
+            <a href="/screenshots/pay1.jpeg" :aria-label="copy.checkout">
+              <img src="/screenshots/pay1.jpeg" width="1206" height="2622" loading="lazy" decoding="async" :alt="copy.checkout" />
+            </a>
+          </motion.figure>
         </div>
       </div>
     </section>

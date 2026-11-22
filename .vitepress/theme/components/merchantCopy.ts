@@ -8,10 +8,6 @@ export const merchantCopy = {
     "fee": "Gateway fee",
     "feeTitle": "Keep the full payment.",
     "feeText": "EPUSDT takes no percentage of a direct on-chain payment. Blockchain fees, hosting and optional third-party services are separate.",
-    "receipt": "Example receipt",
-    "paid": "Payment",
-    "cut": "EPUSDT fee",
-    "received": "To your wallet",
     "commerceTitle": "One gateway. Many ways to sell.",
     "commerceText": "Deploy without a platform account or an industry approval process. Choose how payments fit your business.",
     "sectors": [
@@ -48,7 +44,8 @@ export const merchantCopy = {
     "merchant": "Merchant wallet",
     "notice": "Notify",
     "observes": "Watch for payment",
-    "automation": "Merchant automation"
+    "automation": "Merchant automation",
+    "checkout": "EPUSDT checkout showing the order amount, network and token"
   },
   "zh": {
     "title": "你的收银台，\n你的钱包。",
@@ -57,10 +54,6 @@ export const merchantCopy = {
     "fee": "网关手续费",
     "feeTitle": "每一笔，全额到账。",
     "feeText": "链上直付时，EPUSDT 的抽成是零。区块链网络费、服务器和可选第三方服务的费用另计。",
-    "receipt": "收款示例",
-    "paid": "支付金额",
-    "cut": "EPUSDT 手续费",
-    "received": "钱包实收",
     "commerceTitle": "一套网关，多种生意。",
     "commerceText": "自建网关无需注册平台账号，也没有行业准入审核。选择适合你业务的收款方式。",
     "sectors": [
@@ -97,7 +90,8 @@ export const merchantCopy = {
     "merchant": "商户钱包",
     "notice": "通知",
     "observes": "监听到账",
-    "automation": "商户自动化程序"
+    "automation": "商户自动化程序",
+    "checkout": "EPUSDT 收银台实拍，展示订单金额、支付网络和币种"
   },
   "zh-tw": {
     "title": "你的收銀台，\n你的錢包。",
@@ -106,10 +100,6 @@ export const merchantCopy = {
     "fee": "閘道手續費",
     "feeTitle": "每一筆，全額入帳。",
     "feeText": "鏈上直付時，EPUSDT 的抽成為零。區塊鏈網路費、伺服器和選用的第三方服務費用另計。",
-    "receipt": "收款範例",
-    "paid": "付款金額",
-    "cut": "EPUSDT 手續費",
-    "received": "錢包實收",
     "commerceTitle": "一套閘道，多種生意。",
     "commerceText": "自架閘道無須註冊平台帳號，也沒有產業准入審核。選擇適合你業務的收款方式。",
     "sectors": [
@@ -146,7 +136,8 @@ export const merchantCopy = {
     "merchant": "商家錢包",
     "notice": "通知",
     "observes": "監聽入帳",
-    "automation": "商家自動化程式"
+    "automation": "商家自動化程式",
+    "checkout": "EPUSDT 收銀台畫面，顯示訂單金額、付款網路與幣種"
   },
   "ja": {
     "title": "自分の決済画面から、\n自分のウォレットへ。",
@@ -155,10 +146,6 @@ export const merchantCopy = {
     "fee": "ゲートウェイ手数料",
     "feeTitle": "支払額をそのまま受け取る。",
     "feeText": "オンチェーンの直接決済で EPUSDT が差し引く手数料はゼロ。ネットワーク、サーバー、任意の外部サービスの費用は別途かかります。",
-    "receipt": "受取例",
-    "paid": "支払額",
-    "cut": "EPUSDT 手数料",
-    "received": "ウォレット受取額",
     "commerceTitle": "さまざまな業種に、一つの決済基盤。",
     "commerceText": "セルフホスト版はプラットフォームへの登録や業種審査が不要です。ビジネスに合った決済フローを選べます。",
     "sectors": [
@@ -195,7 +182,8 @@ export const merchantCopy = {
     "merchant": "加盟店ウォレット",
     "notice": "通知",
     "observes": "入金を検知",
-    "automation": "加盟店の自動処理"
+    "automation": "加盟店の自動処理",
+    "checkout": "注文金額、ネットワークと通貨を表示した EPUSDT の決済画面"
   },
   "vi": {
     "title": "Trang thanh toán của bạn.\nVí của bạn.",
@@ -204,10 +192,6 @@ export const merchantCopy = {
     "fee": "Phí cổng thanh toán",
     "feeTitle": "Nhận trọn khoản thanh toán.",
     "feeText": "EPUSDT không thu phần trăm từ giao dịch trực tiếp trên chuỗi. Phí mạng, máy chủ và dịch vụ bên thứ ba tùy chọn được tính riêng.",
-    "receipt": "Biên nhận minh họa",
-    "paid": "Số tiền thanh toán",
-    "cut": "Phí EPUSDT",
-    "received": "Ví nhận được",
     "commerceTitle": "Một cổng cho nhiều mô hình kinh doanh.",
     "commerceText": "Tự triển khai mà không cần đăng ký tài khoản nền tảng hay xét duyệt ngành nghề. Chọn cách nhận tiền phù hợp với doanh nghiệp.",
     "sectors": [
@@ -244,7 +228,8 @@ export const merchantCopy = {
     "merchant": "Ví người bán",
     "notice": "Thông báo",
     "observes": "Theo dõi thanh toán",
-    "automation": "Tự động hóa của cửa hàng"
+    "automation": "Tự động hóa của cửa hàng",
+    "checkout": "Trang thanh toán EPUSDT hiển thị số tiền, mạng và loại tiền"
   },
   "es": {
     "title": "Tu página de pago.\nTu cartera.",
@@ -253,10 +238,6 @@ export const merchantCopy = {
     "fee": "Comisión de la pasarela",
     "feeTitle": "Recibe el pago íntegro.",
     "feeText": "EPUSDT no retiene ningún porcentaje en los pagos directos en cadena. Los costes de red, alojamiento y servicios externos opcionales se pagan aparte.",
-    "receipt": "Recibo de ejemplo",
-    "paid": "Importe pagado",
-    "cut": "Comisión de EPUSDT",
-    "received": "Recibido en tu cartera",
     "commerceTitle": "Una pasarela para distintos negocios.",
     "commerceText": "Instala la pasarela sin crear una cuenta en una plataforma ni pasar por una evaluación de tu sector. Elige cómo cobrar en tu negocio.",
     "sectors": [
@@ -293,7 +274,8 @@ export const merchantCopy = {
     "merchant": "Cartera del comercio",
     "notice": "Notificar",
     "observes": "Detectar el pago",
-    "automation": "Automatización del comercio"
+    "automation": "Automatización del comercio",
+    "checkout": "Pantalla de pago de EPUSDT con el importe, la red y el activo"
   },
   "pt": {
     "title": "Seu checkout.\nSua carteira.",
@@ -302,10 +284,6 @@ export const merchantCopy = {
     "fee": "Tarifa do gateway",
     "feeTitle": "Receba o valor integral.",
     "feeText": "O EPUSDT não desconta nenhum percentual dos pagamentos diretos na blockchain. Custos de rede, hospedagem e serviços opcionais de terceiros são cobrados à parte.",
-    "receipt": "Recibo de exemplo",
-    "paid": "Valor pago",
-    "cut": "Tarifa do EPUSDT",
-    "received": "Recebido na carteira",
     "commerceTitle": "Um gateway para vários negócios.",
     "commerceText": "Instale sem criar conta em uma plataforma nem passar por aprovação do setor. Escolha como receber pagamentos no seu negócio.",
     "sectors": [
@@ -342,12 +320,12 @@ export const merchantCopy = {
     "merchant": "Carteira da loja",
     "notice": "Notificar",
     "observes": "Detectar pagamento",
-    "automation": "Automação da loja"
+    "automation": "Automação da loja",
+    "checkout": "Checkout do EPUSDT com valor do pedido, rede e moeda"
   }
 } satisfies Record<Language, {
   title: string; intro: string; source: string;
-  fee: string; feeTitle: string; feeText: string; receipt: string;
-  paid: string; cut: string; received: string;
+  fee: string; feeTitle: string; feeText: string; checkout: string;
   commerceTitle: string; commerceText: string; sectors: { label: string; detail: string }[];
   markets: string; walletTitle: string; walletText: string; regions: string[]; networks: string;
   finality: string; finalityText: string; engineering: string; engineeringText: string;
