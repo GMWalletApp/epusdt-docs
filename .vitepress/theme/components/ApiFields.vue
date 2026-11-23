@@ -9,6 +9,8 @@ const descriptions = {
   vi: ["Mã kết quả nghiệp vụ.", "Thông báo kết quả.", "Dữ liệu trả về; null khi có lỗi.", "Mã yêu cầu dùng để tra cứu nhật ký."],
   ja: ["処理結果のコード。", "結果を説明するメッセージ。", "レスポンス本文のデータ。失敗時は null。", "ログを追跡するためのリクエスト ID。"],
   es: ["Código de resultado de la aplicación.", "Descripción del resultado.", "Datos devueltos; null en caso de error.", "Identificador para rastrear la solicitud."],
+  ko: ["코드로 표시한 처리 결과입니다.", "처리 결과를 설명하는 메시지입니다.", "응답 데이터입니다. 오류가 발생하면 null입니다.", "요청 추적에 사용되는 식별자입니다."],
+  ru: ["Код результата операции.", "Сообщение о результате.", "Данные ответа. При ошибке возвращается null.", "Идентификатор для отслеживания запроса."],
   pt: ["Código de resultado da aplicação.", "Descrição do resultado.", "Dados retornados; null em caso de erro.", "Identificador para rastrear a requisição."],
 };
 const notes = computed(() => descriptions[localeIndex.value as keyof typeof descriptions] ?? descriptions.root);

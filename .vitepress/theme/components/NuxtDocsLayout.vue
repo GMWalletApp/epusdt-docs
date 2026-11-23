@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, watch } from "vue";
 import { useData } from "vitepress";
-import { en, zh_cn, zh_tw, vi, ja, es, pt_br } from "@nuxt/ui/locale";
+import { en, zh_cn, zh_tw, vi, ja, es, pt_br, ko, ru } from "@nuxt/ui/locale";
 import UApp from "@nuxt/ui/components/App.vue";
 import UBadge from "@nuxt/ui/components/Badge.vue";
 import UButton from "@nuxt/ui/components/Button.vue";
@@ -33,6 +33,8 @@ const languages = [
   { key: "vi", locale: vi, docs: "Tài liệu", search: "Tìm tài liệu", contents: "Trên trang này", skip: "Đến nội dung", mode: "Đổi giao diện", language: "Ngôn ngữ", prev: "Trước", next: "Tiếp", missing: "Không tìm thấy trang" },
   { key: "ja", locale: ja, docs: "ドキュメント", search: "ドキュメントを検索", contents: "このページの目次", skip: "本文へ移動", mode: "テーマを切り替える", language: "言語", prev: "前へ", next: "次へ", missing: "ページが見つかりません" },
   { key: "es", locale: es, docs: "Documentación", search: "Buscar en la documentación", contents: "En esta página", skip: "Ir al contenido", mode: "Cambiar tema", language: "Idioma", prev: "Anterior", next: "Siguiente", missing: "Página no encontrada" },
+  { key: "ko", locale: ko, docs: "문서", search: "문서 검색", contents: "이 페이지의 내용", skip: "본문으로 건너뛰기", mode: "테마 변경", language: "언어", prev: "이전", next: "다음", missing: "페이지를 찾을 수 없습니다" },
+  { key: "ru", locale: ru, docs: "Документация", search: "Поиск по документации", contents: "На этой странице", skip: "Перейти к содержанию", mode: "Сменить тему", language: "Язык", prev: "Назад", next: "Далее", missing: "Страница не найдена" },
   { key: "pt", locale: pt_br, docs: "Documentação", search: "Pesquisar na documentação", contents: "Nesta página", skip: "Ir para o conteúdo", mode: "Alterar tema", language: "Idioma", prev: "Anterior", next: "Próximo", missing: "Página não encontrada" },
 ].map(item => {
   const lang = siteLanguages.find(l => l.id === (item.key === "root" ? "en" : item.key))!;
@@ -62,6 +64,7 @@ const apiSection = computed(() => groups.value.some(g => g.items.some(item => it
 const filter = ref("");
 const filterLabels: Record<string, string> = {
   root: "Filter endpoints", zh: "筛选接口", "zh-tw": "篩選介面", vi: "Lọc API",
+  ko: "API 필터", ru: "Фильтр методов",
   ja: "API を絞り込む", es: "Filtrar endpoints", pt: "Filtrar endpoints",
 };
 const filterLabel = computed(() => filterLabels[local.value.key]);

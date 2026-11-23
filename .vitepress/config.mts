@@ -45,6 +45,8 @@ const config = defineConfig({
     ja: docsLocale("ja"),
     es: docsLocale("es"),
     pt: docsLocale("pt"),
+    ko: docsLocale("ko"),
+    ru: docsLocale("ru"),
     root: {
       label: "English",
       lang: "en-US",

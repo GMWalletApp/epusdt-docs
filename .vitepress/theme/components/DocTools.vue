@@ -13,6 +13,8 @@ const labels = {
   vi: { home: "Trang chủ", docs: "Tài liệu", menu: "Công cụ", copy: "Sao chép liên kết", markdown: "Mở Markdown", deploy: "Hướng dẫn triển khai bằng Agent", copied: "Đã sao chép liên kết", failed: "Chọn và sao chép liên kết" },
   ja: { home: "ホーム", docs: "ドキュメント", menu: "ページ操作", copy: "リンクをコピー", markdown: "Markdown を開く", deploy: "エージェント導入ガイド", copied: "リンクをコピーしました", failed: "リンクを選択してコピー" },
   es: { home: "Inicio", docs: "Documentación", menu: "Herramientas", copy: "Copiar enlace", markdown: "Abrir Markdown", deploy: "Guía de despliegue con agentes", copied: "Enlace copiado", failed: "Selecciona y copia el enlace" },
+  ko: { home: "홈", docs: "문서", menu: "페이지 도구", copy: "페이지 링크 복사", markdown: "Markdown 열기", deploy: "에이전트 배포 가이드", copied: "링크 복사됨", failed: "링크를 선택해 복사하세요" },
+  ru: { home: "Главная", docs: "Документация", menu: "Действия со страницей", copy: "Скопировать ссылку", markdown: "Открыть Markdown", deploy: "Развёртывание с агентом", copied: "Ссылка скопирована", failed: "Выделите и скопируйте ссылку" },
   pt: { home: "Início", docs: "Documentação", menu: "Ferramentas", copy: "Copiar link", markdown: "Abrir Markdown", deploy: "Guia de implantação com agentes", copied: "Link copiado", failed: "Selecione e copie o link" },
 };
 const local = computed(() => labels[localeIndex.value as keyof typeof labels] ?? labels.root);
@@ -51,7 +53,7 @@ async function copyLink() {
 const items = computed(() => {
   const actions = [{ label: local.value.copy, icon: "i-lucide-link", onSelect: copyLink }];
   const links = [];
-  if (/^(?:(?:zh|zh-tw|vi|ja|es|pt)\/)?(?:guide|api|gmpay-edge|gmshop-edge)\//.test(file.value)) {
+  if (/^(?:(?:zh|zh-tw|vi|ja|es|pt|ko|ru)\/)?(?:guide|api|gmpay-edge|gmshop-edge)\//.test(file.value)) {
     links.push({ label: local.value.markdown, icon: "i-lucide-file-text", to: "/agent-docs/" + file.value, target: "_blank" });
   }
   links.push({ label: local.value.deploy, icon: "i-lucide-terminal", to: "/agent-setup/prompt.md", target: "_blank" });
