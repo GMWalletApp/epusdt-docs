@@ -2,6 +2,7 @@ import type { Theme } from "vitepress";
 import { defineAsyncComponent } from "vue";
 import ui from "@nuxt/ui/vue-plugin";
 import SiteLayout from "./components/SiteLayout.vue";
+import { redirectHomeOnEntry } from "./language-preference";
 import "./styles/ui.css";
 import "./styles/custom.css";
 import "./styles/docs.css";
@@ -9,6 +10,7 @@ import "./styles/docs.css";
 export default {
   Layout: SiteLayout,
   enhanceApp({ app, router }) {
+    if (!import.meta.env.SSR) redirectHomeOnEntry();
     if (import.meta.env.PROD && !import.meta.env.SSR) {
       const browser = window as Window & { __VP_HASH_MAP__: Record<string, string> };
       let loadedPages = browser.__VP_HASH_MAP__;

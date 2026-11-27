@@ -18,6 +18,7 @@ import UPageBody from "@nuxt/ui/components/PageBody.vue";
 import UPageCard from "@nuxt/ui/components/PageCard.vue";
 import USeparator from "@nuxt/ui/components/Separator.vue";
 import { languages as siteLanguages } from "../../languages";
+import { rememberLanguage } from "../language-preference";
 import DocMotion from "./DocMotion.vue";
 import DocTools from "./DocTools.vue";
 
@@ -36,7 +37,7 @@ const languages = [
   { key: "pt", locale: pt_br, docs: "Documentação", search: "Pesquisar na documentação", contents: "Nesta página", skip: "Ir para o conteúdo", mode: "Alterar tema", language: "Idioma", prev: "Anterior", next: "Próximo", missing: "Página não encontrada" },
 ].map(item => {
   const lang = siteLanguages.find(l => l.id === (item.key === "root" ? "en" : item.key))!;
-  return { ...item, label: lang.label, prefix: lang.prefix };
+  return { ...item, id: lang.id, label: lang.label, prefix: lang.prefix };
 });
 const local = computed(() => languages.find(l => l.key === localeIndex.value) ?? languages[0]);
 const file = computed(() => page.value.relativePath || "");
@@ -46,7 +47,8 @@ const switches = computed(() => {
   const readmes: Record<string, string> = { root: "/README", zh: "/README.zh-CN", "zh-tw": "/README.zh-TW" };
   return languages.map(l => ({
     label: l.label, icon: l.key === local.value.key ? "i-lucide-check" : undefined,
-    to: (/^README/.test(file.value) ? readmes[l.key] : paths?.[l.key === "root" ? "en" : l.key]) ?? l.prefix,
+    onSelect: () => rememberLanguage(l.id),
+    to: (/^README/.test(file.value) ? readmes[l.key] : paths?.[l.id]) ?? l.prefix,
   }));
 });
 const sections = computed(() => (theme.value.sidebar ?? {}) as Record<string, Group[]>);

@@ -7,6 +7,7 @@ import MerchantStory from "./MerchantStory.vue";
 import GradientASCII from "./GradientASCII.vue";
 
 import { languages, type Language } from "../../languages";
+import { rememberLanguage } from "../language-preference";
 
 const props = defineProps<{ language: Language }>();
 const current = computed(() => languages.find(l => l.id === props.language)!);
@@ -157,7 +158,7 @@ onUnmounted(() => {
           <summary :aria-label="translations[language].nav + ' · ' + current.label">{{ current.label }} ▾</summary>
           <div class="ep-language-options">
             <a v-for="item in languages" :key="item.id" :href="item.prefix" :lang="item.tag" :hreflang="item.tag"
-              :aria-current="item.id === language ? 'page' : undefined">{{ item.label }}</a>
+              :aria-current="item.id === language ? 'page' : undefined" @click="rememberLanguage(item.id)">{{ item.label }}</a>
           </div>
         </details>
       </nav>
